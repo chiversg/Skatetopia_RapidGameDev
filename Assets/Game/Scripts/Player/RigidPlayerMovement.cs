@@ -47,7 +47,7 @@ public class RigidPlayerMovement : MonoBehaviour
             while (isGrounded() == false)
             {
                 Vector3 movePos = rb.transform.rotation * Vector3.down;
-                rb.AddForce(movePos);
+                rb.AddForce(movePos,ForceMode.Force);
                 yield return null;
                 
             }

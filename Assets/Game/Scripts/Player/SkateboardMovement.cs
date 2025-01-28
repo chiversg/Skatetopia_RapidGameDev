@@ -9,7 +9,7 @@ public class SkateboardMovement : MonoBehaviour
     [SerializeField]
     private float acceleration;
     [SerializeField]
-    private float maxSpeed;
+    private float maxManualSpeed;
     [SerializeField]
     private float speed = 1;
     [SerializeField]
@@ -18,9 +18,15 @@ public class SkateboardMovement : MonoBehaviour
     private float jumpSpeed;
 
     private float direction;
-    private float ySpeed;
-    private Vector2 moveVector = new Vector2(0f,0f);
-    Vector2 velocity;
+    private float vSpeed;
+    private float gravStrength = 9.8f;
+    private Vector2 moveVector = new Vector2(0f, 0f);
+
+    Vector2 inputVelocity;  //Speed gained by holding down an input
+    Vector2 dragVelocity;   //The resistance from the ground slowing the player down
+    Vector2 momentumGain;   //Extra momemtum gained by gravity
+    Vector2 velocity;       //The player's total velocity
+    Vector2 gravity;
 
     void Start()
     {
@@ -30,47 +36,51 @@ public class SkateboardMovement : MonoBehaviour
     }
     void Update()
     {
+        movePlayer();
+        applyGravity();
+        velocity = inputVelocity + gravity;
+        velocity = adjustVelocityToSlope(velocity);
+        matchRotation();
+        player.Move(velocity * Time.deltaTime);
+    }
+    private void movePlayer()
+    {
         float direction = Input.GetAxis("Horizontal");
-        Vector2 movementDirection = new Vector2(direction, 0f);
-        
-
-        ySpeed += Physics.gravity.y * Time.deltaTime;
-
-        if(player.isGrounded)
+        inputVelocity += new Vector2(direction * speed, 0f);
+        inputVelocity.x = Mathf.Clamp(inputVelocity.x, -maxManualSpeed, maxManualSpeed);
+    }
+    private void applyGravity()
+    {
+        //Debug.Log(player.isGrounded);
+        if(player.isGrounded == false)
         {
-            player.stepOffset = originalStepOffset;
-            ySpeed = -0.5f;
-
-            if (Input.GetButtonDown("Jump"))
-            {
-                ySpeed = jumpSpeed;
-            }
-        }
+            vSpeed -= gravStrength * Time.deltaTime; 
+        } 
         else
         {
-            player.stepOffset = 0;
+            vSpeed = 0f;
         }
+        gravity = new Vector2(0f, vSpeed);
+    }
+    private void matchRotation()
+    {
+        var ray = new Ray(player.transform.position, player.transform.rotation * Vector2.down);
 
-        velocity += movementDirection * speed * acceleration;
-        velocity = adjustVelocityToSlope(velocity);
-        velocity.y += ySpeed;
-
-       
-        player.Move(velocity * Time.deltaTime);
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, 5f) && hitInfo.collider.gameObject.tag == "Floor")
+        {
+            player.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+            Debug.Log(hitInfo.collider.gameObject.name);
+        }
     }
     private Vector2 adjustVelocityToSlope(Vector2 velocity)
     {
-        var ray = new Ray(transform.position, Vector2.down);
+        var ray = new Ray(player.transform.position, player.transform.rotation * Vector2.down);
 
-        if(Physics.Raycast(ray, out RaycastHit hitInfo, 10f))
+        if(Physics.Raycast(ray, out RaycastHit hitInfo, 10f) && hitInfo.collider.gameObject.tag == "Floor")
         {
             var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
             var adjustedVelocity = slopeRotation * velocity;
-            Debug.Log(adjustedVelocity);
-            if(adjustedVelocity.y < 0)
-            {
-                return adjustedVelocity;
-            }
+            return adjustedVelocity;   
         }
         return velocity;
     }
@@ -80,6 +90,14 @@ public class SkateboardMovement : MonoBehaviour
         {
             //player.rotation = collision.transform.rotation;
         }
+    }
+    private void addMomentum()
+    {
+        Vector2 addedMomentum = findComponents(player.transform.rotation.eulerAngles.z, 9.8f); ;
+        addedMomentum.x = addedMomentum.y;
+        addedMomentum.y = 0f;
+        //addedMomentum = rb.rotation * addedMomentum;
+        //rb.AddForce(addedMomentum, ForceMode.Acceleration);
     }
     private Vector2 findComponents(float angle, float magnitude)
     {
