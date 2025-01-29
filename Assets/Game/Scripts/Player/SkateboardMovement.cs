@@ -7,7 +7,7 @@ public class SkateboardMovement : MonoBehaviour
     [SerializeField]
     private CharacterController player;
     [SerializeField]
-    private float acceleration;
+    private float acceleration = 1;
     [SerializeField]
     private float maxManualSpeed;
     [SerializeField]
@@ -18,6 +18,8 @@ public class SkateboardMovement : MonoBehaviour
     private float jumpSpeed;
     [SerializeField]
     private float drag;
+    [SerializeField]
+    private float deceleration = 1;
     public TextMeshProUGUI debugText;
 
     private float direction;
@@ -66,6 +68,10 @@ public class SkateboardMovement : MonoBehaviour
     private void movePlayer()
     {
         float direction = Input.GetAxisRaw("Horizontal");
+        if((direction < 0) != (xSpeed < 0))
+        {
+            direction *= deceleration;
+        }
         Debug.Log("Player dir" + direction);
         xSpeed += direction * speed * acceleration * Time.deltaTime;
         xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
