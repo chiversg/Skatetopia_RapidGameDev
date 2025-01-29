@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SkateboardMovement : MonoBehaviour
 {
@@ -13,17 +15,23 @@ public class SkateboardMovement : MonoBehaviour
     [SerializeField]
     private float speed = 1;
     [SerializeField]
-    private float originalStepOffset;
-    [SerializeField]
     private float jumpSpeed;
     [SerializeField]
     private float drag;
+    public TextMeshProUGUI debugText;
 
     private float direction;
     private float vSpeed;
     private float xSpeed;
     private float gravStrength = 9.8f;
     private Vector2 moveVector = new Vector2(0f, 0f);
+
+    private enum state 
+    {
+        GROUNDED, 
+        JUMPING
+    };
+    state playerState;
 
     Vector2 inputVelocity;  //Speed gained by holding down an input
     Vector2 dragVelocity;   //The resistance from the ground slowing the player down
@@ -37,36 +45,45 @@ public class SkateboardMovement : MonoBehaviour
         Vector2 ans = findComponents(37, 14);
         Debug.Log(ans.x + " x");
         Debug.Log(ans.y + " y");
+        playerState = state.JUMPING;
     }
     void Update()
     {
         movePlayer();
         applyGravity();
         applyDrag();
-        //addMomentum();
-        Debug.Log("Drag: " + dragVelocity);
-        Debug.Log("Velocity:" + velocity);
-        velocity = inputVelocity + gravity;
-        velocity += dragVelocity;
+        addMomentum();
+        performTricks();
+        velocity.x = xSpeed;
+        velocity.y = vSpeed;
         velocity.x = Mathf.Clamp(velocity.x, -maxSpeed, maxSpeed);
         rotatedVelocity = adjustVelocityToSlope(velocity);
         matchRotation();
         Debug.Log(player.transform.rotation.x);
-
         player.Move(rotatedVelocity * Time.deltaTime);
+        updateDebugText();
     }
     private void movePlayer()
     {
         float direction = Input.GetAxisRaw("Horizontal");
         Debug.Log("Player dir" + direction);
-        inputVelocity += new Vector2(direction * speed * acceleration, 0f);
-        inputVelocity.x = Mathf.Clamp(inputVelocity.x, -maxManualSpeed, maxManualSpeed);
+        xSpeed += direction * speed * acceleration * Time.deltaTime;
+        xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
+    }
+    private void performTricks()
+    {
+        if (Input.GetButtonDown("Jump") && player.isGrounded)
+        {
+            playerState = state.JUMPING;
+            vSpeed += jumpSpeed;
+        }
     }
     private void applyGravity()
     {
         //Debug.Log(player.isGrounded);
         if (player.isGrounded == false)
         {
+            playerState = state.GROUNDED;
             vSpeed -= gravStrength * Time.deltaTime;
         }
         else
@@ -77,14 +94,14 @@ public class SkateboardMovement : MonoBehaviour
     }
     private void applyDrag()
     {
-        dragVelocity = new Vector2(-velocity.normalized.x * drag, 0f);
+        xSpeed += -velocity.normalized.x * drag * Time.deltaTime;
 
     }
     private void matchRotation()
     {
         var ray = new Ray(player.transform.position, player.transform.rotation * Vector2.down);
 
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, 5f) && hitInfo.collider.gameObject.tag == "Floor")
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, 5f) && hitInfo.collider.gameObject.tag == "Floor" && playerState == state.GROUNDED)
         {
             player.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
             //Debug.Log(hitInfo.collider.gameObject.name);
@@ -92,15 +109,16 @@ public class SkateboardMovement : MonoBehaviour
     }
     private Vector2 adjustVelocityToSlope(Vector2 velocity)
     {
-        var ray = new Ray(player.transform.position, player.transform.rotation * Vector2.down);
+            var ray = new Ray(player.transform.position, player.transform.rotation * Vector2.down);
 
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, 10f) && hitInfo.collider.gameObject.tag == "Floor")
-        {
-            var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
-            var adjustedVelocity = slopeRotation * velocity;
-            return adjustedVelocity;
-        }
-        return velocity;
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, 10f) && hitInfo.collider.gameObject.tag == "Floor" && playerState == state.GROUNDED)
+            {
+                var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+                var adjustedVelocity = slopeRotation * velocity;
+                return adjustedVelocity;
+            }
+            return velocity;
+        
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -112,7 +130,8 @@ public class SkateboardMovement : MonoBehaviour
     private void addMomentum()
     {
         Debug.Log("Player Rotation: " + player.transform.rotation.z);
-        momentumGain = findComponents(player.transform.rotation.eulerAngles.z, 9.8f); ;
+        momentumGain = findComponents(player.transform.rotation.eulerAngles.z, 9.8f);
+        xSpeed += -momentumGain.y * Time.deltaTime;
         Debug.Log("Horizonal Momentum Gain: " + momentumGain.y);
     }
     private Vector2 findComponents(float angle, float magnitude)
@@ -122,6 +141,14 @@ public class SkateboardMovement : MonoBehaviour
         float adjacent = magnitude * Mathf.Cos(rad);
 
         return new Vector2(adjacent, opposite);
+    }
+    private void updateDebugText()
+    {
+        debugText.text =
+            "\nVelocity: " + rotatedVelocity +
+            "\nxSpeed: " + xSpeed +
+            "\nvSpeed: " + vSpeed +
+            "\nState: " + playerState;
     }
 }
 
