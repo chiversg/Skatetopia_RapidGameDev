@@ -156,5 +156,9 @@ public class SkateboardMovement : MonoBehaviour
             "\nvSpeed: " + vSpeed +
             "\nState: " + playerState;
     }
+
+    public void addSpeed(float s){
+        vSpeed += s;
+    }
 }
 
