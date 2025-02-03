@@ -28,6 +28,9 @@ public class SkateboardMovement : MonoBehaviour
     private float gravStrength = 9.8f;
     private Vector2 moveVector = new Vector2(0f, 0f);
 
+    public Transform railEnd;
+    public bool onRail;
+
     private enum state 
     {
         GROUNDED, 
@@ -51,19 +54,22 @@ public class SkateboardMovement : MonoBehaviour
     }
     void Update()
     {
-        movePlayer();
-        applyGravity();
-        applyDrag();
-        addMomentum();
-        performTricks();
-        velocity.x = xSpeed;
-        velocity.y = vSpeed;
-        velocity.x = Mathf.Clamp(velocity.x, -maxSpeed, maxSpeed);
-        rotatedVelocity = adjustVelocityToSlope(velocity);
-        matchRotation();
-        Debug.Log(player.transform.rotation.x);
-        player.Move(rotatedVelocity * Time.deltaTime);
-        updateDebugText();
+        if(onRail)movePlayerTowards();
+        else{
+            movePlayer();
+            applyGravity();
+            applyDrag();
+            addMomentum();
+            performTricks();
+            velocity.x = xSpeed;
+            velocity.y = vSpeed;
+            velocity.x = Mathf.Clamp(velocity.x, -maxSpeed, maxSpeed);
+            rotatedVelocity = adjustVelocityToSlope(velocity);
+            matchRotation();
+            Debug.Log(player.transform.rotation.x);
+            player.Move(rotatedVelocity * Time.deltaTime);
+            updateDebugText();
+        }
     }
     private void movePlayer()
     {
@@ -155,6 +161,11 @@ public class SkateboardMovement : MonoBehaviour
             "\nxSpeed: " + xSpeed +
             "\nvSpeed: " + vSpeed +
             "\nState: " + playerState;
+    }
+
+    private void movePlayerTowards(){
+        transform.position = Vector3.MoveTowards(transform.position, railEnd.position, xSpeed/100);
+        if(Vector3.Distance(transform.position, railEnd.position) < 0.01f) onRail = false;
     }
 
     public void addSpeed(float s){
