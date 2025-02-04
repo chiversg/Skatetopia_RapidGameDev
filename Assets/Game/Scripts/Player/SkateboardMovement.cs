@@ -168,8 +168,15 @@ public class SkateboardMovement : MonoBehaviour
         if(Vector3.Distance(transform.position, railEnd.position) < 0.01f) onRail = false;
     }
 
-    public void addSpeed(float s){
-        vSpeed += s;
+    public void addSpeed(float xs, float ys){
+        Debug.Log("BOunce");
+        xSpeed += xs;
+        vSpeed += ys;
+        //velocity.Set(velocity.x += xs, velocity.y += ys);   
+    }
+
+    public void setDirection(float dir){
+        direction = dir;
     }
 }
 
