@@ -97,18 +97,23 @@ public class SkateboardMovement : MonoBehaviour
         rotatedVelocity = adjustVelocityToSlope(velocity);
         Debug.Log(player.transform.rotation.x);
         player.Move(rotatedVelocity * Time.deltaTime);
-
     }
     private void movePlayer(float dampening)
     {
         float direction = Input.GetAxisRaw("Horizontal");
-        if ((direction < 0) != (xSpeed < 0))
+        if ((direction < 0) == (xSpeed < 0) && xSpeed < maxManualSpeed)
+        {
+            Debug.Log("Player dir" + direction);
+            xSpeed += direction * speed * dampening * acceleration * Time.deltaTime;
+            xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
+        }
+        else if ((direction < 0) != (xSpeed < 0))
         {
             direction *= deceleration;
+            Debug.Log("Player dir" + direction);
+            xSpeed += direction * speed * dampening * acceleration * Time.deltaTime;
+            xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
         }
-        Debug.Log("Player dir" + direction);
-        xSpeed += direction * speed * dampening * acceleration * Time.deltaTime;
-        xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
     }
     private void performTricks()
     {
@@ -246,6 +251,10 @@ public class SkateboardMovement : MonoBehaviour
     public void setDirection(float dir)
     {
         direction = dir;
+    }
+    public float getXSpeed()
+    {
+        return xSpeed;
     }
 }
 
