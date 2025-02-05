@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GrindRail : MonoBehaviour
@@ -15,15 +13,16 @@ public class GrindRail : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    private void OnTriggerEnter(Collider other){
+    private void OnTriggerEnter(Collider other)
+    {
         Debug.Log("rail enter");
-        if(other.tag == "Player"){
+        if (other.tag == "Player")
+        {
             Debug.Log("player enter rail");
-            player.GetComponent<SkateboardMovement>().railEnd = end;
-            player.GetComponent<SkateboardMovement>().onRail = true;
+            player.GetComponent<SkateboardMovement>().boardRail(end);
         }
     }
 }

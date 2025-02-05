@@ -1,7 +1,5 @@
-using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class SkateboardMovement : MonoBehaviour
 {
@@ -34,13 +32,14 @@ public class SkateboardMovement : MonoBehaviour
     public Transform railEnd;
     public bool onRail;
 
-    private enum state 
+    private enum state
     {
         GROUNDED,
         JUMPING,
-        FALLING
+        FALLING,
+        GRINDING
     };
-    state playerState = state.JUMPING;
+    private state playerState = state.FALLING;
 
     Vector2 inputVelocity;  //Speed gained by holding down an input
     Vector2 dragVelocity;   //The resistance from the ground slowing the player down
@@ -61,25 +60,46 @@ public class SkateboardMovement : MonoBehaviour
     }
     void Update()
     {
-        if(onRail)movePlayerTowards();
-        else{
-           updateRays();
-        movePlayer();
-        applyGravity();
-        applyDrag();
-        addMomentum();
-        performTricks();
+        if (onRail) playerState = state.GRINDING;
+        updateRays();
+        updateDebugText();
+
+        switch (playerState)
+        {
+            case state.GROUNDED:
+
+                movePlayer(1);
+                applyGravity();
+                applyDrag();
+                addMomentum();
+                performTricks();
+                matchRotation();
+                break;
+            case state.JUMPING:
+                movePlayer(0.5f);
+                applyGravity();
+                matchRotation();
+                break;
+            case state.FALLING:
+                movePlayer(0.5f);
+                applyGravity();
+                matchRotation();
+                break;
+            case state.GRINDING:
+                performTricks();
+                movePlayerTowards();
+                //matchRotation();
+                break;
+        }
         velocity.x = xSpeed;
         velocity.y = vSpeed;
         velocity.x = Mathf.Clamp(velocity.x, -maxSpeed, maxSpeed);
         rotatedVelocity = adjustVelocityToSlope(velocity);
-        matchRotation();
         Debug.Log(player.transform.rotation.x);
         player.Move(rotatedVelocity * Time.deltaTime);
-        updateDebugText();
-        }
+
     }
-    private void movePlayer()
+    private void movePlayer(float dampening)
     {
         float direction = Input.GetAxisRaw("Horizontal");
         if ((direction < 0) != (xSpeed < 0))
@@ -87,13 +107,14 @@ public class SkateboardMovement : MonoBehaviour
             direction *= deceleration;
         }
         Debug.Log("Player dir" + direction);
-        xSpeed += direction * speed * acceleration * Time.deltaTime;
+        xSpeed += direction * speed * dampening * acceleration * Time.deltaTime;
         xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
     }
     private void performTricks()
     {
-        if (Input.GetButtonDown("Jump") && playerState == state.GROUNDED)
+        if (Input.GetButtonDown("Jump") && (playerState == state.GROUNDED || playerState == state.GRINDING))
         {
+            onRail = false;
             playerState = state.JUMPING;
             vSpeed += jumpSpeed;
         }
@@ -116,7 +137,7 @@ public class SkateboardMovement : MonoBehaviour
     private void applyDrag()
     {
         xSpeed += -velocity.normalized.x * drag * Time.deltaTime;
-         
+
     }
     private void matchRotation()
     {
@@ -124,7 +145,7 @@ public class SkateboardMovement : MonoBehaviour
         {
             player.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
             //Debug.Log(hitInfo.collider.gameObject.name);
-        } 
+        }
         else if (Physics.Raycast(leftRay, out RaycastHit lhitInfo, 2f) && lhitInfo.collider.gameObject.tag == "Floor")
         {
             player.transform.rotation = Quaternion.FromToRotation(Vector3.up, lhitInfo.normal);
@@ -148,7 +169,7 @@ public class SkateboardMovement : MonoBehaviour
             var adjustedVelocity = slopeRotation * velocity;
             return adjustedVelocity;
         }
-        if(playerState != state.JUMPING) playerState = state.FALLING;
+        if (playerState != state.JUMPING) playerState = state.FALLING;
         return velocity;
 
     }
@@ -189,7 +210,7 @@ public class SkateboardMovement : MonoBehaviour
         Debug.DrawRay(leftRay.origin, leftRay.direction, Color.blue);
         Debug.DrawRay(rightRay.origin, rightRay.direction, Color.red);
     }
-    
+
     private void updateDebugText()
     {
         debugText.text =
@@ -200,19 +221,30 @@ public class SkateboardMovement : MonoBehaviour
     }
 
 
-    private void movePlayerTowards(){
-        transform.position = Vector3.MoveTowards(transform.position, railEnd.position, xSpeed/100);
-        if(Vector3.Distance(transform.position, railEnd.position) < 0.01f) onRail = false;
+    private void movePlayerTowards()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, railEnd.position, Mathf.Abs(xSpeed) / 100);
+        if (Vector3.Distance(transform.position, railEnd.position) < 0.01f)
+        {
+            playerState = state.FALLING;
+            onRail = false;
+        }
     }
-
-    public void addSpeed(float xs, float ys){
+    public void boardRail(Transform target)
+    {
+        railEnd = target;
+        onRail = true;
+    }
+    public void addSpeed(float xs, float ys)
+    {
         Debug.Log("BOunce");
         xSpeed += xs;
         vSpeed += ys;
         //velocity.Set(velocity.x += xs, velocity.y += ys);   
     }
 
-    public void setDirection(float dir){
+    public void setDirection(float dir)
+    {
         direction = dir;
     }
 }
