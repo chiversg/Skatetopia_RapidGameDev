@@ -245,6 +245,7 @@ public class SkateboardMovement : MonoBehaviour
     }
     public void boardRail(Transform target)
     {
+        vSpeed = 0;
         railEnd = target;
         onRail = true;
     }
