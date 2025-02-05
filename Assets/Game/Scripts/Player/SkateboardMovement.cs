@@ -19,6 +19,13 @@ public class SkateboardMovement : MonoBehaviour
     private float drag;
     [SerializeField]
     private float deceleration = 1;
+    [SerializeField]
+    [Tooltip("Gravity that affects the player's fall speed")]
+    private float gravStrength = 9.8f;
+    [SerializeField]
+    [Tooltip("Gravity gained by going down slopes")]
+    private float gravPotentialStrength = 9.8f;
+
     public TextMeshProUGUI debugText;
 
     private float direction;
@@ -26,7 +33,7 @@ public class SkateboardMovement : MonoBehaviour
     private float xSpeed;
     private float xJump;
     private float yJump;
-    private float gravStrength = 9.8f;
+
     private Vector2 moveVector = new Vector2(0f, 0f);
 
     public Transform railEnd;
@@ -63,6 +70,7 @@ public class SkateboardMovement : MonoBehaviour
         if (onRail) playerState = state.GRINDING;
         updateRays();
         updateDebugText();
+
 
         switch (playerState)
         {
@@ -188,7 +196,7 @@ public class SkateboardMovement : MonoBehaviour
     private void addMomentum()
     {
         Debug.Log("Player Rotation: " + player.transform.rotation.z);
-        momentumGain = findComponents(player.transform.rotation.eulerAngles.z, 9.8f);
+        momentumGain = findComponents(player.transform.rotation.eulerAngles.z, gravPotentialStrength);
         xSpeed += -momentumGain.y * Time.deltaTime;
         Debug.Log("Horizonal Momentum Gain: " + momentumGain.y);
     }
@@ -219,7 +227,7 @@ public class SkateboardMovement : MonoBehaviour
     private void updateDebugText()
     {
         debugText.text =
-            "\nVelocity: " + rotatedVelocity +
+            "\nVelocity: " + player.velocity +
             "\nxSpeed: " + xSpeed +
             "\nvSpeed: " + vSpeed +
             "\nState: " + playerState;
