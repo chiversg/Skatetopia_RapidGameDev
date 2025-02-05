@@ -31,7 +31,10 @@ public class SkateboardMovement : MonoBehaviour
     private float gravStrength = 9.8f;
     private Vector2 moveVector = new Vector2(0f, 0f);
 
-    private enum state
+    public Transform railEnd;
+    public bool onRail;
+
+    private enum state 
     {
         GROUNDED,
         JUMPING,
@@ -58,7 +61,9 @@ public class SkateboardMovement : MonoBehaviour
     }
     void Update()
     {
-        updateRays();
+        if(onRail)movePlayerTowards();
+        else{
+           updateRays();
         movePlayer();
         applyGravity();
         applyDrag();
@@ -72,6 +77,7 @@ public class SkateboardMovement : MonoBehaviour
         Debug.Log(player.transform.rotation.x);
         player.Move(rotatedVelocity * Time.deltaTime);
         updateDebugText();
+        }
     }
     private void movePlayer()
     {
@@ -193,9 +199,21 @@ public class SkateboardMovement : MonoBehaviour
             "\nState: " + playerState;
     }
 
-    public void addSpeed(float s)
-    {
-        vSpeed += s;
+
+    private void movePlayerTowards(){
+        transform.position = Vector3.MoveTowards(transform.position, railEnd.position, xSpeed/100);
+        if(Vector3.Distance(transform.position, railEnd.position) < 0.01f) onRail = false;
+    }
+
+    public void addSpeed(float xs, float ys){
+        Debug.Log("BOunce");
+        xSpeed += xs;
+        vSpeed += ys;
+        //velocity.Set(velocity.x += xs, velocity.y += ys);   
+    }
+
+    public void setDirection(float dir){
+        direction = dir;
     }
 }
 
