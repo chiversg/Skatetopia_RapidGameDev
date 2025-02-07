@@ -67,10 +67,10 @@ public class SkateboardMovement : MonoBehaviour
     }
     void Update()
     {
+        
         if (onRail) playerState = state.GRINDING;
         updateRays();
         updateDebugText();
-
 
         switch (playerState)
         {
@@ -105,6 +105,8 @@ public class SkateboardMovement : MonoBehaviour
         rotatedVelocity = adjustVelocityToSlope(velocity);
         Debug.Log(player.transform.rotation.x);
         player.Move(rotatedVelocity * Time.deltaTime);
+
+        if (player.velocity.x == 0 && Mathf.Abs(xSpeed) > 1f) xSpeed = 0f;
     }
     private void movePlayer(float dampening)
     {
