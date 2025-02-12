@@ -26,6 +26,8 @@ public class SkateboardMovement : MonoBehaviour
     [Tooltip("Gravity gained by going down slopes")]
     private float gravPotentialStrength = 9.8f;
 
+    public bool debug;
+
     public TextMeshProUGUI debugText;
 
     private float direction;
@@ -70,7 +72,7 @@ public class SkateboardMovement : MonoBehaviour
         
         if (onRail) playerState = state.GRINDING;
         updateRays();
-        updateDebugText();
+        if(debug) updateDebugText();
 
         switch (playerState)
         {
