@@ -267,5 +267,10 @@ public class SkateboardMovement : MonoBehaviour
     {
         return xSpeed;
     }
+
+    public void hitHazard(){
+        xSpeed = 0;
+        vSpeed = 0;
+    }
 }
 

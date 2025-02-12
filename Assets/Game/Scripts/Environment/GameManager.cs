@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
 
     private List<ResetBehaviour> registeredForReset;
 
+    private int gameState;
+
     private void Awake()
     {
         if (instance == null)
@@ -46,5 +48,9 @@ public class GameManager : MonoBehaviour
         {
             Instance.registeredForReset[i].Reset();
         }
+    }
+
+    public void setGameState(int i){
+        if(gameState < i) gameState = i;
     }
 }
