@@ -24,9 +24,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public enum GameState {
+        StartMenu,
+        InCutscene, 
+        InLevel,
+        InHub
+    }
+
+    public GameState State;
+
+    public static bool[,] socks = new bool[3,3];
+
     private List<ResetBehaviour> registeredForReset;
 
-    private int gameState;
+    private int levelBeat;
 
     private void Awake()
     {
@@ -51,6 +62,15 @@ public class GameManager : MonoBehaviour
     }
 
     public void setGameState(int i){
-        if(gameState < i) gameState = i;
+        if(levelBeat < i) levelBeat = i;
+    }
+
+    public void setCollectable(int i, int j){
+        //Debug.Log("Game Manager Set Collectable: " + j + " of Level: " + i + " to be True");
+        socks[i,j] = true;
+    }
+    public bool getCollectableBool(int levIdx, int colIdx){
+        //Debug.Log("TEST IS THIS TRUE OR FALSE: " + socks[levIdx,colIdx]);
+        return socks[levIdx, colIdx];
     }
 }

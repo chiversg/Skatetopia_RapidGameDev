@@ -14,6 +14,7 @@ public class Collectable : MonoBehaviour
 
     private GameObject collectableUI;
     private GameObject collectableImage;
+    private bool collected;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,7 @@ public class Collectable : MonoBehaviour
         else if(Index == index.Third) idx = 2;
         collectableUI = GameObject.FindGameObjectWithTag("Collectable UI");
         collectableImage = collectableUI.transform.GetChild(idx).gameObject;
+        if(collected) updateUI();
     }
 
     // Update is called once per frame
@@ -33,8 +35,22 @@ public class Collectable : MonoBehaviour
 
     private void OnTriggerEnter(Collider other){
         if(other.tag == "Player"){
-            collectableImage.GetComponent<Image>().sprite = sock;
+            updateUI();
+            FindObjectOfType<LevelManager>().collectSock(idx);
             Destroy(this.gameObject);
         }
+    }
+
+    public void updateUI(){
+        //Debug.Log("TESTING COLLECTABLE THINGY V2");
+        collectableImage.GetComponent<Image>().sprite = sock;
+    }
+
+    public int getIdx(){
+        return idx;
+    }
+
+    public void setCollected(bool b){
+        collected = b;
     }
 }
