@@ -11,12 +11,12 @@ public class GrindRail : MonoBehaviour
     [Tooltip("End point of the rail")]
     public Transform end;
     private GameObject player;
-    private SkateboardMovement playerScript;
+    private SkateboardMovementRigid playerScript;
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        playerScript = player.GetComponent<SkateboardMovement>();
+        playerScript = player.GetComponent<SkateboardMovementRigid>();
         if(Direction == direction.Left) dir = 1;
         else if(Direction == direction.Right) dir = -1;
         else if(Direction == direction.Flat) dir = 0;

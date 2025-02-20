@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,66 +9,179 @@ using UnityEngine.UIElements;
 public class RigidPlayerMovement : MonoBehaviour
 {
     [SerializeField]
-    Rigidbody rb;
+    private Rigidbody player;
     [SerializeField]
-    float acceleration;
+    private float acceleration = 1;
+    [SerializeField]
+    private float maxManualSpeed;
+    [SerializeField]
+    private float maxSpeed;
+    [SerializeField]
+    private float speed = 1;
+    [SerializeField]
+    private float jumpSpeed;
+    [SerializeField]
+    private float drag;
+    [SerializeField]
+    private float deceleration = 1;
+    [SerializeField]
+    [Tooltip("Gravity that affects the player's fall speed")]
+    private float gravStrength = 9.8f;
+    [SerializeField]
+    [Tooltip("Gravity gained by going down slopes")]
+    private float gravPotentialStrength = 9.8f;
 
-    Boolean isJumping;
+    public bool debug;
+
+    public TextMeshProUGUI debugText;
+
+    private float direction;
+    private float vSpeed;
+    private float xSpeed;
+    private float xJump;
+    private float yJump;
+
+    private Vector2 moveVector = new Vector2(0f, 0f);
+
+    public Transform railEnd;
+    public bool onRail;
+
+    private enum state
+    {
+        GROUNDED,
+        JUMPING,
+        FALLING,
+        GRINDING
+    };
+    private state playerState = state.FALLING;
+
+    Vector2 inputVelocity;  //Speed gained by holding down an input
+    Vector2 dragVelocity;   //The resistance from the ground slowing the player down
+    Vector2 momentumGain;   //Extra momemtum gained by gravity
+    Vector2 velocity;       //The player's total velocity
+    Vector2 rotatedVelocity; //The player's velocity rotated to slope
+    Vector2 gravity;
+
+    Ray downRay;
+    Ray leftRay;
+    Ray rightRay;
+
+    Vector2 surfaceNormal = Vector2.up;
+
     private void Start()
     {
-        
+        gravity = new Vector2(0f, -gravStrength);
+        downRay = new Ray(player.transform.position, Vector3.down);
+        leftRay = new Ray(player.transform.position, Vector3.left);
+        rightRay = new Ray(player.transform.position, Vector3.right);
     }
     void Update()
     {
+        velocity = new Vector2(0f,0f);
+        if (onRail) playerState = state.GRINDING;
+        //updateRays();
+        if (debug) updateDebugText();
+
+        switch (playerState)
+        {
+            case state.GROUNDED:
+
+                movePlayer();
+                applyGravity();
+                applyDrag();
+                addMomentum();
+                performTricks();
+                break;
+            case state.JUMPING:
+                movePlayer();
+                applyGravity();
+                break;
+            case state.FALLING:
+                movePlayer();
+                applyGravity();
+                break;
+            case state.GRINDING:
+                performTricks();
+                movePlayerTowards();
+                //matchRotation();
+                break;
+        }
+        velocity = inputVelocity + gravity;
+        player.velocity = velocity;
+    }
+    private void movePlayer()
+    {
         float direction = Input.GetAxis("Horizontal");
-        Vector2 velocity = new Vector2(direction * acceleration, 0f);
-        velocity = adjustVelocityToSlope(velocity);
-        rb.AddForce(velocity, ForceMode.Acceleration);
-        Debug.Log(isGrounded());
-        matchRotation();
-        StartCoroutine(moveToFloor());
+        inputVelocity = new Vector2(direction * speed, 0f);
+    }
+    private void performTricks()
+    {
 
     }
-    private void matchRotation()
+    private void applyGravity()
     {
-        var ray = new Ray(transform.position, transform.rotation * Vector2.down);
+        velocity += gravity * surfaceNormal; 
+    }
+    private void applyDrag()
+    {
 
-        if(Physics.Raycast(ray, out RaycastHit hitInfo, 1.5f))
-        {
-            rb.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
-            Debug.Log(rb.rotation);
-        }
     }
-    IEnumerator moveToFloor()
+    private Vector2 adjustVelocityToSlope(Vector2 velocity)
     {
-        var ray = new Ray(transform.position, rb.rotation * Vector2.down);
-      
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, 5f)) 
-        {
-            while (isGrounded() == false)
-            {
-                Vector3 movePos = rb.transform.rotation * Vector3.down;
-                rb.AddForce(movePos,ForceMode.Force);
-                yield return null;
-                
-            }
-        }
-    }
-    private Boolean isGrounded()
-    {
-        var ray = new Ray(transform.position, transform.rotation * Vector2.down);
-        return Physics.Raycast(ray, 1.1f);
-    }
-    private Vector2 adjustVelocityToSlope(Vector2 velocity)//Rotates the velocity to be parallel to the slope the player is on
-    {
-        var ray = new Ray(transform.position, transform.rotation * Vector2.down);//Create a new raycast at player position and pointing down
-
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, 5f))//Shoot the raycast out 5 units and return whatever is hit as hitInfo
-        {
-            var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
-            var adjustedVelocity = slopeRotation * velocity;//From my understanding multiplying a vector by a quaternion rotates that vector into the direction of the quaternion
-            return adjustedVelocity;
-        }
         return velocity;
     }
+    private void addMomentum()
+    {
+
+    }
+    private bool isGrounded()
+    {
+        return false;
+    }
+    private void updateDebugText()
+    {
+        debugText.text =
+            "\nVelocity: " + player.velocity +
+            "\nxSpeed: " + xSpeed +
+            "\nvSpeed: " + vSpeed +
+            "\nState: " + playerState;
+    }
+    private void movePlayerTowards()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, railEnd.position, Mathf.Abs(xSpeed) / 100);
+        if (Vector3.Distance(transform.position, railEnd.position) < 0.01f)
+        {
+            playerState = state.FALLING;
+            onRail = false;
+        }
+    }
+    public void boardRail(Transform target)
+    {
+        vSpeed = 0;
+        railEnd = target;
+        onRail = true;
+    }
+    public void addSpeed(float xs, float ys)
+    {
+        Debug.Log("BOunce");
+        xSpeed += xs;
+        vSpeed += ys;
+        //velocity.Set(velocity.x += xs, velocity.y += ys);   
+    }
+
+    public void setDirection(float dir)
+    {
+        direction = dir;
+    }
+    public float getXSpeed()
+    {
+        return xSpeed;
+    }
+
+    public void hitHazard()
+    {
+        xSpeed = 0;
+        vSpeed = 0;
+    }
+    
 }
