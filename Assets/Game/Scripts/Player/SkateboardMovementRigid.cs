@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Xml.XPath;
 using TMPro;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -26,6 +27,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     [SerializeField] private float maxUturnAngle = 30;
     [SerializeField] private float ollieStrength = 4;
     [SerializeField] private float backflipStrength = 8;
+    [SerializeField] private float uturnDuration = 0.5f;
 
     [Header("Collision")]
     [SerializeField] private Transform floorCheck;
@@ -46,10 +48,16 @@ public class SkateboardMovementRigid : MonoBehaviour
     private float vSpeed;
     private float xSpeed;
 
+    private float uturnTargetSpeed;
+    private float uturnInitalSpeed;
+    private float uturnSpeed;
+    private float uturnTime;
+
     private Vector2 moveVector = new Vector2(0f, 0f);
 
     public Transform railEnd;
     public bool onRail;
+    private bool turning;
 
     private Transform prevPos;
     private enum state
@@ -57,7 +65,8 @@ public class SkateboardMovementRigid : MonoBehaviour
         GROUNDED,
         JUMPING,
         FALLING,
-        GRINDING
+        GRINDING,
+        TURNING
     };
     private state playerState = state.FALLING;
 
@@ -69,16 +78,18 @@ public class SkateboardMovementRigid : MonoBehaviour
     Ray leftRay;
     Ray rightRay;
 
-
+    Vector3 localVelocity;
 
     Vector3 surfaceNormal = Vector3.up;
 
     private float playerAngle;
+    private Quaternion defaultRotation;
 
 
     void Start()
     {
         Application.targetFrameRate = 60;
+        defaultRotation = player.rotation;
         prevPos = player.transform;
         downRay = new Ray(player.transform.position, Vector3.down);
         leftRay = new Ray(player.transform.position, Vector3.left);
@@ -94,12 +105,14 @@ public class SkateboardMovementRigid : MonoBehaviour
         updateStates();
         updateCurrentSurface();
         rotatePlayerToTarget(surfaceNormal);
+        flipSprite();
 
         if (debug) updateDebugText();
     }
     void FixedUpdate()
     {
         checkCollisions();
+        localVelocity = Quaternion.FromToRotation(surfaceNormal, Vector3.up) * player.velocity;
 
         switch (playerState)
         {
@@ -122,6 +135,9 @@ public class SkateboardMovementRigid : MonoBehaviour
                 performTricks();
                 movePlayerTowards();
                 break;
+            case state.TURNING:
+                uturn();
+                break;
         }
         move_and_slide();
     }
@@ -132,10 +148,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         velocity = new Vector2(xSpeed, vSpeed);
         velocity.x = Mathf.Clamp(velocity.x, -maxSpeed, maxSpeed);
         rotatedVelocity = adjustVelocityToTarget(velocity, surfaceNormal);
-        // Debug.Log(player.transform.rotation.x);
         player.velocity = rotatedVelocity;
-
-        if (player.velocity.x == 0 && Mathf.Abs(xSpeed) > 1f) xSpeed = 0f;
     }
     private void movePlayer(float dampening)
     {
@@ -145,11 +158,11 @@ public class SkateboardMovementRigid : MonoBehaviour
         //Else apply drag opposite to the direction the player is moving
 
         direction = Input.GetAxisRaw("Horizontal");
-        if ((direction < 0) == (xSpeed < 0) && direction != 0)
+        if ((direction < 0) == (xSpeed < 0) && direction != 0 && Mathf.Abs(xSpeed) < maxManualSpeed)
         {
             // Debug.Log("Player dir" + direction);
             xSpeed += direction * speed * dampening * acceleration * Time.deltaTime;
-            xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
+            //xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
         }
         else if ((direction < 0) != (xSpeed < 0) && direction != 0)
         {
@@ -173,23 +186,33 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void performTricks()
     {
-        if (Input.GetButton("Jump") && isGrounded && Mathf.Abs(playerAngle) < maxOllieAngle)
+        if (Input.GetButton("Jump") && isGrounded && Mathf.Abs(playerAngle) <= maxOllieAngle)
         {
             onRail = false;
             isJumping = true;
             vSpeed += ollieStrength;
         }
-        if (Input.GetButton("Crouch") && isGrounded && Mathf.Abs(playerAngle) < maxBackflipAngle)
+        if (Input.GetButton("Crouch") && isGrounded && Mathf.Abs(playerAngle) <= maxBackflipAngle)
         {
             onRail = false;
             isJumping = true;
             vSpeed += backflipStrength;
         }
+        if(Input.GetButtonDown("U-Turn") && isGrounded && Mathf.Abs(playerAngle) <= maxBackflipAngle)
+        {
+            onRail = false;
+            isJumping = false;
+            turning = true;
+            uturnTargetSpeed = -xSpeed;
+            uturnInitalSpeed = xSpeed;
+            uturnSpeed = (uturnTargetSpeed - xSpeed) / (uturnDuration);
+            uturnTime = 0f;
+        }
     }
     private void applyGravity()
     {
         //If the player is in the air apply the strength of gravity to the player
-        //Otherwise set isJumping to false, and set vertical speeds to zero
+        //Otherwise set isJumping to false, and set vertical speed to zero
         if (isGrounded == false)
         {
             vSpeed -= gravStrength * Time.deltaTime;
@@ -206,6 +229,20 @@ public class SkateboardMovementRigid : MonoBehaviour
         momentumGain = findComponents(playerAngle, gravPotentialStrength);
         xSpeed += -momentumGain.y * Time.deltaTime;
         // Debug.Log("Horizonal Momentum Gain: " + momentumGain.y);
+    }
+    private void uturn()
+    {
+        uturnTime += Time.deltaTime;
+
+        if(uturnTime < uturnDuration)
+        {
+            xSpeed = uturnSpeed * uturnTime + uturnInitalSpeed;
+        }
+        else
+        {
+            xSpeed = uturnTargetSpeed;
+            turning = false;
+        }
     }
     //-----------------------------------------------------------------------[Movement Helper Methods]
     private void rotatePlayerToTarget(Vector3 target)
@@ -233,10 +270,10 @@ public class SkateboardMovementRigid : MonoBehaviour
     private void updateCurrentSurface()
     {
         //Shoots a raycast directly below the player 5 units down. Raycast is relative to player rotation\
-        //Raycast is used if the player is in any state other than juming
+        //Raycast is used if the player is in any state other than jumping
         //OR
         //If the ground detection sphere detects ground below the player
-        if (playerState != state.JUMPING || Physics.OverlapSphere(floorCheck.position, 0.2f, floorObjects).Length > 0)
+        if (playerState != state.JUMPING || Physics.OverlapSphere(floorCheck.position, 0.4f, floorObjects).Length > 0)
         {
             if (Physics.Raycast(downRay, out RaycastHit hitInfo, 5f))
             {
@@ -270,7 +307,11 @@ public class SkateboardMovementRigid : MonoBehaviour
         {
             playerState = state.GRINDING;
         }
-        if (isGrounded)
+        else if (turning)
+        {
+            playerState = state.TURNING;
+        }
+        else if (isGrounded)
         {
             playerState = state.GROUNDED;
         }
@@ -302,7 +343,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void findPlayerAngle()
     {
-        playerAngle = player.transform.rotation.eulerAngles.z;
+        playerAngle = Mathf.RoundToInt(player.transform.rotation.eulerAngles.z);
         if (playerAngle > 180)
         {
             playerAngle -= 360;
@@ -315,6 +356,20 @@ public class SkateboardMovementRigid : MonoBehaviour
         {
             playerState = state.FALLING;
             onRail = false;
+        }
+    }
+    private void flipSprite()
+    {
+        if(xSpeed != 0)
+        {
+            if(xSpeed < 0)
+            {
+                player.transform.localScale = new Vector3(-Mathf.Abs(player.transform.lossyScale.x), player.transform.lossyScale.y, player.transform.lossyScale.z);
+            }
+            else if(xSpeed > 0)
+            {
+                player.transform.localScale = new Vector3(Mathf.Abs(player.transform.lossyScale.x), player.transform.lossyScale.y, player.transform.lossyScale.z);
+            }
         }
     }
     //-----------------------------------------------------------------------[Public Methods]
@@ -349,6 +404,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         debugText.text =
             "\nVelocity: " + player.velocity +
+            "\nLocal Velocity: " + localVelocity +
             "\nxSpeed: " + xSpeed +
             "\nvSpeed: " + vSpeed +
             "\nState: " + playerState +
