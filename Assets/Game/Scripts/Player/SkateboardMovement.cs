@@ -60,12 +60,16 @@ public class SkateboardMovement : MonoBehaviour
     Ray downRay;
     Ray leftRay;
     Ray rightRay;
+    Ray downLeftRay;
+    Ray downRightRay;
 
     void Start()
     {
         downRay = new Ray(player.transform.position, Vector3.down);
         leftRay = new Ray(player.transform.position, Vector3.left);
         rightRay = new Ray(player.transform.position, Vector3.right);
+        downLeftRay = new Ray(player.transform.position + Vector3.left * player.radius, Vector3.down);
+        downRightRay = new Ray(player.transform.position + Vector3.right * player.radius, Vector3.down);
     }
     void Update()
     {

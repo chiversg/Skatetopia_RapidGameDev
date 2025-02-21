@@ -54,7 +54,7 @@ public class Ramp : MonoBehaviour
                 usable = true;
             }
             if(!usable){
-                player.GetComponent<SkateboardMovement>().addSpeed(0, (plyrExitY-plyrEnterY)*2);
+                player.GetComponent<SkateboardMovementRigid>().addSpeed(0, (plyrExitY-plyrEnterY)*2);
             }
         }
     }
