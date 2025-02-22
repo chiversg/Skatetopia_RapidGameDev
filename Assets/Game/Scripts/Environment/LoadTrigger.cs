@@ -18,18 +18,33 @@ public class LoadTrigger : MonoBehaviour
 
     private bool playerInTrigger;
 
+    //private GameObject sockUI;
+    private UIManager uiManager;
+    private LevelManager levelManager;
+
     void Start()
     {
+        uiManager = FindObjectOfType<UIManager>();
+        levelManager = FindObjectOfType<LevelManager>();
+        if(uiManager==null) Debug.LogError("UI Manager is not applied to Player_UI");
+        if(!uiManager.enabled) Debug.LogError("UI Manager disabled");
+        if(levelManager==null) Debug.LogError("No LevelManager in Scene");
+        if(!levelManager.enabled) Debug.LogError("LevelManager Disabled");
         if(levelExit) sceneName = "Hub";
         if(debug) sceneName = "Test Scene Sam";
+        //sockUI = GameObject.FindGameObjectWithTag("Collectable UI");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(playerInTrigger && (Input.GetKey(enter) || levelExit)){
-            if(levelExit) FindObjectOfType<LevelManager>().recordSocks();
-            SceneManager.LoadScene(sceneName);
+        if(playerInTrigger){
+            if(levelExit) {
+                levelManager.recordSocks();
+                uiManager.levelWinScreen(levelManager.calculateScore());
+            }
+            else if(Input.GetKey(enter)) SceneManager.LoadScene(sceneName);
+            playerInTrigger = false;
         }
     }
 
@@ -39,5 +54,15 @@ public class LoadTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other){
         if(other.tag == "Player") playerInTrigger = false;
+    }
+
+    private void loadScene(){
+        
+    }
+
+    private void levelCompleteScreen(){
+        //sockUI.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
+        //sockUI.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.5f);
+        //sockUI.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0, 0);
     }
 }

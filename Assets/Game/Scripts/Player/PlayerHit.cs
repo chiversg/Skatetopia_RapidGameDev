@@ -38,7 +38,7 @@ public class PlayerHit : MonoBehaviour
         Debug.Log("Timer TEST");
         if(!invincible){
             Debug.Log("Timer Has Started");
-            player.GetComponent<SkateboardMovement>().hitHazard();
+            player.GetComponent<SkateboardMovementRigid>().hitHazard();
             invincible = true;
         }
     }
