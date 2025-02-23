@@ -351,8 +351,14 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void movePlayerTowards()
     {
+        rotatePlayerToTarget(surfaceNormal);
+        player.AddRelativeForce(Vector3.forward * xSpeed);
+
         transform.position = Vector3.MoveTowards(transform.position, railEnd.position, Mathf.Abs(xSpeed) / 100);
-        if (Vector3.Distance(transform.position, railEnd.position) < 0.01f)
+
+        //Using xSpeed to ensure that the it doesn't matter which way the player/rail is facing, could probably change to Math.absolute
+        Debug.Log(transform.position.x*xSpeed + " " + railEnd.position.x*xSpeed);
+        if(transform.position.x * xSpeed > railEnd.position.x * xSpeed)
         {
             playerState = state.FALLING;
             onRail = false;
@@ -373,8 +379,9 @@ public class SkateboardMovementRigid : MonoBehaviour
         }
     }
     //-----------------------------------------------------------------------[Public Methods]
-    public void boardRail(Transform target)
+    public void boardRail(Transform target, Transform rail)
     {
+        Debug.Log(player.transform.rotation.z);
         vSpeed = 0;
         railEnd = target;
         onRail = true;
