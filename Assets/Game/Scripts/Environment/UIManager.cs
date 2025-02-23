@@ -20,6 +20,9 @@ public class UIManager : MonoBehaviour
     public GameObject timer;
     [Tooltip("Number of points each second left rewards at the end of the level")]
     public int timerScore = 5;
+    [Header("Pop-up Text")]
+    [Tooltip("Pop up text element in the UI")]
+    public GameObject popupText;
     [Header("Level Complete Screen")]
     [Tooltip("level complete screen element")]
     public GameObject levelComplete;
@@ -58,13 +61,15 @@ public class UIManager : MonoBehaviour
             catch(System.Exception ex2){
                 Debug.LogError("Something wrong with the timer text, make sure timer text is the second child of timer");
             }
+            collectable.SetActive(true);
+            timer.SetActive(true);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(canContinue && Input.GetKey(input)) SceneManager.LoadScene("Test Scene Sam");
+        if(canContinue && Input.GetKey(input)) SceneManager.LoadScene("01_Hub");
     }
 
     public void updateCollectables(int index, Sprite sock){
@@ -98,5 +103,17 @@ public class UIManager : MonoBehaviour
 
     void timerOver(){
         canContinue = true;
+    }
+
+    public void updatePopupText(string s){
+        popupText.GetComponent<TMPro.TextMeshProUGUI>().text = s;
+    }
+
+    public void enablePopupText(){
+        popupText.SetActive(true);
+    }
+
+    public void disablePopupText(){
+        popupText.SetActive(false);
     }
 }
