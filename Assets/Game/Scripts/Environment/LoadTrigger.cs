@@ -6,8 +6,9 @@ using UnityEngine.SceneManagement;
 public class LoadTrigger : MonoBehaviour
 {
     public enum Level{Tutorial, LevelOne, LevelTwo, Hub}
-    [Tooltip("Is the scene load the level exit, if not it'll be a hub entrance")]
-    public bool levelExit;
+    public enum TriggerType{HubDoor, LevelExit, MidwayPoint}
+    [Tooltip("What type of load trigger is this?")]
+    public TriggerType triggerType;
     [Tooltip("If set to true will load sams test scene")]
     public bool debug;
 
@@ -16,6 +17,12 @@ public class LoadTrigger : MonoBehaviour
     public Level level;
     [Tooltip("Input player must press to trigger level load")]
     public KeyCode enter;   
+
+    [Header("Level Midpoint Variables")]
+    [Tooltip("First half of level terrain")]
+    public GameObject firstHalf;
+    [Tooltip("Second half of level terrain")]
+    public GameObject secondHalf;
 
     private bool playerInTrigger;
     private string levelName;
@@ -31,8 +38,14 @@ public class LoadTrigger : MonoBehaviour
         levelManager = FindObjectOfType<LevelManager>();
         if(uiManager==null) Debug.LogError("UI Manager is not applied to Player_UI");
         if(!uiManager.enabled) Debug.LogError("UI Manager disabled");
-        if(levelExit&&levelManager==null) Debug.LogError("No LevelManager in Scene");
-        if(levelExit&&!levelManager.enabled) Debug.LogError("LevelManager Disabled");
+        if(triggerType!=TriggerType.HubDoor&&levelManager==null) Debug.LogError("No LevelManager in Scene");
+        if(triggerType!=TriggerType.HubDoor&&!levelManager.enabled) Debug.LogError("LevelManager Disabled");
+        if(triggerType==TriggerType.MidwayPoint){
+            if(firstHalf==null)Debug.LogError("First half of level terrain not given to midpoint load trigger");
+            if(secondHalf==null)Debug.LogError("Second half of level terrain not given to midpoint load trigger");
+            firstHalf.SetActive(true);
+            secondHalf.SetActive(false);
+        }
 
         if(level==Level.Tutorial){
             levelName = "Tutorial";
@@ -55,16 +68,27 @@ public class LoadTrigger : MonoBehaviour
     {
         //Debug.Log("TESTING TESTING 12345");
         if(playerInTrigger){
-            if(levelExit) {
+            if(triggerType==TriggerType.LevelExit) {
                 levelManager.recordSocks();
                 uiManager.levelWinScreen(levelManager.calculateScore());
                 playerInTrigger = false;
             }
-            else{
+            else if(triggerType==TriggerType.HubDoor){
                 if(Input.GetKey(enter)){
                     loadScene();
                     playerInTrigger = false;
                 } 
+            }
+            else if(triggerType==TriggerType.MidwayPoint){
+                firstHalf.SetActive(false);
+                secondHalf.SetActive(true);
+                uiManager.updatePopupText("you've reached your goal, go back home");
+                uiManager.enablePopupText();
+                Timer t = gameObject.AddComponent<Timer>();
+                t.TimerEnded.AddListener(timerOver);
+                t.setTimer(2.0f);
+                t.startTimer();
+                playerInTrigger = false;
             } 
         }
     }
@@ -72,7 +96,7 @@ public class LoadTrigger : MonoBehaviour
     private void OnTriggerEnter(Collider other){
         if(other.tag == "Player"){
             playerInTrigger = true;
-            if(!levelExit){
+            if(triggerType==TriggerType.HubDoor){
                 uiManager.updatePopupText("Press " + enter + " to Enter " + levelName);
                 uiManager.enablePopupText();
             }
@@ -82,7 +106,7 @@ public class LoadTrigger : MonoBehaviour
     private void OnTriggerExit(Collider other){
         if(other.tag == "Player"){
             playerInTrigger = false;
-            if(!levelExit) uiManager.disablePopupText();
+            if(triggerType==TriggerType.HubDoor) uiManager.disablePopupText();
         }
     }
 
@@ -91,9 +115,8 @@ public class LoadTrigger : MonoBehaviour
         SceneManager.LoadScene(officialLevelName);
     }
 
-    private void levelCompleteScreen(){
-        //sockUI.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
-        //sockUI.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.5f);
-        //sockUI.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0, 0);
+    private void timerOver(){
+        uiManager.disablePopupText();
+        gameObject.SetActive(false);
     }
 }
