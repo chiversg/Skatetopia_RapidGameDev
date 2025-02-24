@@ -70,7 +70,7 @@ public class UIManager : MonoBehaviour
     void Update()
     {
         if(canContinue && Input.GetKey(input)){
-            Time.timeScale = 0;
+            Time.timeScale = 1;
             SceneManager.LoadScene("01_Hub");
         }
     }
