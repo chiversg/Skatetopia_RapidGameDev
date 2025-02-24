@@ -1,9 +1,5 @@
-using System.Collections.Generic;
-using System.Xml.XPath;
 using TMPro;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class SkateboardMovementRigid : MonoBehaviour
 {
@@ -25,9 +21,13 @@ public class SkateboardMovementRigid : MonoBehaviour
     [SerializeField] private float maxOllieAngle = 30;
     [SerializeField] private float maxBackflipAngle = 30;
     [SerializeField] private float maxUturnAngle = 30;
+    [SerializeField] private float maxKickoffAngle = 30;
+    [SerializeField][Tooltip("The maximum speed the player can be moving to start kickoff")] private float kickoffMaxEntranceSpeed = 3;
     [SerializeField] private float ollieStrength = 4;
     [SerializeField] private float backflipStrength = 8;
     [SerializeField] private float uturnDuration = 0.5f;
+    [SerializeField] private float kickoffMaxSpeed = 10;
+    [SerializeField] private float kickoffTimeToCharge = 3;
 
     [Header("Collision")]
     [SerializeField] private Transform floorCheck;
@@ -53,6 +53,8 @@ public class SkateboardMovementRigid : MonoBehaviour
     private float uturnSpeed;
     private float uturnTime;
 
+    private float kickoffTime;
+
     private Vector2 moveVector = new Vector2(0f, 0f);
 
     public Transform railEnd;
@@ -66,7 +68,8 @@ public class SkateboardMovementRigid : MonoBehaviour
         JUMPING,
         FALLING,
         GRINDING,
-        TURNING
+        TURNING,
+        CHARGING
     };
     private state playerState = state.FALLING;
 
@@ -138,6 +141,9 @@ public class SkateboardMovementRigid : MonoBehaviour
             case state.TURNING:
                 uturn();
                 break;
+            case state.CHARGING:
+                kickoff();
+                break;
         }
         move_and_slide();
     }
@@ -198,7 +204,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             isJumping = true;
             vSpeed += backflipStrength;
         }
-        if(Input.GetButtonDown("U-Turn") && isGrounded && Mathf.Abs(playerAngle) <= maxBackflipAngle)
+        if (Input.GetButtonDown("U-Turn") && isGrounded && Mathf.Abs(playerAngle) <= maxBackflipAngle)
         {
             onRail = false;
             isJumping = false;
@@ -207,6 +213,13 @@ public class SkateboardMovementRigid : MonoBehaviour
             uturnInitalSpeed = xSpeed;
             uturnSpeed = (uturnTargetSpeed - xSpeed) / (uturnDuration);
             uturnTime = 0f;
+        }
+        if (Input.GetButtonDown("Kickoff") && isGrounded && Mathf.Abs(playerAngle) <= maxKickoffAngle)
+        {
+            Debug.Log("tired ot kick");
+            onRail = false;
+            kickoffTime = 0f;
+            playerState = state.CHARGING;
         }
     }
     private void applyGravity()
@@ -234,7 +247,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         uturnTime += Time.deltaTime;
 
-        if(uturnTime < uturnDuration)
+        if (uturnTime < uturnDuration)
         {
             xSpeed = uturnSpeed * uturnTime + uturnInitalSpeed;
         }
@@ -242,6 +255,19 @@ public class SkateboardMovementRigid : MonoBehaviour
         {
             xSpeed = uturnTargetSpeed;
             turning = false;
+        }
+    }
+    private void kickoff()
+    {
+        if (Input.GetButton("Kickoff"))
+        {
+            xSpeed += -velocity.normalized.x * 0.5f;
+            kickoffTime = kickoffTime > kickoffTimeToCharge ? kickoffTimeToCharge : kickoffTime + Time.deltaTime;
+        }
+        else
+        {
+            xSpeed = kickoffMaxSpeed * (kickoffTime / kickoffTimeToCharge);
+            playerState = state.GROUNDED;
         }
     }
     //-----------------------------------------------------------------------[Movement Helper Methods]
@@ -288,11 +314,11 @@ public class SkateboardMovementRigid : MonoBehaviour
     private void checkCollisions()
     {
         isGrounded = Physics.OverlapSphere(floorCheck.position, checkRadius, floorObjects).Length > 0;
-        if(Physics.OverlapSphere(CeilingCheck.position, checkRadius, floorObjects).Length > 0)
+        if (Physics.OverlapSphere(CeilingCheck.position, checkRadius, floorObjects).Length > 0)
         {
             vSpeed = 0;
         }
-        if(Physics.OverlapSphere(LeftCheck.position, checkRadius, floorObjects).Length > 0)
+        if (Physics.OverlapSphere(LeftCheck.position, checkRadius, floorObjects).Length > 0)
         {
             xSpeed = 0;
         }
@@ -310,6 +336,10 @@ public class SkateboardMovementRigid : MonoBehaviour
         else if (turning)
         {
             playerState = state.TURNING;
+        }
+        else if (playerState == state.CHARGING)
+        {
+            playerState = state.CHARGING;
         }
         else if (isGrounded)
         {
@@ -357,8 +387,8 @@ public class SkateboardMovementRigid : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, railEnd.position, Mathf.Abs(xSpeed) / 100);
 
         //Using xSpeed to ensure that the it doesn't matter which way the player/rail is facing, could probably change to Math.absolute
-        Debug.Log(transform.position.x*xSpeed + " " + railEnd.position.x*xSpeed);
-        if(transform.position.x * xSpeed > railEnd.position.x * xSpeed)
+        Debug.Log(transform.position.x * xSpeed + " " + railEnd.position.x * xSpeed);
+        if (transform.position.x * xSpeed > railEnd.position.x * xSpeed)
         {
             playerState = state.FALLING;
             onRail = false;
@@ -366,13 +396,13 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void flipSprite()
     {
-        if(xSpeed != 0)
+        if (xSpeed != 0)
         {
-            if(xSpeed < 0)
+            if (xSpeed < 0)
             {
                 player.transform.localScale = new Vector3(-Mathf.Abs(player.transform.lossyScale.x), player.transform.lossyScale.y, player.transform.lossyScale.z);
             }
-            else if(xSpeed > 0)
+            else if (xSpeed > 0)
             {
                 player.transform.localScale = new Vector3(Mathf.Abs(player.transform.lossyScale.x), player.transform.lossyScale.y, player.transform.lossyScale.z);
             }
