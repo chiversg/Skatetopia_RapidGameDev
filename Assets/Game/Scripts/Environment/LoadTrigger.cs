@@ -46,20 +46,23 @@ public class LoadTrigger : MonoBehaviour
             levelName = "Level Two";
             officialLevelName = "03_Garden";
         }
+        else if(level==Level.Hub) officialLevelName = "01_Hub";
         //sockUI = GameObject.FindGameObjectWithTag("Collectable UI");
     }
 
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log("TESTING TESTING 12345");
         if(playerInTrigger){
             if(levelExit) {
                 levelManager.recordSocks();
                 uiManager.levelWinScreen(levelManager.calculateScore());
+                playerInTrigger = false;
             }
             else{
                 if(Input.GetKey(enter)){
-                    SceneManager.LoadScene(officialLevelName);
+                    loadScene();
                     playerInTrigger = false;
                 } 
             } 
@@ -84,7 +87,8 @@ public class LoadTrigger : MonoBehaviour
     }
 
     private void loadScene(){
-        
+        Debug.Log("SCENE LOAD TEST");
+        SceneManager.LoadScene(officialLevelName);
     }
 
     private void levelCompleteScreen(){

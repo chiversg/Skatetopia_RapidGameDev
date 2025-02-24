@@ -69,7 +69,10 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(canContinue && Input.GetKey(input)) SceneManager.LoadScene("01_Hub");
+        if(canContinue && Input.GetKey(input)){
+            Time.timeScale = 0;
+            SceneManager.LoadScene("01_Hub");
+        }
     }
 
     public void updateCollectables(int index, Sprite sock){
