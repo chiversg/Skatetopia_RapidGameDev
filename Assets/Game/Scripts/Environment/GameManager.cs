@@ -31,7 +31,8 @@ public class GameManager : MonoBehaviour
         InHub
     }
 
-    public GameState State;
+    public GameState gameState;
+    private int gameProg;
 
     public static bool[,] socks = new bool[3,3];
 
@@ -72,5 +73,13 @@ public class GameManager : MonoBehaviour
     public bool getCollectableBool(int levIdx, int colIdx){
         //Debug.Log("TEST IS THIS TRUE OR FALSE: " + socks[levIdx,colIdx]);
         return socks[levIdx, colIdx];
+    }
+
+    public int getGameProg(){
+        return gameProg;
+    }
+
+    public void setGameProg(int i){
+        gameProg = i;
     }
 }

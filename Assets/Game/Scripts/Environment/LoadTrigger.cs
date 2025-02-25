@@ -29,13 +29,17 @@ public class LoadTrigger : MonoBehaviour
     private string officialLevelName;
 
     //private GameObject sockUI;
+    //private GameManager gameManager;
     private UIManager uiManager;
     private LevelManager levelManager;
 
     void Start()
     {
+        //gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         levelManager = FindObjectOfType<LevelManager>();
+        //if(gameManager==null) Debug.LogError("No Game Manager in scene");
+        //if(!gameManager.enabled) Debug.LogError("Game Manager is disabled");
         if(uiManager==null) Debug.LogError("UI Manager is not applied to Player_UI");
         if(!uiManager.enabled) Debug.LogError("UI Manager disabled");
         if(triggerType!=TriggerType.HubDoor&&levelManager==null) Debug.LogError("No LevelManager in Scene");
@@ -112,6 +116,7 @@ public class LoadTrigger : MonoBehaviour
 
     private void loadScene(){
         Debug.Log("SCENE LOAD TEST");
+        //gameManager.gameState = GameManager.GameState.InLevel;
         SceneManager.LoadScene(officialLevelName);
     }
 

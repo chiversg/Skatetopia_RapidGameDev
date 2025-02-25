@@ -21,19 +21,28 @@ public class LevelManager : MonoBehaviour
     private bool[] socks = new bool[3];
 
     private UIManager uiManager;
+    private GameManager gameManager;
+
+    void Awake(){
+        gameManager = FindObjectOfType<GameManager>();
+        uiManager = FindObjectOfType<UIManager>();
+        gameManager.gameState = GameManager.GameState.InLevel;
+        Debug.Log(gameManager.getGameProg());
+    }
 
     void Start()
     {
-        uiManager = FindObjectOfType<UIManager>();
         if(uiManager==null) Debug.LogError("UI Manager is not applied to Player_UI");
         if(!uiManager.enabled) Debug.LogError("UI Manager disabled");
+        if(gameManager==null) Debug.LogError("Game Manager missing from scenen");
+        if(!gameManager.enabled) Debug.LogError("Game Manager disabled");
         if(Level == level.Tutorial) levelIndex = 0;
         else if(Level == level.LevelOne) levelIndex = 1;
         else if(Level == level.LevelTwo) levelIndex = 2;
         Collectable[] collectables = FindObjectsOfType(typeof(Collectable)) as Collectable[];
         //Debug.Log("TESTING THE LEVEL LOADING THINGY");
         foreach(var c in collectables){
-            if(FindObjectOfType<GameManager>().getCollectableBool(levelIndex, c.getIdx())){
+            if(gameManager.getCollectableBool(levelIndex, c.getIdx())){
                 //Debug.Log("TESTING GAME MANAGER BOLLEAN");
                 c.setCollected(true);
             }
@@ -58,8 +67,14 @@ public class LevelManager : MonoBehaviour
         for(int i=0; i<socks.Length; i++){
             if(socks[i]){
                 //Debug.Log("Recorded Sock: " + i);
-                FindObjectOfType<GameManager>().setCollectable(levelIndex, i);
+                gameManager.setCollectable(levelIndex, i);
             } 
+        }
+    }
+
+    public void updateGameProg(){
+        if(gameManager.getGameProg()<levelIndex){
+            gameManager.setGameProg(levelIndex);
         }
     }
 
