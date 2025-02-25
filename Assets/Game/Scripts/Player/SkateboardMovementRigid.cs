@@ -45,6 +45,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     public TextMeshProUGUI debugText;
 
     private float direction;
+    private float lastFacedDirection;
     private float vSpeed;
     private float xSpeed;
 
@@ -88,6 +89,9 @@ public class SkateboardMovementRigid : MonoBehaviour
     private float playerAngle;
     private Quaternion defaultRotation;
 
+    public SpriteRenderer kickoffIndicator;
+    public Transform indicatorTransform;
+
 
     void Start()
     {
@@ -111,6 +115,9 @@ public class SkateboardMovementRigid : MonoBehaviour
         flipSprite();
 
         if (debug) updateDebugText();
+
+        direction = Input.GetAxisRaw("Horizontal");
+        lastFacedDirection = direction != 0 ? direction : lastFacedDirection;
     }
     void FixedUpdate()
     {
@@ -261,12 +268,30 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         if (Input.GetButton("Kickoff"))
         {
-            xSpeed += -velocity.normalized.x * 0.5f;
-            kickoffTime = kickoffTime > kickoffTimeToCharge ? kickoffTimeToCharge : kickoffTime + Time.deltaTime;
+            if (Mathf.Abs(xSpeed) < 1)
+            {
+                xSpeed = 0f;
+            }
+            else
+            {
+                xSpeed += -velocity.normalized.x * 1;
+            }
+
+            if(kickoffTime >= kickoffTimeToCharge)
+            {
+                kickoffIndicator.color = Color.green;
+                kickoffTime = kickoffTimeToCharge;
+            } else
+            {
+                kickoffIndicator.color = Color.red;
+                kickoffTime = kickoffTime + Time.deltaTime;
+            }
+            
         }
         else
         {
-            xSpeed = kickoffMaxSpeed * (kickoffTime / kickoffTimeToCharge);
+            kickoffIndicator.color = Color.red;
+            xSpeed = kickoffMaxSpeed * (kickoffTime / kickoffTimeToCharge) * lastFacedDirection;
             playerState = state.GROUNDED;
         }
     }
@@ -445,7 +470,8 @@ public class SkateboardMovementRigid : MonoBehaviour
             "\nxSpeed: " + xSpeed +
             "\nvSpeed: " + vSpeed +
             "\nState: " + playerState +
-            "\nRotation: " + playerAngle;
+            "\nRotation: " + playerAngle +
+            "\nLast: " + lastFacedDirection;
     }
 }
 
