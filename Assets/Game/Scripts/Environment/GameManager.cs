@@ -32,6 +32,10 @@ public class GameManager : MonoBehaviour
     }
 
     public GameState gameState;
+    
+    [Header("Debug")]
+    [Tooltip("Tracks the furthest level in the game to have been beaten, 0 means tutorial was beat, 1 means street, etc.")]
+    [SerializeField]
     private int gameProg;
 
     public static bool[,] socks = new bool[3,3];
