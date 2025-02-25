@@ -11,7 +11,7 @@ public class GrindRail : MonoBehaviour
     [Tooltip("End point of the rail")]
     public Transform end;
     public bool debug;
-
+    
     private GameObject player;
     private SkateboardMovementRigid playerScript;
     // Start is called before the first frame update

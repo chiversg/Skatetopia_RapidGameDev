@@ -29,13 +29,17 @@ public class LoadTrigger : MonoBehaviour
     private string officialLevelName;
 
     //private GameObject sockUI;
+    private GameManager gameManager;
     private UIManager uiManager;
     private LevelManager levelManager;
 
     void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         levelManager = FindObjectOfType<LevelManager>();
+        if(gameManager==null) Debug.LogError("No Game Manager in scene");
+        if(!gameManager.enabled) Debug.LogError("Game Manager is disabled");
         if(uiManager==null) Debug.LogError("UI Manager is not applied to Player_UI");
         if(!uiManager.enabled) Debug.LogError("UI Manager disabled");
         if(triggerType!=TriggerType.HubDoor&&levelManager==null) Debug.LogError("No LevelManager in Scene");
@@ -50,14 +54,17 @@ public class LoadTrigger : MonoBehaviour
         if(level==Level.Tutorial){
             levelName = "Tutorial";
             officialLevelName = "00_Tutorial";
+            if(gameManager.getGameProg()<0) this.enabled = false;
         }
         else if(level==Level.LevelOne){
             levelName = "Level One";
             officialLevelName = "02_Street";
+            if(gameManager.getGameProg()<1) this.enabled = false;
         }
         else if(level==Level.LevelTwo){
             levelName = "Level Two";
             officialLevelName = "03_Garden";
+            if(gameManager.getGameProg()<2) this.enabled = false;
         }
         else if(level==Level.Hub) officialLevelName = "01_Hub";
         //sockUI = GameObject.FindGameObjectWithTag("Collectable UI");
@@ -96,7 +103,7 @@ public class LoadTrigger : MonoBehaviour
     private void OnTriggerEnter(Collider other){
         if(other.tag == "Player"){
             playerInTrigger = true;
-            if(triggerType==TriggerType.HubDoor){
+            if(triggerType==TriggerType.HubDoor && this.enabled){
                 uiManager.updatePopupText("Press " + enter + " to Enter " + levelName);
                 uiManager.enablePopupText();
             }
@@ -106,12 +113,13 @@ public class LoadTrigger : MonoBehaviour
     private void OnTriggerExit(Collider other){
         if(other.tag == "Player"){
             playerInTrigger = false;
-            if(triggerType==TriggerType.HubDoor) uiManager.disablePopupText();
+            if(triggerType==TriggerType.HubDoor && this.enabled) uiManager.disablePopupText();
         }
     }
 
     private void loadScene(){
         Debug.Log("SCENE LOAD TEST");
+        //gameManager.gameState = GameManager.GameState.InLevel;
         SceneManager.LoadScene(officialLevelName);
     }
 

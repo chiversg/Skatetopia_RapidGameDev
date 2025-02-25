@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    [Tooltip("Is the level UI such as collectables, speedometer, and timer in the scene?")]
-    public bool levelUI;
+    //[Tooltip("Is the level UI such as collectables, speedometer, and timer in the scene?")]
+    //public bool levelUI;
     
     [Header("Collectables")]
     [Tooltip("collectable UI element")]
@@ -36,11 +36,16 @@ public class UIManager : MonoBehaviour
     private GameObject[] collectableImage = new GameObject[3];
     private GameObject timerText;
     private bool canContinue;
+    private GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        if(levelUI){
+        gameManager = FindObjectOfType<GameManager>();
+        //Debug.Log(gameManager.gameState);
+        if(gameManager==null) Debug.LogError("Game Manager missing from scenen");
+        if(!gameManager.enabled) Debug.LogError("Game Manager disabled");
+        if(gameManager.gameState==GameManager.GameState.InLevel){
             if(!collectable) Debug.LogError("CollectableUI Not assigned to UI Manager");
             if(!timer) Debug.LogError("Timer not assigned to UIManager");
             if(!levelComplete) Debug.LogError("Level win screen not assigned to UI Manager");
@@ -71,6 +76,7 @@ public class UIManager : MonoBehaviour
     {
         if(canContinue && Input.GetKey(input)){
             Time.timeScale = 1;
+            gameManager.gameState = GameManager.GameState.InHub;
             SceneManager.LoadScene("01_Hub");
         }
     }
