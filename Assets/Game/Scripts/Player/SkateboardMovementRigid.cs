@@ -121,7 +121,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     void FixedUpdate()
     {
-        checkCollisions();
+        //checkCollisions();
         localVelocity = Quaternion.FromToRotation(surfaceNormal, Vector3.up) * player.velocity;
 
         switch (playerState)
@@ -130,7 +130,7 @@ public class SkateboardMovementRigid : MonoBehaviour
 
                 movePlayer(1);
                 applyGravity();
-                addMomentum();
+                // addMomentum();
                 performTricks();
                 break;
             case state.JUMPING:
@@ -161,7 +161,8 @@ public class SkateboardMovementRigid : MonoBehaviour
         velocity = new Vector2(xSpeed, vSpeed);
         velocity.x = Mathf.Clamp(velocity.x, -maxSpeed, maxSpeed);
         rotatedVelocity = adjustVelocityToTarget(velocity, surfaceNormal);
-        player.velocity = rotatedVelocity;
+        //player.velocity = rotatedVelocity;
+        player.AddForce(Vector2.right, ForceMode.Acceleration);
     }
     private void movePlayer(float dampening)
     {
@@ -174,14 +175,14 @@ public class SkateboardMovementRigid : MonoBehaviour
         if ((direction < 0) == (xSpeed < 0) && direction != 0 && Mathf.Abs(xSpeed) < maxManualSpeed)
         {
             // Debug.Log("Player dir" + direction);
-            xSpeed += direction * speed * dampening * acceleration * Time.deltaTime;
+            xSpeed = direction * speed * dampening * acceleration;
             //xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
         }
         else if ((direction < 0) != (xSpeed < 0) && direction != 0)
         {
             direction *= deceleration;
             // Debug.Log("Player dir" + direction);
-            xSpeed += direction * speed * dampening * acceleration * Time.deltaTime;
+            xSpeed = direction * speed * dampening * acceleration;
             xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
         }
         else if (playerState == state.GROUNDED)
@@ -235,7 +236,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         //Otherwise set isJumping to false, and set vertical speed to zero
         if (isGrounded == false)
         {
-            vSpeed -= gravStrength * Time.deltaTime;
+            //vSpeed = -gravStrength;
         }
         else
         {
@@ -277,16 +278,17 @@ public class SkateboardMovementRigid : MonoBehaviour
                 xSpeed += -velocity.normalized.x * 1;
             }
 
-            if(kickoffTime >= kickoffTimeToCharge)
+            if (kickoffTime >= kickoffTimeToCharge)
             {
                 kickoffIndicator.color = Color.green;
                 kickoffTime = kickoffTimeToCharge;
-            } else
+            }
+            else
             {
                 kickoffIndicator.color = Color.red;
                 kickoffTime = kickoffTime + Time.deltaTime;
             }
-            
+
         }
         else
         {
