@@ -10,8 +10,13 @@ public class CameraFollow : MonoBehaviour
 	public bool mouseFreelook;									//should the camera be rotated with the mouse? (only if camera is not fixed)
 	public float rotateDamping = 100;							//how fast camera rotates to look at target
 	public GameObject waterFilter;								//object to render in front of camera when it is underwater
-	public string[] avoidClippingTags;							//tags for big objects in your game, which you want to camera to try and avoid clipping with
-	
+	public string[] avoidClippingTags;                          //tags for big objects in your game, which you want to camera to try and avoid clipping with
+
+	[SerializeField]
+	public float yPosition;
+	[SerializeField] public float xPosition;
+	public bool lockY = false;
+
 	private Transform followTarget;
 	private bool camColliding;
 	
@@ -29,19 +34,23 @@ public class CameraFollow : MonoBehaviour
 		if(mouseFreelook)
 			rotateDamping = 0f;
 	}
-	
+
 	//run our camera functions each frame
 	void Update()
 	{
 		if (!target)
 			return;
-		
-		SmoothFollow ();
-		if(rotateDamping > 0)
+
+		SmoothFollow();
+		if (rotateDamping > 0)
 			SmoothLookAt();
 		else
 			transform.LookAt(target.position);
-	}
+
+		if (lockY) { 
+			transform.position = new Vector3(transform.position.x, yPosition, transform.position.z);
+		}
+    }
 
 	//toggle waterfilter, is camera clipping walls?
 	void OnTriggerEnter(Collider other)
