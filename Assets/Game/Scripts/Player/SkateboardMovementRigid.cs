@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class SkateboardMovementRigid : MonoBehaviour
 {
@@ -48,6 +49,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     private float lastFacedDirection;
     private float vSpeed;
     private float xSpeed;
+    private Vector3 lastPos;
 
     private float uturnTargetSpeed;
     private float uturnInitalSpeed;
@@ -63,6 +65,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     private bool turning;
 
     private Transform prevPos;
+    private Vector3 prevDeltaPos;
     private enum state
     {
         GROUNDED,
@@ -339,20 +342,17 @@ public class SkateboardMovementRigid : MonoBehaviour
     private void checkCollisions()
     {
         isGrounded = Physics.OverlapSphere(floorCheck.position, checkRadius, floorObjects).Length > 0;
-        if (Physics.OverlapSphere(CeilingCheck.position, checkRadius, floorObjects).Length > 0)
+
+        if (Physics.OverlapBox(LeftCheck.position, new Vector3(0.26f, 0.75f, 1f), player.rotation, floorObjects).Length > 0)
         {
-            vSpeed = 0;
+            xSpeed = 0f;
         }
-        if (Physics.OverlapSphere(LeftCheck.position, checkRadius, floorObjects).Length > 0)
+        if (Physics.OverlapBox(RightCheck.position, new Vector3(0.26f, 0.75f, 1f), player.rotation, floorObjects).Length > 0)
         {
-            xSpeed = 0;
-        }
-        if (Physics.OverlapSphere(RightCheck.position, checkRadius, floorObjects).Length > 0)
-        {
-            xSpeed = 0;
+            xSpeed = 0f;
         }
     }
-    private void updateStates()
+        private void updateStates()
     {
         if (onRail)
         {
