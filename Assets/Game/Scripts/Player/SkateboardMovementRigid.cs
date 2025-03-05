@@ -110,7 +110,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         findPlayerAngle();
         //collidedSurfaces.Clear();
         if (onRail) playerState = state.GRINDING;
-        updateRays();
+        //updateRays();
 
         updateStates();
         updateCurrentSurface();
@@ -302,6 +302,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     private void rotatePlayerToTarget(Vector3 target)
     {
         player.transform.rotation = Quaternion.FromToRotation(Vector3.up, target);
+        updateRays();
     }
     private Vector2 adjustVelocityToTarget(Vector2 velocity, Vector3 target)
     {
@@ -341,13 +342,13 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void checkCollisions()
     {
-        isGrounded = Physics.OverlapSphere(floorCheck.position, checkRadius, floorObjects).Length > 0;
-
-        if (Physics.OverlapBox(LeftCheck.position, new Vector3(0.26f, 0.75f, 1f), player.rotation, floorObjects).Length > 0)
+        isGrounded = Physics.OverlapSphere(floorCheck.position, 1 * player.transform.lossyScale.y, floorObjects).Length > 0;
+        Vector3 boxSize = new Vector3(0.26f * player.transform.lossyScale.x, 0.40f * player.transform.lossyScale.y, 1f * player.transform.lossyScale.z);
+        if (Physics.OverlapBox(LeftCheck.position, boxSize, player.rotation, floorObjects).Length > 0)
         {
             xSpeed = 0f;
         }
-        if (Physics.OverlapBox(RightCheck.position, new Vector3(0.26f, 0.75f, 1f), player.rotation, floorObjects).Length > 0)
+        if (Physics.OverlapBox(RightCheck.position, boxSize, player.rotation, floorObjects).Length > 0)
         {
             xSpeed = 0f;
         }
