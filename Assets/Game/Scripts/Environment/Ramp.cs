@@ -35,7 +35,7 @@ public class Ramp : MonoBehaviour
         }
     }
     private void OnTriggerEnter(Collider other){
-        Debug.Log("Trigger has been Entered");
+        Debug.Log("Trigger has been Entered: "  + gameObject.name);
         if(other.tag == "Player" && usable){
             plyrEnterY = other.transform.position.y;
         }
