@@ -15,7 +15,8 @@ public class SkateboardMovementRigid : MonoBehaviour
     [SerializeField] private float deceleration = 1;
 
     [Header("Gravity")]
-    [SerializeField][Tooltip("Gravity that affects the player's fall speed")] private float gravStrength = 9.8f;
+    [SerializeField][Tooltip("Strength of gravity while the player is moving downwards")] private float downwardsGravityStrength = 19.6f;
+    [SerializeField][Tooltip("Strength of gravity while the playerr is moving upwards")] private float upwardsGravityStrength = 9.8f;
     [SerializeField][Tooltip("Gravity gained by going down slopes")] private float gravPotentialStrength = 9.8f;
 
     [Header("Tricks")]
@@ -29,6 +30,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     [SerializeField] private float uturnDuration = 0.5f;
     [SerializeField] private float kickoffMaxSpeed = 10;
     [SerializeField] private float kickoffTimeToCharge = 3;
+    [SerializeField] private float crouchingGravityMultiplier = 2;
 
     [Header("Collision")]
     [SerializeField] private Transform floorCheck;
@@ -58,6 +60,7 @@ public class SkateboardMovementRigid : MonoBehaviour
 
     private float kickoffTime;
     private bool lockRotation;
+    private bool isCrouching;
 
     private Vector2 moveVector = new Vector2(0f, 0f);
 
@@ -209,7 +212,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             isJumping = true;
             vSpeed += ollieStrength;
         }
-        if (Input.GetButton("Crouch") && isGrounded && Mathf.Abs(playerAngle) <= maxBackflipAngle)
+        if (Input.GetButton("Backflip") && isGrounded && Mathf.Abs(playerAngle) <= maxBackflipAngle)
         {
             onRail = false;
             isJumping = true;
@@ -232,6 +235,14 @@ public class SkateboardMovementRigid : MonoBehaviour
             kickoffTime = 0f;
             playerState = state.CHARGING;
         }
+        if (Input.GetButton("Crouch"))
+        {
+            isCrouching = true;
+        }
+        else
+        {
+            isCrouching = false;
+        }
     }
     private void applyGravity()
     {
@@ -239,7 +250,14 @@ public class SkateboardMovementRigid : MonoBehaviour
         //Otherwise set isJumping to false, and set vertical speed to zero
         if (isGrounded == false)
         {
-            vSpeed -= gravStrength * Time.deltaTime;
+            if (vSpeed >= 0f)
+            {
+                vSpeed -= upwardsGravityStrength * Time.deltaTime;
+            }
+            else
+            {
+                vSpeed -= downwardsGravityStrength * Time.deltaTime;
+            }
         }
         else
         {
@@ -251,8 +269,9 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         //Debug.Log("Player Rotation: " + player.transform.rotation.z);
         momentumGain = findComponents(playerAngle, gravPotentialStrength);
+        if (isCrouching) momentumGain *= crouchingGravityMultiplier;
         xSpeed += -momentumGain.y * Time.deltaTime;
-        // Debug.Log("Horizonal Momentum Gain: " + momentumGain.y);
+        // Debug.Log("Horizonal Momentum Gain: " + momenatumGain.y);
     }
     private void uturn()
     {
@@ -345,8 +364,9 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void checkCollisions()
     {
+       //isGrounded = Physics.Raycast(downRay.origin, downRay.direction, 1.1f);
         isGrounded = Physics.OverlapSphere(floorCheck.position, 1 * player.transform.lossyScale.y, floorObjects).Length > 0;
-        Vector3 boxSize = new Vector3(0.26f * player.transform.lossyScale.x, 0.40f * player.transform.lossyScale.y, 1f * player.transform.lossyScale.z);
+        Vector3 boxSize = new Vector3(0.26f * Mathf.Abs(player.transform.lossyScale.x), 0.40f * Mathf.Abs(player.transform.lossyScale.y), 1f * Mathf.Abs(player.transform.lossyScale.z));
         if (Physics.OverlapBox(LeftCheck.position, boxSize, player.rotation, floorObjects).Length > 0)
         {
             xSpeed = 0f;
@@ -354,6 +374,10 @@ public class SkateboardMovementRigid : MonoBehaviour
         if (Physics.OverlapBox(RightCheck.position, boxSize, player.rotation, floorObjects).Length > 0)
         {
             xSpeed = 0f;
+        }
+        if(Physics.OverlapSphere(CeilingCheck.position, 1 * player.transform.lossyScale.y, floorObjects).Length > 0)
+        {
+            vSpeed = 0f;
         }
     }
         private void updateStates()
@@ -381,12 +405,12 @@ public class SkateboardMovementRigid : MonoBehaviour
         else if (isJumping)
         {
             playerState = state.JUMPING;
-            surfaceNormal = Vector3.up;
+            if(!lockRotation) surfaceNormal = Vector3.up;
         }
         else
         {
             playerState = state.FALLING;
-            surfaceNormal = Vector3.up;
+            if(!lockRotation) surfaceNormal = Vector3.up;
         }
     }
     private void justGrounded()
@@ -461,6 +485,8 @@ public class SkateboardMovementRigid : MonoBehaviour
         if (other.gameObject.tag == "LockRotate")
         {
             Debug.Log("unlocked");
+            xSpeed = player.velocity.x;
+            vSpeed = player.velocity.y;
             lockRotation = false;
         }
     }
