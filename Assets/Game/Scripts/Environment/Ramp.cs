@@ -42,7 +42,7 @@ public class Ramp : MonoBehaviour
     }
 
     private void OnTriggerExit(Collider other){
-        Debug.Log("Trigger has been Exited");
+        Debug.Log("Trigger has been Exited: " + gameObject.name);
         if(other.tag == "Player"){
             plyrExitY = other.transform.position.y;
             if(transform.position.x*dir < other.transform.position.x*dir){
