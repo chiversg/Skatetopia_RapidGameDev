@@ -32,6 +32,20 @@ public class UIManager : MonoBehaviour
     public float screenTimer = 2.5f;
     [Tooltip("Button player must press to continue")]
     public KeyCode input;
+    [Header("Pause")]
+    [Tooltip("pause screen game object")]
+    public GameObject pauseScreen;
+    [Tooltip("input player must press to pause game")]
+    public KeyCode pauseKey;
+    [Header("Trick Get")]
+    [Tooltip("trick info screen game object")]
+    public GameObject trickInfo;
+    [Tooltip("description for ollie")]
+    [TextArea(5,15)]
+    public string ollieDesc;
+    [Tooltip("image for ollie")]
+    public Sprite ollieImage;
+
 
     private GameObject[] collectableImage = new GameObject[3];
     private GameObject timerText;
@@ -79,6 +93,9 @@ public class UIManager : MonoBehaviour
             gameManager.gameState = GameManager.GameState.InHub;
             SceneManager.LoadScene("01_Hub");
         }
+        if(Time.timeScale == 1 && Input.GetKey(pauseKey)){
+            pauseGame();
+        }
     }
 
     public void updateCollectables(int index, Sprite sock){
@@ -124,5 +141,19 @@ public class UIManager : MonoBehaviour
 
     public void disablePopupText(){
         popupText.SetActive(false);
+    }
+
+    public void pauseGame(){
+        Time.timeScale = 0;
+        pauseScreen.SetActive(true);
+        timer.SetActive(false);
+        collectable.SetActive(false);
+    }
+
+    public void resumeGame(){
+        Time.timeScale = 1;
+        pauseScreen.SetActive(false);
+        timer.SetActive(true);
+        collectable.SetActive(true);
     }
 }
