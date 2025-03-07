@@ -57,6 +57,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     private float uturnTime;
 
     private float kickoffTime;
+    private bool lockRotation;
 
     private Vector2 moveVector = new Vector2(0f, 0f);
 
@@ -324,11 +325,12 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void updateCurrentSurface()
     {
-        //Shoots a raycast directly below the player 5 units down. Raycast is relative to player rotation\
-        //Raycast is used if the player is in any state other than jumping
-        //OR
-        //If the ground detection sphere detects ground below the player
-        if (playerState != state.JUMPING || Physics.OverlapSphere(floorCheck.position, 0.4f, floorObjects).Length > 0)
+        if (!lockRotation) {
+            //Shoots a raycast directly below the player 5 units down. Raycast is relative to player rotation
+            //Raycast is used if the player is in any state other than jumping
+            //OR
+            //If the ground detection sphere detects ground below the player
+            if (playerState != state.JUMPING || Physics.OverlapSphere(floorCheck.position, 0.4f, floorObjects).Length > 0)
         {
             if (Physics.Raycast(downRay, out RaycastHit hitInfo, 5f))
             {
@@ -339,6 +341,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             }
         }
         player.velocity = Quaternion.FromToRotation(Vector3.up, surfaceNormal) * player.velocity;
+    }
     }
     private void checkCollisions()
     {
@@ -369,6 +372,10 @@ public class SkateboardMovementRigid : MonoBehaviour
         }
         else if (isGrounded)
         {
+            if(playerState != state.GROUNDED)
+            {
+                //justGrounded();
+            }
             playerState = state.GROUNDED;
         }
         else if (isJumping)
@@ -381,6 +388,13 @@ public class SkateboardMovementRigid : MonoBehaviour
             playerState = state.FALLING;
             surfaceNormal = Vector3.up;
         }
+    }
+    private void justGrounded()
+    {
+        var adj = adjustVelocityToTarget(velocity, surfaceNormal);
+        Debug.Log(adj);
+        xSpeed = adj.x;
+        vSpeed = adj.y;
     }
     private void updateRays()
     {
@@ -432,6 +446,22 @@ public class SkateboardMovementRigid : MonoBehaviour
             {
                 player.transform.localScale = new Vector3(Mathf.Abs(player.transform.lossyScale.x), player.transform.lossyScale.y, player.transform.lossyScale.z);
             }
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "LockRotate")
+        {
+            Debug.Log("locked");
+            lockRotation = true;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "LockRotate")
+        {
+            Debug.Log("unlocked");
+            lockRotation = false;
         }
     }
     //-----------------------------------------------------------------------[Public Methods]
