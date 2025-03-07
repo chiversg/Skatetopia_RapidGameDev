@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,6 +24,10 @@ public class GameManager : MonoBehaviour
 
         }
     }
+    
+    //public static UnityEvent ollieGet;
+    //public static UnityEvent uturnGet;
+    //public static UnityEvent flipGet;
 
     public enum GameState {
         StartMenu,
@@ -52,6 +57,9 @@ public class GameManager : MonoBehaviour
         }
         registeredForReset = new List<ResetBehaviour>();
         Debug.Log(gameProg);
+        //if(ollieGet==null) ollieGet = new UnityEvent();
+        //if(uturnGet==null) uturnGet = new UnityEvent();
+        //if(flipGet==null) flipGet = new UnityEvent();
     }
 
     public static void RegisterForReset(ResetBehaviour resetBehaviour)

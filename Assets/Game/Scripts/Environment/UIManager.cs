@@ -45,17 +45,34 @@ public class UIManager : MonoBehaviour
     public string ollieDesc;
     [Tooltip("image for ollie")]
     public Sprite ollieImage;
-
+    [Tooltip("description for uturn")]
+    [TextArea(5,15)]
+    public string uturnDesc;
+    [Tooltip("image for uturn")]
+    public Sprite uturnImage;
+    [Tooltip("description for backflip")]
+    [TextArea(5,15)]
+    public string flipDesc;
+    [Tooltip("image for backflip")]
+    public Sprite flipImage;
 
     private GameObject[] collectableImage = new GameObject[3];
     private GameObject timerText;
+    private bool paused;
     private bool canContinue;
+    private GameObject trickName;
+    private GameObject trickDesc;
+    private GameObject trickImage;
+
     private GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        //GameManager.ollieGet.AddListener(delegate{trickGet("ollie");});
+        //GameManager.uturnGet.AddListener(delegate{trickGet("uturn");});
+        //GameManager.flipGet.AddListener(delegate{trickGet("flip");});
         //Debug.Log(gameManager.gameState);
         if(gameManager==null) Debug.LogError("Game Manager missing from scenen");
         if(!gameManager.enabled) Debug.LogError("Game Manager disabled");
@@ -63,6 +80,7 @@ public class UIManager : MonoBehaviour
             if(!collectable) Debug.LogError("CollectableUI Not assigned to UI Manager");
             if(!timer) Debug.LogError("Timer not assigned to UIManager");
             if(!levelComplete) Debug.LogError("Level win screen not assigned to UI Manager");
+            if(!trickInfo) Debug.LogError("Trick info screen not assigned to UI Manager");
             if(!scoreText) Debug.LogError("scoreText is not assigned to UI Manager");
             if(input.ToString().Equals("None")) Debug.LogError("Input Key not Assigned to UI Manager");
             try{
@@ -80,6 +98,14 @@ public class UIManager : MonoBehaviour
             catch(System.Exception ex2){
                 Debug.LogError("Something wrong with the timer text, make sure timer text is the second child of timer");
             }
+            try{
+                trickName = trickInfo.transform.GetChild(0).gameObject;
+                trickImage = trickInfo.transform.GetChild(1).gameObject;
+                trickDesc = trickInfo.transform.GetChild(2).gameObject;
+            }
+            catch(System.Exception ex){
+                Debug.LogError("Something is wrong with the children of trickInfo, make sure the trickName, trickImage, and trickDesc are the only children and are in that order");
+            }
             collectable.SetActive(true);
             timer.SetActive(true);
         }
@@ -93,8 +119,9 @@ public class UIManager : MonoBehaviour
             gameManager.gameState = GameManager.GameState.InHub;
             SceneManager.LoadScene("01_Hub");
         }
-        if(Time.timeScale == 1 && Input.GetKey(pauseKey)){
-            pauseGame();
+        if(Input.GetKeyDown(pauseKey)){
+            if(Time.timeScale == 1) pauseGame();
+            else if(Time.timeScale == 0 && paused) resumeGame();
         }
     }
 
@@ -148,12 +175,30 @@ public class UIManager : MonoBehaviour
         pauseScreen.SetActive(true);
         timer.SetActive(false);
         collectable.SetActive(false);
+        paused = true;
     }
 
     public void resumeGame(){
         Time.timeScale = 1;
         pauseScreen.SetActive(false);
+        trickInfo.SetActive(false);
         timer.SetActive(true);
         collectable.SetActive(true);
+        paused = false;
+    }
+
+    public void trickGet(string trick){
+        if(string.Equals(trick, "ollie")) displayTrickInfo("Ollie", ollieImage, ollieDesc);
+        if(string.Equals(trick, "uturn")) displayTrickInfo("U-Turn", uturnImage, uturnDesc);
+        if(string.Equals(trick, "flip")) displayTrickInfo("Flip", flipImage, flipDesc);
+    }
+
+    private void displayTrickInfo(string name, Sprite image, string desc){
+        trickName.GetComponent<TMPro.TextMeshProUGUI>().text = name;
+        trickImage.GetComponent<Image>().sprite = image;
+        trickDesc.GetComponent<TMPro.TextMeshProUGUI>().text = desc;
+        trickInfo.SetActive(true);
+        Time.timeScale = 0;
+        paused = true;
     }
 }
