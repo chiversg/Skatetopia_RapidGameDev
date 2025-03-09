@@ -206,19 +206,19 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void performTricks()
     {
-        if (Input.GetButton("Jump") && isGrounded && Mathf.Abs(playerAngle) <= maxOllieAngle)
+        if (Input.GetButton("Jump") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxOllieAngle)
         {
             onRail = false;
             isJumping = true;
             vSpeed += ollieStrength;
         }
-        if (Input.GetButton("Backflip") && isGrounded && Mathf.Abs(playerAngle) <= maxBackflipAngle)
+        if (Input.GetButton("Backflip") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle)
         {
             onRail = false;
             isJumping = true;
             vSpeed += backflipStrength;
         }
-        if (Input.GetButtonDown("U-Turn") && isGrounded && Mathf.Abs(playerAngle) <= maxBackflipAngle)
+        if (Input.GetButtonDown("U-Turn") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle)
         {
             onRail = false;
             isJumping = false;
@@ -228,7 +228,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             uturnSpeed = (uturnTargetSpeed - xSpeed) / (uturnDuration);
             uturnTime = 0f;
         }
-        if (Input.GetButtonDown("Kickoff") && isGrounded && Mathf.Abs(playerAngle) <= maxKickoffAngle)
+        if (Input.GetButtonDown("Kickoff") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxKickoffAngle)
         {
             Debug.Log("tired ot kick");
             onRail = false;

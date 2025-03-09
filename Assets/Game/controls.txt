@@ -1,0 +1,15 @@
+SKATETOPIA CONTROLS:
+
+Kickoff - space
+
+Ollie - z
+
+U-turn - x
+
+Backflip - c
+
+
+Pause - ESC
+Menu Accept - e
+
+
