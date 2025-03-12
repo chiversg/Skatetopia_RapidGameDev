@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8cad22d1cd4f40b41a1abd5a2cef1142
+guid: 8aa097db5b1e0f448a22df1a80cc6333
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -94,6 +94,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -119,43 +132,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: Windows Store Apps
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: iPhone
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Sky_Texture_Clouds_0
+      name: Night_Sky_Texture_Stars_0
       rect:
         serializedVersion: 2
-        x: 123
-        y: 1123
-        width: 525
-        height: 303
+        x: 139
+        y: 1314
+        width: 60
+        height: 60
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -163,20 +150,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: eb346ad74b2d3874291783eb3ddb0798
-      internalID: -743903029
+      spriteID: 131317b9ed3021347ac351e90a4683a8
+      internalID: 1159079104
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sky_Texture_Clouds_1
+      name: Night_Sky_Texture_Stars_1
       rect:
         serializedVersion: 2
-        x: 826
-        y: 1006
-        width: 531
-        height: 294
+        x: 1115
+        y: 1135
+        width: 212
+        height: 215
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -184,20 +171,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4ef134651c4b5514abf1d5aa30546d76
-      internalID: -2100095764
+      spriteID: 76d51483e5941534fa3396267ce7992f
+      internalID: -238596623
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sky_Texture_Clouds_2
+      name: Night_Sky_Texture_Stars_2
       rect:
         serializedVersion: 2
-        x: 261
-        y: 684
-        width: 409
-        height: 228
+        x: 282
+        y: 578
+        width: 618
+        height: 585
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -205,20 +192,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7ecbf63f6ceb7a84392cdf10ae813255
-      internalID: -720912472
+      spriteID: 11921c9cfbbf4c7479731ee9501b863b
+      internalID: -1740492404
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sky_Texture_Clouds_3
+      name: Night_Sky_Texture_Stars_3
       rect:
         serializedVersion: 2
-        x: 927
-        y: 531
-        width: 380
-        height: 247
+        x: 290
+        y: 171
+        width: 123
+        height: 123
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -226,20 +213,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d86cbac350aa81249960711e17aa6f71
-      internalID: 725129488
+      spriteID: 7323301fdb29f9245838d3ada1802ca9
+      internalID: -1376637403
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sky_Texture_Clouds_4
+      name: Night_Sky_Texture_Stars_4
       rect:
         serializedVersion: 2
-        x: 339
-        y: 192
-        width: 563
-        height: 310
+        x: 992
+        y: 166
+        width: 332
+        height: 338
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -247,8 +234,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7c8fb13bfb9a7144b962a1bb62c114f7
-      internalID: 325221541
+      spriteID: 5500abe96fc3ca842867c79cce63828c
+      internalID: -1036357175
       vertices: []
       indices: 
       edges: []
@@ -264,14 +251,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Sky_Texture_Clouds_0: -743903029
-      Sky_Texture_Clouds_1: -2100095764
-      Sky_Texture_Clouds_2: -720912472
-      Sky_Texture_Clouds_3: 725129488
-      Sky_Texture_Clouds_4: 325221541
-      Sky_Texture_Clouds_5: 1844229418
-      Sky_Texture_Clouds_6: 363595327
-      Sky_Texture_Clouds_7: 951539704
+      Night_Sky_Texture_Stars_0: 1159079104
+      Night_Sky_Texture_Stars_1: -238596623
+      Night_Sky_Texture_Stars_2: -1740492404
+      Night_Sky_Texture_Stars_3: -1376637403
+      Night_Sky_Texture_Stars_4: -1036357175
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
