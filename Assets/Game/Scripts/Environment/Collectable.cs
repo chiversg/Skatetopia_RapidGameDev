@@ -11,6 +11,10 @@ public class Collectable : MonoBehaviour
     private int idx;
     [Tooltip("Sprite that will be filled into the ui on collection")]
     public Sprite sock;
+    [Tooltip("Collectable Get particle effect")]
+    public ParticleSystem sock_get;
+    [Tooltip("Sock gameobject")]
+    public GameObject sockObj;
 
     private UIManager uiManager;
     private LevelManager levelManager;
@@ -27,6 +31,7 @@ public class Collectable : MonoBehaviour
         if(!uiManager.enabled) Debug.LogError("UI Manager disabled");
         if(levelManager==null) Debug.LogError("No LevelManager in Scene");
         if(!levelManager.enabled) Debug.LogError("LevelManager Disabled");
+        if(sock_get==null) Debug.LogError("No particle system attached");
         if(Index == index.First) idx = 0;
         else if(Index == index.Second) idx = 1;
         else if(Index == index.Third) idx = 2;
@@ -45,7 +50,9 @@ public class Collectable : MonoBehaviour
         if(other.tag == "Player"){
             updateUI();
             levelManager.collectSock(idx);
-            Destroy(this.gameObject);
+            sock_get.Play();
+            sockObj.SetActive(false);
+            Destroy(this.gameObject, 2.0f);
         }
     }
 

@@ -111,6 +111,9 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void Update()
     {
+        InstantiateDust dust = gameObject.AddComponent<InstantiateDust>();
+        dust.makeDust(transform.position);
+
         findPlayerAngle();
         //collidedSurfaces.Clear();
         if (onRail) playerState = state.GRINDING;
