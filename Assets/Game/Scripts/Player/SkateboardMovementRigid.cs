@@ -41,6 +41,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     [SerializeField] private LayerMask floorObjects;
 
     [Header("Miscellaneous")]
+    [SerializeField] private Animator animator;
     public bool debug;
     private bool isGrounded;
     private bool isJumping;
@@ -123,6 +124,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         updateCurrentSurface();
         rotatePlayerToTarget(surfaceNormal);
         flipSprite();
+        animate();
 
         if (debug) updateDebugText();
 
@@ -294,6 +296,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         if (Input.GetButton("Kickoff"))
         {
+            animator.SetBool("isKickoff", true);
             if (Mathf.Abs(xSpeed) < 1)
             {
                 xSpeed = 0f;
@@ -319,6 +322,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             kickoffIndicator.color = Color.red;
             xSpeed = kickoffMaxSpeed * (kickoffTime / kickoffTimeToCharge) * lastFacedDirection;
             playerState = state.GROUNDED;
+            animator.SetBool("isKickoff", false);
         }
     }
     //-----------------------------------------------------------------------[Movement Helper Methods]
@@ -493,6 +497,12 @@ public class SkateboardMovementRigid : MonoBehaviour
             lockRotation = false;
         }
     }
+    private void animate()
+    {
+        animator.SetFloat("Speed", Mathf.Abs(xSpeed));
+        animator.SetBool("isJumping", isJumping);
+        animator.SetBool("isCrouching", isCrouching);
+    }
     //-----------------------------------------------------------------------[Public Methods]
     public void boardRail(Transform target, Transform rail)
     {
@@ -520,6 +530,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         xSpeed = 0;
         vSpeed = 0;
+        animator.SetBool("playerHit", true);
     }
     //-----------------------------------------------------------------------[Debug Methods]
     private void updateDebugText()
