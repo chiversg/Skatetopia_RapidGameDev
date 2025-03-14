@@ -1,12 +1,12 @@
 SKATETOPIA CONTROLS:
 
-Kickoff - space
+Kickoff - space/q
 
-Ollie - z
+Ollie - z/j
 
-U-turn - x
+U-turn - x/k
 
-Backflip - c
+Backflip - c/l
 
 
 Pause - ESC
