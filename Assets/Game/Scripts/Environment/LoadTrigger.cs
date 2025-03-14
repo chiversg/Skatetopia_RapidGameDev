@@ -77,6 +77,7 @@ public class LoadTrigger : MonoBehaviour
         if(playerInTrigger){
             if(triggerType==TriggerType.LevelExit) {
                 levelManager.recordSocks();
+                levelManager.updateGameProg();
                 uiManager.levelWinScreen(levelManager.calculateScore());
                 playerInTrigger = false;
             }
