@@ -502,6 +502,14 @@ public class SkateboardMovementRigid : MonoBehaviour
         animator.SetFloat("Speed", Mathf.Abs(xSpeed));
         animator.SetBool("isJumping", isJumping);
         animator.SetBool("isCrouching", isCrouching);
+        if (isJumping && vSpeed <= 0) {
+            animator.SetBool("isFalling", true);
+        }
+        else
+        {
+            animator.SetBool("isFalling", false);
+        }
+        
     }
     //-----------------------------------------------------------------------[Public Methods]
     public void boardRail(Transform target, Transform rail)
@@ -530,7 +538,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         xSpeed = 0;
         vSpeed = 0;
-        animator.SetBool("playerHit", true);
+        animator.SetTrigger("playerHit");
     }
     //-----------------------------------------------------------------------[Debug Methods]
     private void updateDebugText()
@@ -542,7 +550,8 @@ public class SkateboardMovementRigid : MonoBehaviour
             "\nvSpeed: " + vSpeed +
             "\nState: " + playerState +
             "\nRotation: " + playerAngle +
-            "\nLast: " + lastFacedDirection;
+            "\nLast: " + lastFacedDirection +
+            "\nclip: " + animator.GetCurrentAnimatorClipInfo(0)[0].clip.name; ;
     }
 }
 
