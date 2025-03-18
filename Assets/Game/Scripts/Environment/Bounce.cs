@@ -33,7 +33,7 @@ public class Bounce : MonoBehaviour
             //float yForce = Mathf.Abs(player.transform.position.y - transform.position.y);
             //Debug.Log("BOunce force : " + xForce + "   " + yForce);
             Debug.Log(gameObject.name + " - XSPEED: " + dir.x*hForce + " YSPEED: " + dir.y*vForce);
-            player.GetComponent<SkateboardMovementRigid>().addSpeed(dir.x*hForce*-1, dir.y*vForce*-1);
+            player.GetComponent<SkateboardMovementRigid>().addSpeed(0, vForce * -1);
             //player.GetComponent<SkateboardMovement>().setDirection(direction);
         }
     }

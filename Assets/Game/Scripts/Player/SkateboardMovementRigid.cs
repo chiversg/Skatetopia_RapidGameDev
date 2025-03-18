@@ -519,9 +519,12 @@ public class SkateboardMovementRigid : MonoBehaviour
         railEnd = target;
         onRail = true;
     }
-    public void addSpeed(float xs, float ys)
+    public void addSpeed(float xs, float ys, bool reset)
     {
-        Debug.Log("BOunce");
+        if (reset){
+            vSpeed = 0;
+        }
+        //Debug.Log("BOunce");
         xSpeed += xs;
         vSpeed += ys;
         //velocity.Set(velocity.x += xs, velocity.y += ys);   
