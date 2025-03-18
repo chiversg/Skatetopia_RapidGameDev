@@ -112,9 +112,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void Update()
     {
-        InstantiateDust dust = gameObject.AddComponent<InstantiateDust>();
-        dust.makeDust(transform.position);
-
+        Debug.Log(isGrounded);
         findPlayerAngle();
         //collidedSurfaces.Clear();
         if (onRail) playerState = state.GRINDING;
@@ -156,6 +154,8 @@ public class SkateboardMovementRigid : MonoBehaviour
             case state.GRINDING:
                 performTricks();
                 movePlayerTowards();
+                InstantiateDust dust = gameObject.AddComponent<InstantiateDust>();
+                dust.makeDust(transform.position);
                 break;
             case state.TURNING:
                 uturn();
@@ -552,6 +552,18 @@ public class SkateboardMovementRigid : MonoBehaviour
             "\nRotation: " + playerAngle +
             "\nLast: " + lastFacedDirection +
             "\nclip: " + animator.GetCurrentAnimatorClipInfo(0)[0].clip.name; ;
+    }
+
+    public float getSpeed(){
+        return xSpeed;
+    }
+
+    public float getMaxManualSpeed(){
+        return maxManualSpeed;
+    }
+
+    public bool getGrounded(){
+        return isGrounded;
     }
 }
 

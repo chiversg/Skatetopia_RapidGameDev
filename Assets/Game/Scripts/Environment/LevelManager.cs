@@ -9,14 +9,15 @@ public class LevelManager : MonoBehaviour
     [Tooltip("Which Level is this?")]
     public level Level;
     [Tooltip("How many seconds does the player have to complete level?")]
-    public float realTimeTimer = 500;
+    public int levelTimer = 300;
     [Tooltip("Number of points collectables reward at end of level")]
     public int collectableScore = 250;
     [Tooltip("Number of points each second left rewards at the end of the level")]
     public int timerScore = 5;
 
     private int levelIndex;
-    private int intTimer = 500;
+    private int intTimer;
+    private float realTimeTimer;
 
     private bool[] socks = new bool[3];
 
@@ -27,7 +28,9 @@ public class LevelManager : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         gameManager.gameState = GameManager.GameState.InLevel;
-        Debug.Log(gameManager.getGameProg());
+        //Debug.Log(gameManager.getGameProg());
+        intTimer = levelTimer;
+        realTimeTimer = levelTimer;
     }
 
     void Start()
@@ -55,8 +58,9 @@ public class LevelManager : MonoBehaviour
         realTimeTimer -= Time.deltaTime;
         if(MathF.Floor(realTimeTimer)<intTimer){
             intTimer = (int) MathF.Floor(realTimeTimer);
-            uiManager.updateTimer(intTimer);
+            uiManager.updateTimerText(intTimer);
         }
+        uiManager.updateTimerSprite(intTimer, levelTimer * 1.0f);
     }
 
     public void collectSock(int i){
@@ -85,5 +89,9 @@ public class LevelManager : MonoBehaviour
         }
         score += intTimer * timerScore;
         return score;
+    }
+
+    public int getTimer(){
+        return levelTimer;
     }
 }

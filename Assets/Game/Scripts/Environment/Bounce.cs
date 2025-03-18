@@ -6,9 +6,9 @@ public class Bounce : MonoBehaviour
 {
     [Header("Bounce Forces")]
     [Tooltip("Vertical Force for the bounce")]
-    public float vForce = -20.0f;
+    public float vForce = 20.0f;
     [Tooltip("Horizontal Force for the bounce")]
-    public float hForce = -20.0f;
+    public float hForce = 20.0f;
 
     private GameObject player; 
 
@@ -33,7 +33,7 @@ public class Bounce : MonoBehaviour
             //float yForce = Mathf.Abs(player.transform.position.y - transform.position.y);
             //Debug.Log("BOunce force : " + xForce + "   " + yForce);
             Debug.Log(gameObject.name + " - XSPEED: " + dir.x*hForce + " YSPEED: " + dir.y*vForce);
-            player.GetComponent<SkateboardMovementRigid>().addSpeed(dir.x*hForce, dir.y*vForce);
+            player.GetComponent<SkateboardMovementRigid>().addSpeed(dir.x*hForce*-1, dir.y*vForce*-1);
             //player.GetComponent<SkateboardMovement>().setDirection(direction);
         }
     }

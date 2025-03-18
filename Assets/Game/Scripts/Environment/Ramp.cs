@@ -53,7 +53,7 @@ public class Ramp : MonoBehaviour
                 meshCol.enabled = true;
                 usable = true;
             }
-            if(!usable){
+            if(!usable && player.GetComponent<SkateboardMovementRigid>().getGrounded()){
                 player.GetComponent<SkateboardMovementRigid>().addSpeed(0, (plyrExitY-plyrEnterY)*2);
             }
         }

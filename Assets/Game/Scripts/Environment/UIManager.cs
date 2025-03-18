@@ -15,14 +15,27 @@ public class UIManager : MonoBehaviour
     public GameObject collectable;
     [Tooltip("Number of points collectables reward at end of level")]
     public int collectableScore = 250;
+
     [Header("Timer")]
     [Tooltip("Timer UI Element")]
     public GameObject timer;
     [Tooltip("Number of points each second left rewards at the end of the level")]
     public int timerScore = 5;
+
+    [Header("Speedometer")]
+    [Tooltip("Arrow game objecy")]
+    public RectTransform arrow;
+    [Tooltip("Arrow angle when player is slowest")]
+    public float minAngle = 90.0f;
+    [Tooltip("Arrow angle when player is fastest")]
+    public float maxAngle = -90.0f;
+    [Tooltip("Sparks particle system")]
+    public ParticleSystem sparks;
+
     [Header("Pop-up Text")]
     [Tooltip("Pop up text element in the UI")]
     public GameObject popupText;
+
     [Header("Level Complete Screen")]
     [Tooltip("level complete screen element")]
     public GameObject levelComplete;
@@ -32,11 +45,13 @@ public class UIManager : MonoBehaviour
     public float screenTimer = 2.5f;
     [Tooltip("Button player must press to continue")]
     public KeyCode input;
+
     [Header("Pause")]
     [Tooltip("pause screen game object")]
     public GameObject pauseScreen;
     [Tooltip("input player must press to pause game")]
     public KeyCode pauseKey;
+
     [Header("Trick Get")]
     [Tooltip("trick info screen game object")]
     public GameObject trickInfo;
@@ -58,6 +73,7 @@ public class UIManager : MonoBehaviour
 
     private GameObject[] collectableImage = new GameObject[3];
     private GameObject timerText;
+    public GameObject timerClock;
     private bool paused;
     private bool canContinue;
     private GameObject trickName;
@@ -65,6 +81,8 @@ public class UIManager : MonoBehaviour
     private GameObject trickImage;
 
     private GameManager gameManager;
+    private SkateboardMovementRigid playerScript;
+    //private LevelManager levelManager;
 
     // Start is called before the first frame update
     void Start()
@@ -74,11 +92,16 @@ public class UIManager : MonoBehaviour
         //GameManager.uturnGet.AddListener(delegate{trickGet("uturn");});
         //GameManager.flipGet.AddListener(delegate{trickGet("flip");});
         //Debug.Log(gameManager.gameState);
-        if(gameManager==null) Debug.LogError("Game Manager missing from scenen");
+        if(gameManager==null) Debug.LogError("Game Manager missing from scene");
         if(!gameManager.enabled) Debug.LogError("Game Manager disabled");
         if(gameManager.gameState==GameManager.GameState.InLevel){
-            if(!collectable) Debug.LogError("CollectableUI Not assigned to UI Manager");
+            //levelManager = new LevelManager();
+            //if(levelManager==null) Debug.LogError("Level Manager missing from scene");
+            //if (!levelManager.enabled) Debug.LogError("Level Manager disabled");
+            if (!collectable) Debug.LogError("CollectableUI Not assigned to UI Manager");
             if(!timer) Debug.LogError("Timer not assigned to UIManager");
+            if(!arrow) Debug.LogError("Arrow not assigned to UIManager");
+            if(!sparks) Debug.LogError("Sparks not assigned to UIManager");
             if(!levelComplete) Debug.LogError("Level win screen not assigned to UI Manager");
             if(!trickInfo) Debug.LogError("Trick info screen not assigned to UI Manager");
             if(!scoreText) Debug.LogError("scoreText is not assigned to UI Manager");
@@ -92,6 +115,7 @@ public class UIManager : MonoBehaviour
                 Debug.LogError("Something is wrong with the children of collectables, make sure the sock images are the first three children and are in order");
             }
             try{
+                //timerClock = timer.transform.GetChild(0).gameObject;
                 timerText = timer.transform.GetChild(1).gameObject;
                 timerText.GetComponent<TMPro.TextMeshProUGUI>().text = "500";
             }
@@ -109,11 +133,13 @@ public class UIManager : MonoBehaviour
             collectable.SetActive(true);
             timer.SetActive(true);
         }
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<SkateboardMovementRigid>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        updateSpeedometer();
         if(canContinue && Input.GetKey(input)){
             Time.timeScale = 1;
             gameManager.gameState = GameManager.GameState.InHub;
@@ -129,8 +155,23 @@ public class UIManager : MonoBehaviour
         collectableImage[index].GetComponent<Image>().sprite = sock;
     }
 
-    public void updateTimer(int time){
-        timerText.GetComponent<TMPro.TextMeshProUGUI>().text = time.ToString();
+    public void updateTimerText(int time){
+        string minute = (time/60).ToString();
+        string second = (time%60).ToString();
+        if (second.Length <= 1) second = "0" + second;
+        timerText.GetComponent<TMPro.TextMeshProUGUI>().text = minute + ":" + second;
+    }
+
+    public void updateTimerSprite(int time, float totalTime){
+        timerClock.GetComponent<Image>().fillAmount = time / totalTime;
+    }
+
+    public void updateSpeedometer(){
+        float speed = playerScript.getSpeed();
+        float maxSpeed = playerScript.getMaxManualSpeed();
+        arrow.localEulerAngles = new Vector3(0, 0, Mathf.Lerp(minAngle, maxAngle, speed/maxSpeed));
+        if(speed > maxSpeed) sparks.Play();
+        else sparks.Stop();
     }
 
     public void levelWinScreen(int score){
