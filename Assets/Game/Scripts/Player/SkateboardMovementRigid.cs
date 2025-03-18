@@ -112,7 +112,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void Update()
     {
-        Debug.Log(isGrounded);
+        //Debug.Log(isGrounded);
         findPlayerAngle();
         //collidedSurfaces.Clear();
         if (onRail) playerState = state.GRINDING;
