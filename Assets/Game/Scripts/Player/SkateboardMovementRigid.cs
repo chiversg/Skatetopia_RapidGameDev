@@ -216,12 +216,14 @@ public class SkateboardMovementRigid : MonoBehaviour
             onRail = false;
             isJumping = true;
             vSpeed += ollieStrength;
+            animator.SetBool("isJumping", true);
         }
         if (Input.GetButton("Backflip") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle)
         {
             onRail = false;
             isJumping = true;
             vSpeed += backflipStrength;
+            animator.SetBool("isJumping", true);
         }
         if (Input.GetButtonDown("U-Turn") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle)
         {
@@ -242,10 +244,12 @@ public class SkateboardMovementRigid : MonoBehaviour
         }
         if (Input.GetButton("Crouch"))
         {
+            animator.SetBool("isCrouching", true);
             isCrouching = true;
         }
         else
         {
+            animator.SetBool("isCrouching", false);
             isCrouching = false;
         }
     }
@@ -373,6 +377,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
        //isGrounded = Physics.Raycast(downRay.origin, downRay.direction, 1.1f);
         isGrounded = Physics.OverlapSphere(floorCheck.position, 1 * player.transform.lossyScale.y, floorObjects).Length > 0;
+        if (isGrounded) animator.SetBool("isJumping", false);
         Vector3 boxSize = new Vector3(0.26f * Mathf.Abs(player.transform.lossyScale.x), 0.40f * Mathf.Abs(player.transform.lossyScale.y), 1f * Mathf.Abs(player.transform.lossyScale.z));
         if (Physics.OverlapBox(LeftCheck.position, boxSize, player.rotation, floorObjects).Length > 0)
         {
@@ -499,6 +504,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void animate()
     {
+        Debug.Log(isCrouching);
         animator.SetFloat("Speed", Mathf.Abs(xSpeed));
         animator.SetBool("isJumping", isJumping);
         animator.SetBool("isCrouching", isCrouching);
