@@ -54,17 +54,17 @@ public class LoadTrigger : MonoBehaviour
         if(level==Level.Tutorial){
             levelName = "Tutorial";
             officialLevelName = "00_Tutorial";
-            if(gameManager.getGameProg()<0) this.enabled = false;
+            if(gameManager.getGameProg()<1) this.enabled = false;
         }
         else if(level==Level.LevelOne){
             levelName = "Level One";
             officialLevelName = "02_Street";
-            if(gameManager.getGameProg()<0) this.enabled = false;
+            if(gameManager.getGameProg()<2) this.enabled = false;
         }
         else if(level==Level.LevelTwo){
             levelName = "Level Two";
             officialLevelName = "03_Garden";
-            if(gameManager.getGameProg()<1) this.enabled = false;
+            if(gameManager.getGameProg()<3) this.enabled = false;
         }
         else if(level==Level.Hub) officialLevelName = "01_Hub";
         //sockUI = GameObject.FindGameObjectWithTag("Collectable UI");

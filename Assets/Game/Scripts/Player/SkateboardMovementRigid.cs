@@ -213,21 +213,21 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void performTricks()
     {
-        if (Input.GetButton("Jump") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxOllieAngle)
+        if (Input.GetButton("Jump") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxOllieAngle && GameManager.ollie)
         {
             onRail = false;
             isJumping = true;
             vSpeed += ollieStrength;
             animator.SetBool("isJumping", true);
         }
-        if (Input.GetButton("Backflip") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle)
+        if (Input.GetButton("Backflip") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.flip)
         {
             onRail = false;
             isJumping = true;
             vSpeed += backflipStrength;
             animator.SetBool("isJumping", true);
         }
-        if (Input.GetButtonDown("U-Turn") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle)
+        if (Input.GetButtonDown("U-Turn") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.uturn)
         {
             onRail = false;
             isJumping = false;
@@ -506,7 +506,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void animate()
     {
-        Debug.Log(isCrouching);
+        //Debug.Log(isCrouching);
         animator.SetFloat("Speed", Mathf.Abs(xSpeed));
         animator.SetBool("isJumping", isJumping);
         animator.SetBool("isCrouching", isCrouching);

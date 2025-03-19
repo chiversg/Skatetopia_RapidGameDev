@@ -36,14 +36,18 @@ public class GameManager : MonoBehaviour
         InHub
     }
 
-    public GameState gameState;
+    public static GameState gameState;
     
     [Header("Debug")]
     [Tooltip("Tracks the furthest level in the game to have been beaten, 0 means tutorial was beat, 1 means street, etc.")]
     [SerializeField]
-    private static int gameProg;
+    public static int gameProg;
 
     public static bool[,] socks = new bool[3,3];
+
+    public static bool ollie;
+    public static bool flip;
+    public static bool uturn;
 
     private List<ResetBehaviour> registeredForReset;
 

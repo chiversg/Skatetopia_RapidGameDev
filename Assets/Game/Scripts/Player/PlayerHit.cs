@@ -29,15 +29,15 @@ public class PlayerHit : MonoBehaviour
     }
 
     private void timerEnded(){
-        Debug.Log("Timer Ended 123");
+        //Debug.Log("Timer Ended 123");
         invincible = false;
         timer = invincibilityTimer;
     }
 
     public void playerHitHazard(){
-        Debug.Log("Timer TEST");
+        //Debug.Log("Timer TEST");
         if(!invincible){
-            Debug.Log("Timer Has Started");
+            //Debug.Log("Timer Has Started");
             player.GetComponent<SkateboardMovementRigid>().hitHazard();
             invincible = true;
         }

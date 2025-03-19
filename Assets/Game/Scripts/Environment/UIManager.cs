@@ -23,7 +23,9 @@ public class UIManager : MonoBehaviour
     public int timerScore = 5;
 
     [Header("Speedometer")]
-    [Tooltip("Arrow game objecy")]
+    [Tooltip("Speedometer UI Element")]
+    public GameObject speedometer;
+    [Tooltip("Arrow game object")]
     public RectTransform arrow;
     [Tooltip("Arrow angle when player is slowest")]
     public float minAngle = 90.0f;
@@ -51,6 +53,8 @@ public class UIManager : MonoBehaviour
     public GameObject pauseScreen;
     [Tooltip("input player must press to pause game")]
     public KeyCode pauseKey;
+    [Tooltip("Quit Button Text GameObject")]
+    public GameObject quitButtonText;
 
     [Header("Trick Get")]
     [Tooltip("trick info screen game object")]
@@ -84,6 +88,21 @@ public class UIManager : MonoBehaviour
     private SkateboardMovementRigid playerScript;
     //private LevelManager levelManager;
 
+
+    void Awake()
+    {
+        try
+        {
+            for (int i = 0; i < collectableImage.Length; i++)
+            {
+                collectableImage[i] = collectable.transform.GetChild(i).gameObject;
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError("Something is wrong with the children of collectables, make sure the sock images are the first three children and are in order");
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -94,56 +113,70 @@ public class UIManager : MonoBehaviour
         //Debug.Log(gameManager.gameState);
         if(gameManager==null) Debug.LogError("Game Manager missing from scene");
         if(!gameManager.enabled) Debug.LogError("Game Manager disabled");
-        if(gameManager.gameState==GameManager.GameState.InLevel){
+        if (GameManager.gameState == GameManager.GameState.InLevel)
+        {
             //levelManager = new LevelManager();
             //if(levelManager==null) Debug.LogError("Level Manager missing from scene");
             //if (!levelManager.enabled) Debug.LogError("Level Manager disabled");
             if (!collectable) Debug.LogError("CollectableUI Not assigned to UI Manager");
-            if(!timer) Debug.LogError("Timer not assigned to UIManager");
-            if(!arrow) Debug.LogError("Arrow not assigned to UIManager");
-            if(!sparks) Debug.LogError("Sparks not assigned to UIManager");
-            if(!levelComplete) Debug.LogError("Level win screen not assigned to UI Manager");
-            if(!trickInfo) Debug.LogError("Trick info screen not assigned to UI Manager");
-            if(!scoreText) Debug.LogError("scoreText is not assigned to UI Manager");
-            if(input.ToString().Equals("None")) Debug.LogError("Input Key not Assigned to UI Manager");
-            try{
-                for(int i=0; i<collectableImage.Length; i++){
+            if (!timer) Debug.LogError("Timer not assigned to UIManager");
+            if (!speedometer) Debug.LogError("Speedometer Not assigned to UI Manager");
+            if (!arrow) Debug.LogError("Arrow not assigned to UIManager");
+            if (!sparks) Debug.LogError("Sparks not assigned to UIManager");
+            if (!levelComplete) Debug.LogError("Level win screen not assigned to UI Manager");
+            if (!trickInfo) Debug.LogError("Trick info screen not assigned to UI Manager");
+            if (!scoreText) Debug.LogError("scoreText is not assigned to UI Manager");
+            if (input.ToString().Equals("None")) Debug.LogError("Input Key not Assigned to UI Manager");
+            try
+            {
+                for (int i = 0; i < collectableImage.Length; i++)
+                {
                     collectableImage[i] = collectable.transform.GetChild(i).gameObject;
                 }
             }
-            catch(System.Exception ex){
+            catch (System.Exception ex)
+            {
                 Debug.LogError("Something is wrong with the children of collectables, make sure the sock images are the first three children and are in order");
             }
-            try{
+            try
+            {
                 //timerClock = timer.transform.GetChild(0).gameObject;
                 timerText = timer.transform.GetChild(1).gameObject;
                 timerText.GetComponent<TMPro.TextMeshProUGUI>().text = "500";
             }
-            catch(System.Exception ex2){
+            catch (System.Exception ex2)
+            {
                 Debug.LogError("Something wrong with the timer text, make sure timer text is the second child of timer");
             }
-            try{
+            try
+            {
                 trickName = trickInfo.transform.GetChild(0).gameObject;
                 trickImage = trickInfo.transform.GetChild(1).gameObject;
                 trickDesc = trickInfo.transform.GetChild(2).gameObject;
             }
-            catch(System.Exception ex){
+            catch (System.Exception ex)
+            {
                 Debug.LogError("Something is wrong with the children of trickInfo, make sure the trickName, trickImage, and trickDesc are the only children and are in that order");
             }
             collectable.SetActive(true);
             timer.SetActive(true);
+            speedometer.SetActive(true);
+            quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Hub";
         }
+        else if (GameManager.gameState == GameManager.GameState.InHub)
+        {
+            quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Menu";
+        }
+        
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<SkateboardMovementRigid>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        updateSpeedometer();
+        if(GameManager.gameState==GameManager.GameState.InLevel) updateSpeedometer();
         if(canContinue && Input.GetKey(input)){
-            Time.timeScale = 1;
-            gameManager.gameState = GameManager.GameState.InHub;
-            SceneManager.LoadScene("01_Hub");
+            loadHub();
         }
         if(Input.GetKeyDown(pauseKey)){
             if(Time.timeScale == 1) pauseGame();
@@ -167,11 +200,24 @@ public class UIManager : MonoBehaviour
     }
 
     public void updateSpeedometer(){
-        float speed = playerScript.getSpeed();
+        float speed = Mathf.Abs(playerScript.getSpeed());
         float maxSpeed = playerScript.getMaxManualSpeed();
         arrow.localEulerAngles = new Vector3(0, 0, Mathf.Lerp(minAngle, maxAngle, speed/maxSpeed));
         if(speed > maxSpeed) sparks.Play();
         else sparks.Stop();
+    }
+
+    private void loadHub(){
+        Time.timeScale = 1;
+        GameManager.gameState = GameManager.GameState.InHub;
+        SceneManager.LoadScene("01_Hub");
+    }
+
+    private void loadMenu(){
+        //Debug.Log("THIS IS A TEST");
+        Time.timeScale = 1;
+        GameManager.gameState = GameManager.GameState.StartMenu;
+        SceneManager.LoadScene("Title");
     }
 
     public void levelWinScreen(int score){
@@ -195,6 +241,18 @@ public class UIManager : MonoBehaviour
         scoreText.GetComponent<TMPro.TextMeshProUGUI>().text = "Score: " + score;
     }
 
+    public void quitButton(){
+        Debug.Log(GameManager.gameState);
+        if (GameManager.gameState == GameManager.GameState.InLevel)
+        {
+            if (GameManager.gameProg < 2) GameManager.ollie = false;
+            if (GameManager.gameProg < 3) GameManager.uturn = false;
+            if (GameManager.gameProg < 4) GameManager.flip = false;
+            loadHub();
+        }
+        else if (GameManager.gameState == GameManager.GameState.InHub) loadMenu();
+    }
+
     void timerOver(){
         canContinue = true;
     }
@@ -216,6 +274,7 @@ public class UIManager : MonoBehaviour
         pauseScreen.SetActive(true);
         timer.SetActive(false);
         collectable.SetActive(false);
+        speedometer.SetActive(false);
         paused = true;
     }
 
@@ -223,8 +282,12 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1;
         pauseScreen.SetActive(false);
         trickInfo.SetActive(false);
-        timer.SetActive(true);
-        collectable.SetActive(true);
+        if(GameManager.gameState == GameManager.GameState.InLevel)
+        {
+            timer.SetActive(true);
+            collectable.SetActive(true);
+            speedometer.SetActive(true);
+        }
         paused = false;
     }
 

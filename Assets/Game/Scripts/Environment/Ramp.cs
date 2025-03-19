@@ -17,7 +17,7 @@ public class Ramp : MonoBehaviour
     [Tooltip("Box collider for the ramp")]
     public Collider boxCol;
 
-    private bool usable;
+    private bool usable = true;
     private bool[] bounce = new bool[5];
     private int bounceIndex = 0;
     private float plyrEnterY;
@@ -29,11 +29,11 @@ public class Ramp : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         if(Direction == direction.Left){
             dir = 1;
-            usable = true;
+            //usable = true;
         }
         else if(Direction == direction.Right){
             dir = -1;
-            usable = false;
+            //usable = false;
         }
     }
 
@@ -43,7 +43,7 @@ public class Ramp : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other){
-        Debug.Log("Trigger has been Entered: "  + gameObject.name);
+        //Debug.Log("Trigger has been Entered: "  + gameObject.name);
         if(other.tag == "Player" && usable){
             plyrEnterY = other.transform.position.y;
         }
@@ -51,7 +51,7 @@ public class Ramp : MonoBehaviour
     
     private void OnTriggerStay(Collider other){
         if(other.tag == "Player"){
-            Debug.Log(bounce);
+            //Debug.Log(bounce);
             bounce[bounceIndex] = player.GetComponent<SkateboardMovementRigid>().getGrounded();
             bounceIndex++;
             if(bounceIndex>=5) bounceIndex = 0;
@@ -59,7 +59,7 @@ public class Ramp : MonoBehaviour
     }
 
     private void OnTriggerExit(Collider other){
-        Debug.Log("Trigger has been Exited: " + gameObject.name + ", " + bounce);
+        //Debug.Log("Trigger has been Exited: " + gameObject.name + ", " + bounce[0] + bounce[1] + bounce[2] + bounce[3] + bounce[4]);
         if(other.tag == "Player"){
             bool bounceFinal = false;
             foreach(bool b in bounce){
