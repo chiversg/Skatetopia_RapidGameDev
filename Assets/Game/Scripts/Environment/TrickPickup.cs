@@ -22,6 +22,9 @@ public class TrickPickup : MonoBehaviour
 
     private void OnTriggerEnter(Collider other){
         if(other.tag == "Player"){
+            if (Trick == trick.ollie) GameManager.ollie = true;
+            else if (Trick == trick.uturn) GameManager.uturn = true;
+            else if(Trick == trick.flip) GameManager.flip = true;
             uiManager.trickGet(Trick.ToString());
             Destroy(this.gameObject);
         }

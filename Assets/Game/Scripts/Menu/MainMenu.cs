@@ -7,6 +7,10 @@ public class MainMenu : MonoBehaviour
 {
     private GameManager gameManager;
 
+    private void Awake()
+    {
+        GameManager.gameState = GameManager.GameState.StartMenu;
+    }
     void Start(){
         gameManager = FindObjectOfType<GameManager>();
         if(gameManager==null) Debug.LogError("Game Manager missing from scene");
@@ -14,7 +18,16 @@ public class MainMenu : MonoBehaviour
     }
 
     public void playGame(){
-        SceneManager.LoadScene("Cutscene");
+        if (GameManager.gameProg == 0){
+            SceneManager.LoadScene("Cutscene");
+            GameManager.gameState = GameManager.GameState.InCutscene;
+        }
+        else
+        {
+            SceneManager.LoadScene("01_Hub");
+            GameManager.gameState = GameManager.GameState.InHub;
+        }
+       
     }
 
     public void quitGame(){
@@ -23,7 +36,7 @@ public class MainMenu : MonoBehaviour
     }
 
     public void playGameDebug(){
-        gameManager.setGameProg(2);
+        gameManager.setGameProg(4);
         SceneManager.LoadScene("01_Hub");
     }
 }

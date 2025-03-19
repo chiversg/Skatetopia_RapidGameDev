@@ -20,7 +20,7 @@ public class PlayerWalk : MonoBehaviour
         xSpeed = player.velocity.x;
         flipSprite();
         checkInputs();
-        Debug.Log("Ger");
+        //Debug.Log("Ger");
         animator.SetFloat("Speed", Mathf.Abs(xSpeed));
         animator.SetBool("heldUp", lookUp);
     }
@@ -40,7 +40,7 @@ public class PlayerWalk : MonoBehaviour
     }
     private void flipSprite()
     {
-        Debug.Log(xSpeed);
+        //Debug.Log(xSpeed);
         if (xSpeed != 0)
         {
             if (xSpeed < 0)

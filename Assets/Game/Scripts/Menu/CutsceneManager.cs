@@ -35,7 +35,11 @@ public class CutsceneManager : MonoBehaviour
     }
 
     public void timerEnded(){
-        if(index==panels.transform.childCount) SceneManager.LoadScene("00_Tutorial");
+        if (index == panels.transform.childCount)
+        {
+            GameManager.gameProg = 1;
+            SceneManager.LoadScene("00_Tutorial");
+        }
         else showPanel();
     }
 }
