@@ -20,13 +20,12 @@ public class PlayerWalk : MonoBehaviour
         xSpeed = player.velocity.x;
         flipSprite();
         checkInputs();
-        Debug.Log("Ger");
         animator.SetFloat("Speed", Mathf.Abs(xSpeed));
         animator.SetBool("heldUp", lookUp);
     }
     private void FixedUpdate()
     {
-        player.AddForce(Vector3.right * Input.GetAxis("Horizontal") * 1.3f, ForceMode.VelocityChange);
+        player.AddForce(Vector3.right * Input.GetAxis("Horizontal"), ForceMode.VelocityChange);
     }
     private void checkInputs()
     {
@@ -40,7 +39,6 @@ public class PlayerWalk : MonoBehaviour
     }
     private void flipSprite()
     {
-        Debug.Log(xSpeed);
         if (xSpeed != 0)
         {
             if (xSpeed < 0)
