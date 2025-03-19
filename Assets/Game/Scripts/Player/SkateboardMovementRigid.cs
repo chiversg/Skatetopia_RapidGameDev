@@ -13,6 +13,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     [SerializeField] private float speed = 1;
     [SerializeField] private float drag;
     [SerializeField] private float deceleration = 1;
+    [SerializeField] private float airDampening = 0.75f;
 
     [Header("Gravity")]
     [SerializeField][Tooltip("Strength of gravity while the player is moving downwards")] private float downwardsGravityStrength = 19.6f;
@@ -33,6 +34,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     [SerializeField] private float crouchingGravityMultiplier = 2;
 
     [Header("Collision")]
+    [SerializeField] private float knockbackStrength;
     [SerializeField] private Transform floorCheck;
     [SerializeField] private Transform LeftCheck;
     [SerializeField] private Transform RightCheck;
@@ -144,11 +146,11 @@ public class SkateboardMovementRigid : MonoBehaviour
                 performTricks();
                 break;
             case state.JUMPING:
-                movePlayer(0.5f);
+                movePlayer(airDampening);
                 applyGravity();
                 break;
             case state.FALLING:
-                movePlayer(0.5f);
+                movePlayer(airDampening);
                 applyGravity();
                 break;
             case state.GRINDING:
@@ -545,8 +547,10 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     public void hitHazard()
     {
-        xSpeed = 0;
-        vSpeed = 0;
+        Vector2 vel = new Vector2(xSpeed, vSpeed);
+        vel = vel.normalized * -knockbackStrength;
+        xSpeed = vel.x;
+        vSpeed = vel.y;
         animator.SetTrigger("playerHit");
     }
     //-----------------------------------------------------------------------[Debug Methods]
