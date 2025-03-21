@@ -36,7 +36,7 @@ public class MainMenu : MonoBehaviour
     }
 
     public void playGameDebug(){
-        gameManager.setGameProg(4);
+        gameManager.setDebug();
         SceneManager.LoadScene("01_Hub");
     }
 }

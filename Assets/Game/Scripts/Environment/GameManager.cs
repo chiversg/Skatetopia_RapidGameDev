@@ -39,8 +39,10 @@ public class GameManager : MonoBehaviour
     public static GameState gameState;
     
     [Header("Debug")]
-    [Tooltip("Tracks the furthest level in the game to have been beaten, 0 means tutorial was beat, 1 means street, etc.")]
+    [Tooltip("gives all tricks")]
     [SerializeField]
+    public bool debug;
+
     public static int gameProg;
 
     public static bool[,] socks = new bool[3,3];
@@ -61,9 +63,8 @@ public class GameManager : MonoBehaviour
         }
         registeredForReset = new List<ResetBehaviour>();
         Debug.Log(gameProg);
-        //if(ollieGet==null) ollieGet = new UnityEvent();
-        //if(uturnGet==null) uturnGet = new UnityEvent();
-        //if(flipGet==null) flipGet = new UnityEvent();
+
+        if (debug) setDebug();
     }
 
     public static void RegisterForReset(ResetBehaviour resetBehaviour)
@@ -98,5 +99,13 @@ public class GameManager : MonoBehaviour
 
     public void setGameProg(int i){
         gameProg = i;
+    }
+
+    public void setDebug()
+    {
+        ollie = true;
+        uturn = true;
+        flip = true;
+        gameProg = 5;
     }
 }
