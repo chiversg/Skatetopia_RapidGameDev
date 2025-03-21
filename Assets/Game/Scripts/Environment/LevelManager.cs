@@ -96,4 +96,6 @@ public class LevelManager : MonoBehaviour
     public int getTimer(){
         return levelTimer;
     }
+
+    public int getIndex() {  return levelIndex; }
 }
