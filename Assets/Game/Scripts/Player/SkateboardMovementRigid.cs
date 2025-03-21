@@ -122,10 +122,10 @@ public class SkateboardMovementRigid : MonoBehaviour
 
         updateStates();
         updateCurrentSurface();
-        rotatePlayerToTarget(surfaceNormal);
+        if(playerState != state.GRINDING) rotatePlayerToTarget(surfaceNormal);
         flipSprite();
         animate();
-
+            
         if (debug) updateDebugText();
 
         direction = Input.GetAxisRaw("Horizontal");
@@ -459,13 +459,20 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void movePlayerTowards()
     {
-        rotatePlayerToTarget(surfaceNormal);
-        player.AddRelativeForce(Vector3.forward * xSpeed);
+        //rotatePlayerToTarget(surfaceNormal);
+        //Debug.Log("Pre Speed: " + xSpeed);
+        if (xSpeed * lastFacedDirection < (maxManualSpeed * 4) / 5)
+        {
+            //Debug.Log("Equation: " + (maxManualSpeed / 500) * lastFacedDirection);
+            xSpeed += (maxManualSpeed / 200) * lastFacedDirection;
+        }
+        Debug.Log("Speed: " + xSpeed);
+        //player.AddRelativeForce(Vector3.forward * xSpeed);
 
         transform.position = Vector3.MoveTowards(transform.position, railEnd.position, Mathf.Abs(xSpeed) / 100);
 
         //Using xSpeed to ensure that the it doesn't matter which way the player/rail is facing, could probably change to Math.absolute
-        Debug.Log(transform.position.x * xSpeed + " " + railEnd.position.x * xSpeed);
+        //Debug.Log(transform.position.x * xSpeed + " " + railEnd.position.x * xSpeed);
         if (transform.position.x * xSpeed > railEnd.position.x * xSpeed)
         {
             playerState = state.FALLING;
