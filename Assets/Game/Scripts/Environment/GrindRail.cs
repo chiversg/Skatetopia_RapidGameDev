@@ -36,7 +36,7 @@ public class GrindRail : MonoBehaviour
         var height = GetComponent<MeshFilter>().mesh.bounds.extents.z;
         float xSpeed = playerScript.getXSpeed();
         //Debug.Log("rail enter" + height);
-        if (other.tag == "Skateboard" && xSpeed*dir >= 0)
+        if (other.tag == "Player" && xSpeed*dir >= 0)
         {
             Debug.Log("player enter rail");
             playerScript.boardRail(end, transform);
