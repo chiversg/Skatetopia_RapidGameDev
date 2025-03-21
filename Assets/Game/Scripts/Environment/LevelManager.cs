@@ -39,9 +39,21 @@ public class LevelManager : MonoBehaviour
         if(!uiManager.enabled) Debug.LogError("UI Manager disabled");
         if(gameManager==null) Debug.LogError("Game Manager missing from scenen");
         if(!gameManager.enabled) Debug.LogError("Game Manager disabled");
-        if (Level == level.Tutorial) levelIndex = 0;
-        else if (Level == level.LevelOne) levelIndex = 1;
-        else if (Level == level.LevelTwo) levelIndex = 2;
+        if (Level == level.Tutorial)
+        {
+            levelIndex = 0;
+        }
+        else if (Level == level.LevelOne)
+        {
+            levelIndex = 1;
+            GameManager.ollie = true;
+        }
+        else if (Level == level.LevelTwo)
+        {
+            levelIndex = 2;
+            GameManager.ollie = true;
+            GameManager.uturn = true;
+        }
         Collectable[] collectables = FindObjectsOfType(typeof(Collectable)) as Collectable[];
         //Debug.Log("TESTING THE LEVEL LOADING THINGY");
         foreach (var c in collectables)
