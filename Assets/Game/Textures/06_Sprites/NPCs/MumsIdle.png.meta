@@ -150,8 +150,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 51df61cf5d3312a46bb1fb313a48e7c7
-      internalID: 552999033
+      spriteID: 0f28e91946ee67243959bebcb10e43c6
+      internalID: -723109776
       vertices: []
       indices: 
       edges: []
@@ -171,8 +171,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 864f817a4246d9241a6e096e1bff423d
-      internalID: 410345224
+      spriteID: 6b6bc42f28b5a80498ebcbde9c04eb29
+      internalID: -971789560
       vertices: []
       indices: 
       edges: []
@@ -192,8 +192,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: db847541e07f6f94a9ef34b5b1b2e26e
-      internalID: -1813868058
+      spriteID: 688b58ed79361014183434ddfaeff129
+      internalID: 633215771
       vertices: []
       indices: 
       edges: []
@@ -213,8 +213,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f51577977d4bd8844b3f1fb5152d5283
-      internalID: -1505262255
+      spriteID: a0c775a720f7fe843a010d719140f542
+      internalID: -1703068578
       vertices: []
       indices: 
       edges: []
@@ -234,8 +234,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 95e8dd494b0ea744da9afc6bc3b78bd7
-      internalID: -1027253588
+      spriteID: 6b1810b3f7ac85c47956c6cfa303cec8
+      internalID: -1293663320
       vertices: []
       indices: 
       edges: []
@@ -255,8 +255,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 914993a1a4c2eb048aa31ef9e0d6e2b6
-      internalID: -685969439
+      spriteID: 9726101b7b4c8064abd6c2caf817882d
+      internalID: -1893802849
       vertices: []
       indices: 
       edges: []
@@ -276,8 +276,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 21c839829e9673b4ab9015dfbe3a4bd3
-      internalID: -585945070
+      spriteID: af3d58801883803448ecc3b7771e36ce
+      internalID: 981254016
       vertices: []
       indices: 
       edges: []
@@ -297,8 +297,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a16288cd711806c4ab51daf7c2998cee
-      internalID: -1345269293
+      spriteID: 63e9fc8fce85aca4fb1d0a22d67961ce
+      internalID: -1618659460
       vertices: []
       indices: 
       edges: []
@@ -318,8 +318,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: acfa7d9567094084783963753c77cf4f
-      internalID: -769630588
+      spriteID: e8a72afdab9e19a48a2ce44ab4cf0192
+      internalID: 1460013423
       vertices: []
       indices: 
       edges: []
@@ -339,365 +339,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bca9b708547e1d648b2a5c42a4b75ce2
-      internalID: -1572855752
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_10
-      rect:
-        serializedVersion: 2
-        x: 5120
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5bfb3e83b0c9a234fa6b8edb01b905fc
-      internalID: -782797655
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_11
-      rect:
-        serializedVersion: 2
-        x: 5632
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ba0e5f1ff69bcfa4494b102fdda2ded2
-      internalID: 167266585
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_12
-      rect:
-        serializedVersion: 2
-        x: 6144
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 30307fa169e5482428cdd6eb670ef6d5
-      internalID: 1759888517
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_13
-      rect:
-        serializedVersion: 2
-        x: 6656
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c51dc197fdf310a4a8400a119038fddd
-      internalID: 1751802800
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_14
-      rect:
-        serializedVersion: 2
-        x: 7168
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3302e9c2bcd96344ea5d986f15850a86
-      internalID: 886592459
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_15
-      rect:
-        serializedVersion: 2
-        x: 7680
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8d6ba902b3751334b907e5050fc33709
-      internalID: 1126146876
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_16
-      rect:
-        serializedVersion: 2
-        x: 8192
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 38408711202f3a44b8343d11b14b3caa
-      internalID: -640080903
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_17
-      rect:
-        serializedVersion: 2
-        x: 8704
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 460e6ed78bddd544e86d22c7608eba80
-      internalID: 556485516
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_18
-      rect:
-        serializedVersion: 2
-        x: 9216
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d594026dd099f8049baa9920dee123b4
-      internalID: -1533242348
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_19
-      rect:
-        serializedVersion: 2
-        x: 9728
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4608f3a4904e06e4eba308b5a52e26d7
-      internalID: 1549512001
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_20
-      rect:
-        serializedVersion: 2
-        x: 10240
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cba8418f1fa13384f94fdf9afc321c7c
-      internalID: -537866431
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_21
-      rect:
-        serializedVersion: 2
-        x: 10752
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e5948962e0680c6479c1eea747d271e2
-      internalID: 1149740871
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_22
-      rect:
-        serializedVersion: 2
-        x: 11264
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 30c212f4b6986d1468549be30ceae2cd
-      internalID: 137681106
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_23
-      rect:
-        serializedVersion: 2
-        x: 11776
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6857ff3359a87a44586265957176ee7f
-      internalID: -786357051
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_24
-      rect:
-        serializedVersion: 2
-        x: 12288
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0aec2888be8aad34892c482c1d80778d
-      internalID: -2051964870
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_25
-      rect:
-        serializedVersion: 2
-        x: 12800
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9dbd7500018e5b94688db223f7399942
-      internalID: -1131499692
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_26
-      rect:
-        serializedVersion: 2
-        x: 13312
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 29adc2c20767f444caffd289e24ac940
-      internalID: -2008840504
+      spriteID: de77379c61a0bf4408e479d0552504e1
+      internalID: 414725922
       vertices: []
       indices: 
       edges: []
@@ -705,7 +348,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: ac38db2d280577d479443ace94fd4161
+    spriteID: 46df0e1f23fec654b9786b881cdda19b
     internalID: 0
     vertices: []
     indices: 
@@ -713,33 +356,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      MumsIdle_0: 552999033
-      MumsIdle_1: 410345224
-      MumsIdle_10: -782797655
-      MumsIdle_11: 167266585
-      MumsIdle_12: 1759888517
-      MumsIdle_13: 1751802800
-      MumsIdle_14: 886592459
-      MumsIdle_15: 1126146876
-      MumsIdle_16: -640080903
-      MumsIdle_17: 556485516
-      MumsIdle_18: -1533242348
-      MumsIdle_19: 1549512001
-      MumsIdle_2: -1813868058
-      MumsIdle_20: -537866431
-      MumsIdle_21: 1149740871
-      MumsIdle_22: 137681106
-      MumsIdle_23: -786357051
-      MumsIdle_24: -2051964870
-      MumsIdle_25: -1131499692
-      MumsIdle_26: -2008840504
-      MumsIdle_3: -1505262255
-      MumsIdle_4: -1027253588
-      MumsIdle_5: -685969439
-      MumsIdle_6: -585945070
-      MumsIdle_7: -1345269293
-      MumsIdle_8: -769630588
-      MumsIdle_9: -1572855752
+      MumsIdle_0: -723109776
+      MumsIdle_1: -971789560
+      MumsIdle_2: 633215771
+      MumsIdle_3: -1703068578
+      MumsIdle_4: -1293663320
+      MumsIdle_5: -1893802849
+      MumsIdle_6: 981254016
+      MumsIdle_7: -1618659460
+      MumsIdle_8: 1460013423
+      MumsIdle_9: 414725922
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
