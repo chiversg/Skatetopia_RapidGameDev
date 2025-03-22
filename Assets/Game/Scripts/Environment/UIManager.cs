@@ -62,6 +62,8 @@ public class UIManager : MonoBehaviour
     public GameObject loseScreen;
 
     [Header("Trick Get")]
+    [Tooltip("input player must press to exit the menu")]
+    public KeyCode quitKey;
     [Tooltip("trick info screen game object")]
     public GameObject trickInfo;
     [Tooltip("description for ollie")]
@@ -193,6 +195,10 @@ public class UIManager : MonoBehaviour
         if(Input.GetKeyDown(pauseKey)){
             if(Time.timeScale == 1) pauseGame();
             else if(Time.timeScale == 0 && paused) resumeGame();
+        }
+        if (Input.GetKeyDown(quitKey))
+        {
+            if(Time.timeScale == 0) resumeGame();
         }
     }
 
