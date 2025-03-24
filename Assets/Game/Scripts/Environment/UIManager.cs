@@ -39,6 +39,12 @@ public class UIManager : MonoBehaviour
     [Tooltip("Pop up text element in the UI")]
     public GameObject popupText;
 
+    [Header("Pop-up Alert")]
+    [Tooltip("Pop-up alert element in UI")]
+    public GameObject alert;
+    [Tooltip("alert text element")]
+    public GameObject alertText;
+
     [Header("Level Complete Screen")]
     [Tooltip("level complete screen element")]
     public GameObject levelComplete;
@@ -99,7 +105,7 @@ public class UIManager : MonoBehaviour
     private LevelManager levelManager;
     private SkateboardMovementRigid playerScript;
 
-    public enum Load {Level, Hub, Title}
+    public enum Load {Level, Hub, Title, Cutscene}
     void Awake()
     {
         try
@@ -125,6 +131,8 @@ public class UIManager : MonoBehaviour
         //Debug.Log(gameManager.gameState);
         if(gameManager==null) Debug.LogError("Game Manager missing from scene");
         if(!gameManager.enabled) Debug.LogError("Game Manager disabled");
+        if (!alert) Debug.LogError("Alert not assigned to UIManager");
+        if (!alertText) Debug.LogError("Alert Text not assigned to UIManager");
         if (GameManager.gameState == GameManager.GameState.InLevel)
         {
             levelManager = FindObjectOfType<LevelManager>();
@@ -175,7 +183,8 @@ public class UIManager : MonoBehaviour
             collectable.SetActive(true);
             timer.SetActive(true);
             speedometer.SetActive(true);
-            quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Hub";
+            if(GameManager.gameProg>=2) quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Hub";
+            else quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Menu";
         }
         else if (GameManager.gameState == GameManager.GameState.InHub)
         {
@@ -190,7 +199,8 @@ public class UIManager : MonoBehaviour
     {
         if(GameManager.gameState==GameManager.GameState.InLevel) updateSpeedometer();
         if(canContinue && Input.GetKey(input)){
-            loadScene(Load.Hub);
+            if(GameManager.gameProg == 7) loadScene(Load.Cutscene);
+            else loadScene(Load.Hub);
         }
         if(Input.GetKeyDown(pauseKey)){
             if(Time.timeScale == 1) pauseGame();
@@ -248,6 +258,11 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(levelName[levelManager.getIndex()]);
     }
 
+    private void loadCutscene()
+    {
+
+    }
+
     public void levelWinScreen(int score){
         //createTimer();
         //setLevelWin();
@@ -259,6 +274,7 @@ public class UIManager : MonoBehaviour
         t.setTimer(screenTimer);
         t.startTimer();
         Time.timeScale = 0;
+        speedometer.SetActive(false);
         levelComplete.SetActive(true);
         collectable.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
         collectable.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.5f);
@@ -288,6 +304,9 @@ public class UIManager : MonoBehaviour
             case Load.Title:
                 loadMenu();
                 break;
+            case Load.Cutscene:
+                loadCutscene();
+                break;
         }
         //if (menu) loadMenu();
         //else loadHub();
@@ -295,6 +314,7 @@ public class UIManager : MonoBehaviour
 
     public void loadSceneFromButton(int i)
     {
+        if (GameManager.gameProg < 2) i = 2;
         if (i == 0) loadScene(Load.Hub);
         if (i == 1) loadScene(Load.Level);
         if (i == 2) loadScene(Load.Title);
@@ -318,6 +338,21 @@ public class UIManager : MonoBehaviour
     public void disablePopupText()
     {
         popupText.SetActive(false);
+    }
+
+    public void updateAlertText(string s)
+    {
+        alertText.GetComponent<TMPro.TextMeshProUGUI>().text = s;
+    }
+
+    public void enableAlert()
+    {
+        alert.SetActive(true);
+    }
+
+    public void disableAlert()
+    {
+        alert.SetActive(false);
     }
 
     public void pauseGame()

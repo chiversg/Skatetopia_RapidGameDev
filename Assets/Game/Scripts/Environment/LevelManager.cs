@@ -91,8 +91,11 @@ public class LevelManager : MonoBehaviour
     }
 
     public void updateGameProg(){
-        if(gameManager.getGameProg()<levelIndex+2){
-            gameManager.setGameProg(levelIndex+2);
+        int i;
+        if (levelIndex == 0) i = 0;
+        else i = 1;
+        if(gameManager.getGameProg()<((levelIndex+1)*2)+i){
+            gameManager.setGameProg(((levelIndex+1)*2)+i);
         }
     }
 

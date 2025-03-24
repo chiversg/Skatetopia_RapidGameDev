@@ -5,41 +5,74 @@ using UnityEngine.SceneManagement;
 
 public class CutsceneManager : MonoBehaviour
 {
-    [Tooltip ("Empty Gameobject holden all the panels for the cutscene")]
-    public GameObject panels;
+    [Tooltip("List holding Empty Gameobjects, each one holds all the panels for a specific cutscene")]
+    public List<GameObject> cutscenes;
+
+    [Tooltip("Key to press to continue at end")]
+    public KeyCode accept;
+
     [Tooltip ("Length between each panel in the cutscene")]
     public float length;
 
-    private int index = 0;
+    private int panelIndex = 0;
+    private int cutsceneIndex = 0;
+    private bool cutsceneEnd;
 
     void Awake(){
-        if(!panels) Debug.LogError("Panels not assigned in inspector!!!!");
-        foreach(Transform child in panels.transform){
-            child.gameObject.SetActive(false);
+        foreach (GameObject cutscene in cutscenes)
+        {
+            foreach (Transform child in cutscene.transform)
+            {
+                child.gameObject.SetActive(false);
+            }
         }
     }
 
     void Start()
     {
-        showPanel();
+        if (GameManager.gameProg == 0) showCutscene(0);
+        else if (GameManager.gameProg == 2) showCutscene(1);
+        else if (GameManager.gameProg == 7) showCutscene(2);
     }
 
-    public void showPanel(){
-        Debug.Log("Cutscene Test: " + index);
-        panels.transform.GetChild(index).gameObject.SetActive(true);
+    private void Update()
+    {
+        if(cutsceneEnd && (Input.GetKey(accept) || accept == KeyCode.None))
+        {
+            if (cutsceneIndex == 0)
+            {              
+                GameManager.gameProg = 1;
+                SceneManager.LoadScene("00_Tutorial");
+            }
+            else if (cutsceneIndex == 1)
+            {               
+                GameManager.gameProg = 3;
+                SceneManager.LoadScene("01_Hub");
+            }
+            else if (cutsceneIndex == 2)
+            {               
+                GameManager.gameProg = 8;
+                SceneManager.LoadScene("01_Hub");
+            }
+        }
+    }
+
+    public void showCutscene(int i){
+        cutsceneIndex = i;
+        Debug.Log("Cutscene Test: " + panelIndex);
+        cutscenes[i].transform.GetChild(panelIndex).gameObject.SetActive(true);
         Timer t = gameObject.AddComponent<Timer>();
         t.TimerEnded.AddListener(timerEnded);
         t.setTimer(length);
         t.startTimer();
-        index++;
+        panelIndex++;
     }
 
     public void timerEnded(){
-        if (index == panels.transform.childCount)
+        if (panelIndex == cutscenes[cutsceneIndex].transform.childCount)
         {
-            GameManager.gameProg = 1;
-            SceneManager.LoadScene("00_Tutorial");
+            cutsceneEnd = true;
         }
-        else showPanel();
+        else showCutscene(cutsceneIndex);
     }
 }

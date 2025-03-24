@@ -106,6 +106,6 @@ public class GameManager : MonoBehaviour
         ollie = true;
         uturn = true;
         flip = true;
-        gameProg = 5;
+        gameProg = 10;
     }
 }

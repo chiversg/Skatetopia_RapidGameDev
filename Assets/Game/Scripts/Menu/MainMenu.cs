@@ -19,13 +19,18 @@ public class MainMenu : MonoBehaviour
 
     public void playGame(){
         if (GameManager.gameProg == 0){
-            SceneManager.LoadScene("Cutscene");
             GameManager.gameState = GameManager.GameState.InCutscene;
+            SceneManager.LoadScene("Cutscene");
+        }
+        else if(GameManager.gameProg == 1)
+        {
+            GameManager.gameState = GameManager.GameState.InLevel;
+            SceneManager.LoadScene("00_Tutorial");
         }
         else
         {
-            SceneManager.LoadScene("01_Hub");
             GameManager.gameState = GameManager.GameState.InHub;
+            SceneManager.LoadScene("01_Hub");
         }
        
     }
