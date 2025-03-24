@@ -65,6 +65,8 @@ public class SkateboardMovementRigid : MonoBehaviour
     private bool lockRotation;
     private bool isCrouching;
 
+    private float grindSpeed;
+
     private Vector2 moveVector = new Vector2(0f, 0f);
 
     public Transform railEnd;
@@ -173,6 +175,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     private void move_and_slide()
     {
         velocity = new Vector2(xSpeed, vSpeed);
+        if (playerState == state.GRINDING)
         velocity.x = Mathf.Clamp(velocity.x, -maxSpeed, maxSpeed);
         rotatedVelocity = adjustVelocityToTarget(velocity, surfaceNormal);
         player.velocity = rotatedVelocity;
@@ -215,21 +218,33 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         if (Input.GetButton("Jump") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxOllieAngle && GameManager.ollie)
         {
-            onRail = false;
+            if (onRail)
+            {
+                onRail = false;
+                xSpeed = grindSpeed;
+            }
             isJumping = true;
             vSpeed += ollieStrength;
             animator.SetBool("isJumping", true);
         }
         if (Input.GetButton("Backflip") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.flip)
         {
-            onRail = false;
+            if (onRail)
+            {
+                onRail = false;
+                xSpeed = grindSpeed;
+            }
             isJumping = true;
             vSpeed += backflipStrength;
             animator.SetBool("isJumping", true);
         }
         if (Input.GetButtonDown("U-Turn") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.uturn)
         {
-            onRail = false;
+            if (onRail)
+            {
+                onRail = false;
+                xSpeed = grindSpeed;
+            }
             isJumping = false;
             turning = true;
             uturnTargetSpeed = -xSpeed;
@@ -459,22 +474,17 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void movePlayerTowards()
     {
-        //rotatePlayerToTarget(surfaceNormal);
-        //Debug.Log("Pre Speed: " + xSpeed);
-        if (xSpeed * lastFacedDirection < (maxManualSpeed * 4) / 5)
+        if (grindSpeed * lastFacedDirection < (maxManualSpeed * 4) / 5)
         {
-            //Debug.Log("Equation: " + (maxManualSpeed / 500) * lastFacedDirection);
-            xSpeed += (maxManualSpeed / 200) * lastFacedDirection;
+            grindSpeed += (maxManualSpeed / 200) * lastFacedDirection;
         }
-        Debug.Log("Speed: " + xSpeed);
-        //player.AddRelativeForce(Vector3.forward * xSpeed);
+        Debug.Log("Speed: " + grindSpeed);
 
-        transform.position = Vector3.MoveTowards(transform.position, railEnd.position, Mathf.Abs(xSpeed) / 100);
+        transform.position = Vector3.MoveTowards(transform.position, railEnd.position, Mathf.Abs(grindSpeed) / 50);
 
-        //Using xSpeed to ensure that the it doesn't matter which way the player/rail is facing, could probably change to Math.absolute
-        //Debug.Log(transform.position.x * xSpeed + " " + railEnd.position.x * xSpeed);
-        if (transform.position.x * xSpeed > railEnd.position.x * xSpeed)
+        if (transform.position.x * grindSpeed >= railEnd.position.x * grindSpeed)
         {
+            xSpeed = grindSpeed;
             playerState = state.FALLING;
             onRail = false;
         }
@@ -530,6 +540,8 @@ public class SkateboardMovementRigid : MonoBehaviour
     public void boardRail(Transform target, Transform rail)
     {
         Debug.Log(player.transform.rotation.z);
+        grindSpeed = xSpeed;
+        xSpeed = 0;
         vSpeed = 0;
         railEnd = target;
         onRail = true;
