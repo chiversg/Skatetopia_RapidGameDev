@@ -169,7 +169,7 @@ public class SkateboardMovementRigid : MonoBehaviour
                 kickoff();
                 break;
         }
-        if(playerState == state.LISTENING)
+        if(playerState != state.LISTENING)
         {
             move_and_slide();
         }

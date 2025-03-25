@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -42,6 +43,8 @@ public class GameManager : MonoBehaviour
     [Tooltip("gives all tricks")]
     [SerializeField]
     public bool debug;
+    public int prog;
+    public GameState state;
 
     public static int gameProg;
 
@@ -106,6 +109,7 @@ public class GameManager : MonoBehaviour
         ollie = true;
         uturn = true;
         flip = true;
-        gameProg = 10;
+        gameProg = prog;
+        gameState = state;
     }
 }

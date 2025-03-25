@@ -27,6 +27,7 @@ public class LoadTrigger : MonoBehaviour
     private bool playerInTrigger;
     private string levelName;
     private string officialLevelName;
+    private bool off;
 
     //private GameObject sockUI;
     private GameManager gameManager;
@@ -51,25 +52,35 @@ public class LoadTrigger : MonoBehaviour
             secondHalf.SetActive(false);
         }
 
-        if(level==Level.Tutorial){
-            levelName = "Level One: Tutorial";
-            officialLevelName = "00_Tutorial";
-            if(gameManager.getGameProg()<1) this.enabled = false;
-        }
-        else if(level==Level.LevelOne){
-            levelName = "Level Two: Street";
-            officialLevelName = "02_Street";
-            if(gameManager.getGameProg()<2) this.enabled = false;
-        }
-        else if(level==Level.LevelTwo){
-            levelName = "Level Three: Garden";
-            officialLevelName = "03_Garden";
-            if(gameManager.getGameProg()<3) this.enabled = false;
+        if(triggerType == TriggerType.HubDoor)
+        {
+            if (level == Level.Tutorial)
+            {
+                levelName = "Level One: Tutorial";
+                officialLevelName = "00_Tutorial";
+                if (gameManager.getGameProg() < 2) this.enabled = false;
+            }
+            else if (level == Level.LevelOne)
+            {
+                levelName = "Level Two: Street";
+                officialLevelName = "02_Street";
+                if (gameManager.getGameProg() < 4) this.enabled = false;
+            }
+            else if (level == Level.LevelTwo)
+            {
+                levelName = "Level Three: Garden";
+                officialLevelName = "03_Garden";
+                if (gameManager.getGameProg() < 6) this.enabled = false;
+            }
         }
         else if(level==Level.Hub) officialLevelName = "01_Hub";
         //sockUI = GameObject.FindGameObjectWithTag("Collectable UI");
     }
 
+    private void OnDisable()
+    {
+        //Debug.LogError("DSIFSDFADF");
+    }
     // Update is called once per frame
     void Update()
     {
@@ -90,13 +101,14 @@ public class LoadTrigger : MonoBehaviour
             else if(triggerType==TriggerType.MidwayPoint){
                 firstHalf.SetActive(false);
                 secondHalf.SetActive(true);
-                uiManager.updatePopupText("you've reached your goal, go back home");
-                uiManager.enablePopupText();
-                Timer t = gameObject.AddComponent<Timer>();
+                uiManager.updateAlertText("Go Back Home");
+                uiManager.enableAlert();
+                Timer t = secondHalf.gameObject.AddComponent<Timer>();
                 t.TimerEnded.AddListener(timerOver);
                 t.setTimer(2.0f);
                 t.startTimer();
                 playerInTrigger = false;
+                //off = true;
             } 
         }
     }
@@ -125,7 +137,7 @@ public class LoadTrigger : MonoBehaviour
     }
 
     private void timerOver(){
-        uiManager.disablePopupText();
+        uiManager.disableAlert();
         gameObject.SetActive(false);
     }
 }

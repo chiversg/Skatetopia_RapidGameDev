@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
@@ -94,6 +95,7 @@ public class UIManager : MonoBehaviour
 
     private bool paused;
     private bool canContinue;
+    private bool alertUp = true;
 
     private string[] levelName = { "00_Tutorial", "02_Street", "03_Garden" };
 
@@ -189,6 +191,16 @@ public class UIManager : MonoBehaviour
         else if (GameManager.gameState == GameManager.GameState.InHub)
         {
             quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Menu";
+            if(GameManager.gameProg == 3 || GameManager.gameProg == 5)
+            {
+                alert.SetActive(true);
+                alertText.GetComponent<TMPro.TextMeshProUGUI>().text = "Talk to Mom";
+                alertUp = true;
+                Timer t = gameObject.AddComponent<Timer>();
+                t.TimerEnded.AddListener(alertTimerOver);
+                t.setTimer(2.0f);
+                t.startTimer();
+            }
         }
         
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<SkateboardMovementRigid>();
@@ -197,9 +209,10 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.anyKey && !alertUp) disableAlert();
         if(GameManager.gameState==GameManager.GameState.InLevel) updateSpeedometer();
         if(canContinue && Input.GetKey(input)){
-            if(GameManager.gameProg == 7) loadScene(Load.Cutscene);
+            if(GameManager.gameProg == 7 || GameManager.gameProg == 2) loadScene(Load.Cutscene);
             else loadScene(Load.Hub);
         }
         if(Input.GetKeyDown(pauseKey)){
@@ -260,7 +273,7 @@ public class UIManager : MonoBehaviour
 
     private void loadCutscene()
     {
-
+        SceneManager.LoadScene("Cutscene");
     }
 
     public void levelWinScreen(int score){
@@ -314,7 +327,7 @@ public class UIManager : MonoBehaviour
 
     public void loadSceneFromButton(int i)
     {
-        if (GameManager.gameProg < 2) i = 2;
+        if (GameManager.gameProg < 2 && i == 0) i = 2;
         if (i == 0) loadScene(Load.Hub);
         if (i == 1) loadScene(Load.Level);
         if (i == 2) loadScene(Load.Title);
@@ -323,6 +336,11 @@ public class UIManager : MonoBehaviour
     void timerOver()
     {
         canContinue = true;
+    }
+
+    public void alertTimerOver()
+    {
+        alertUp = false;
     }
 
     public void updatePopupText(string s)
@@ -352,7 +370,8 @@ public class UIManager : MonoBehaviour
 
     public void disableAlert()
     {
-        alert.SetActive(false);
+        alert.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, false);
+        alertText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0.0f, 0.1f, false);
     }
 
     public void pauseGame()
