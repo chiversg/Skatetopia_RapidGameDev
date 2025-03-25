@@ -82,7 +82,8 @@ public class SkateboardMovementRigid : MonoBehaviour
         FALLING,
         GRINDING,
         TURNING,
-        CHARGING
+        CHARGING,
+        LISTENING
     };
     private state playerState = state.FALLING;
 
@@ -168,7 +169,11 @@ public class SkateboardMovementRigid : MonoBehaviour
                 kickoff();
                 break;
         }
-        move_and_slide();
+        if(playerState == state.LISTENING)
+        {
+            move_and_slide();
+        }
+        
     }
 
     //-----------------------------------------------------------------------[Movement Methods]
@@ -436,6 +441,10 @@ public class SkateboardMovementRigid : MonoBehaviour
             playerState = state.JUMPING;
             if(!lockRotation) surfaceNormal = Vector3.up;
         }
+        else if (playerState == state.LISTENING)
+        {
+            playerState = state.LISTENING;
+        }
         else
         {
             playerState = state.FALLING;
@@ -571,6 +580,14 @@ public class SkateboardMovementRigid : MonoBehaviour
         xSpeed = vel.x;
         vSpeed = vel.y;
         animator.SetTrigger("playerHit");
+    }
+    public void enterDialogue()
+    {
+        playerState = state.LISTENING;
+    }
+    public void exitDialogue()
+    {
+        playerState = state.GROUNDED;
     }
     //-----------------------------------------------------------------------[Debug Methods]
     private void updateDebugText()

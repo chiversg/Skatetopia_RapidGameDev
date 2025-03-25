@@ -10,6 +10,7 @@ public class PlayerWalk : MonoBehaviour
 
     private float xSpeed;
     private bool lookUp;
+    private bool isListening = false;
     void Start()
     {
         
@@ -17,16 +18,26 @@ public class PlayerWalk : MonoBehaviour
 
     private void Update()
     {
-        xSpeed = player.velocity.x;
-        flipSprite();
-        checkInputs();
-        //Debug.Log("Ger");
-        animator.SetFloat("Speed", Mathf.Abs(xSpeed));
-        animator.SetBool("heldUp", lookUp);
+        if (!isListening)
+        {
+            xSpeed = player.velocity.x;
+            flipSprite();
+            checkInputs();
+            //Debug.Log("Ger");
+            animator.SetFloat("Speed", Mathf.Abs(xSpeed));
+            animator.SetBool("heldUp", lookUp);
+        }
+        else
+        {
+            animator.SetBool("listening", true);
+        }
     }
     private void FixedUpdate()
     {
-        player.AddForce(Vector3.right * Input.GetAxis("Horizontal") * 1.3f, ForceMode.VelocityChange);
+        if (!isListening)
+        {
+            player.AddForce(Vector3.right * Input.GetAxis("Horizontal") * 1.3f, ForceMode.VelocityChange);
+        }
     }
     private void checkInputs()
     {
@@ -52,5 +63,14 @@ public class PlayerWalk : MonoBehaviour
                 player.transform.localScale = new Vector3(Mathf.Abs(player.transform.lossyScale.x), player.transform.lossyScale.y, player.transform.lossyScale.z);
             }
         }
+    }
+    public void enterDialogue()
+    {
+        isListening = true;
+    }
+    public void exitDialogue()
+    {
+        isListening = false;
+        animator.SetBool("listening", false);
     }
 }
