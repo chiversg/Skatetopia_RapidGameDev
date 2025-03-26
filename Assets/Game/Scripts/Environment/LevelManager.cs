@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    public enum level {Tutorial, LevelOne, LevelTwo}
+    public enum level { Tutorial, LevelOne, LevelTwo }
     [Tooltip("Which Level is this?")]
     public level Level;
     [Tooltip("How many seconds does the player have to complete level?")]
@@ -24,7 +22,10 @@ public class LevelManager : MonoBehaviour
     private UIManager uiManager;
     private GameManager gameManager;
 
-    void Awake(){
+    private bool gamePaused = false;
+
+    void Awake()
+    {
         gameManager = FindObjectOfType<GameManager>();
         uiManager = FindObjectOfType<UIManager>();
         GameManager.gameState = GameManager.GameState.InLevel;
@@ -35,10 +36,10 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        if(uiManager==null) Debug.LogError("UI Manager is not applied to Player_UI");
-        if(!uiManager.enabled) Debug.LogError("UI Manager disabled");
-        if(gameManager==null) Debug.LogError("Game Manager missing from scenen");
-        if(!gameManager.enabled) Debug.LogError("Game Manager disabled");
+        if (uiManager == null) Debug.LogError("UI Manager is not applied to Player_UI");
+        if (!uiManager.enabled) Debug.LogError("UI Manager disabled");
+        if (gameManager == null) Debug.LogError("Game Manager missing from scenen");
+        if (!gameManager.enabled) Debug.LogError("Game Manager disabled");
         if (Level == level.Tutorial)
         {
             levelIndex = 0;
@@ -69,48 +70,70 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        realTimeTimer -= Time.deltaTime;
-        if(MathF.Floor(realTimeTimer)<intTimer){
-            intTimer = (int) MathF.Floor(realTimeTimer);
-            uiManager.updateTimerText(intTimer);
+        if (!gamePaused)
+        {
+            realTimeTimer -= Time.deltaTime;
+            if (MathF.Floor(realTimeTimer) < intTimer)
+            {
+                intTimer = (int)MathF.Floor(realTimeTimer);
+                uiManager.updateTimerText(intTimer);
+            }
+            uiManager.updateTimerSprite(intTimer, levelTimer * 1.0f);
         }
-        uiManager.updateTimerSprite(intTimer, levelTimer * 1.0f);
     }
 
-    public void collectSock(int i){
+    public void collectSock(int i)
+    {
         socks[i] = true;
     }
 
-    public void recordSocks(){
-        for(int i=0; i<socks.Length; i++){
-            if(socks[i]){
+    public void recordSocks()
+    {
+        for (int i = 0; i < socks.Length; i++)
+        {
+            if (socks[i])
+            {
                 //Debug.Log("Recorded Sock: " + i);
                 gameManager.setCollectable(levelIndex, i);
-            } 
+            }
         }
     }
 
-    public void updateGameProg(){
+    public void updateGameProg()
+    {
         int i;
         if (levelIndex == 0) i = 0;
         else i = 1;
-        if(gameManager.getGameProg()<((levelIndex+1)*2)+i){
-            gameManager.setGameProg(((levelIndex+1)*2)+i);
+        if (gameManager.getGameProg() < ((levelIndex + 1) * 2) + i)
+        {
+            gameManager.setGameProg(((levelIndex + 1) * 2) + i);
         }
     }
 
-    public int calculateScore(){
+    public int calculateScore()
+    {
         int score = 0;
-        for(int i=0; i<socks.Length; i++){
-            if(socks[i]) score += collectableScore;
+        for (int i = 0; i < socks.Length; i++)
+        {
+            if (socks[i]) score += collectableScore;
         }
         score += intTimer * timerScore;
         return score;
     }
 
-    public int getTimer(){
+    public int getTimer()
+    {
         return levelTimer;
     }
 
-    public int getIndex() {  return levelIndex; }
+    public int getIndex() { return levelIndex; }
+    public void pauseGame()
+    {
+        gamePaused = true;
+    }
+    public void unpauseGame()
+    {
+        gamePaused = false;
+    }
 }
+
