@@ -130,8 +130,8 @@ public class LoadTrigger : MonoBehaviour
         {
             if (level == Level.Tutorial)
             {
-                levelName = "Level One: Tutorial";
-                officialLevelName = "00_Tutorial";
+                levelName = "Level One: Bedroom";
+                officialLevelName = "00_Bedroom";
                 if (gameManager.getGameProg() < 2) this.enabled = false;
                 else this.enabled = true;
             }
