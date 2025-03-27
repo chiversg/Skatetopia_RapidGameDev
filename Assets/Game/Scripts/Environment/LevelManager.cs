@@ -135,5 +135,10 @@ public class LevelManager : MonoBehaviour
     {
         gamePaused = false;
     }
+
+    public bool sockCollected(int i)
+    {
+        return socks[i];
+    }
 }
 

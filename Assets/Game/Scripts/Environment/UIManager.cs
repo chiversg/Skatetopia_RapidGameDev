@@ -49,12 +49,19 @@ public class UIManager : MonoBehaviour
     [Header("Level Complete Screen")]
     [Tooltip("level complete screen element")]
     public GameObject levelComplete;
-    [Tooltip("Gameobject holding the text that'll display the score")]
-    public GameObject scoreText;
+    [Tooltip("Gameobject holding the text that'll display the flavour text for rank")]
+    public GameObject rankFlavourText;
     [Tooltip("amount of time before player can move onto the level load")]
     public float screenTimer = 2.5f;
     [Tooltip("Button player must press to continue")]
     public KeyCode input;
+    [Tooltip("Game object that holds rank images")]
+    public GameObject ranks;
+    [Tooltip("Time remaining text object")]
+    public GameObject timeRemainText;
+    [Tooltip("Timer sprite for level complete")]
+    public GameObject levelCompleteTimer;
+
 
     [Header("Pause")]
     [Tooltip("pause screen game object")]
@@ -90,8 +97,13 @@ public class UIManager : MonoBehaviour
     public Sprite flipImage;
 
     private GameObject[] collectableImage = new GameObject[3];
+    private GameObject[] rankSprite = new GameObject[5];
     private GameObject timerText;
     public GameObject timerClock;
+
+    private string flavourText = "";
+    private int timeAmt;
+    private float totalTimeAmt;
 
     private bool paused;
     private bool canContinue;
@@ -147,7 +159,7 @@ public class UIManager : MonoBehaviour
             if (!sparks) Debug.LogError("Sparks not assigned to UIManager");
             if (!levelComplete) Debug.LogError("Level win screen not assigned to UI Manager");
             if (!trickInfo) Debug.LogError("Trick info screen not assigned to UI Manager");
-            if (!scoreText) Debug.LogError("scoreText is not assigned to UI Manager");
+            if (!rankFlavourText) Debug.LogError("rankFlavourText is not assigned to UI Manager");
             if (!pauseScreen) Debug.LogError("Pause Screen is not assigned to UI Manager");
             if (!loseScreen) Debug.LogError("Lose Screen is not assigned to Ui Manager");
             if (input.ToString().Equals("None")) Debug.LogError("Input Key not Assigned to UI Manager");
@@ -181,6 +193,17 @@ public class UIManager : MonoBehaviour
             catch (System.Exception ex)
             {
                 Debug.LogError("Something is wrong with the children of trickInfo, make sure the trickName, trickImage, and trickDesc are the only children and are in that order");
+            }
+            try
+            {
+                for (int i = 0; i < rankSprite.Length; i++)
+                {
+                    rankSprite[i] = ranks.transform.GetChild(i).gameObject;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError("Something is wrong with the children of ranks, make sure the ranks are the only 5 children of rank letters game object");
             }
             collectable.SetActive(true);
             timer.SetActive(true);
@@ -232,6 +255,7 @@ public class UIManager : MonoBehaviour
 
     public void updateTimerText(int time)
     {
+        timeAmt = time;
         string minute = (time/60).ToString();
         string second = (time%60).ToString();
         if (second.Length <= 1) second = "0" + second;
@@ -241,6 +265,7 @@ public class UIManager : MonoBehaviour
 
     public void updateTimerSprite(int time, float totalTime)
     {
+        totalTimeAmt = totalTime;
         timerClock.GetComponent<Image>().fillAmount = time / totalTime;
     }
 
@@ -279,7 +304,6 @@ public class UIManager : MonoBehaviour
     public void levelWinScreen(int score){
         //createTimer();
         //setLevelWin();
-        
         Timer t = gameObject.AddComponent<Timer>();
         t.TimerEnded.AddListener(timerOver);
         //PlayerHit pHit = gameObject.AddComponent<PlayerHit>();
@@ -288,14 +312,17 @@ public class UIManager : MonoBehaviour
         t.startTimer();
         Time.timeScale = 0;
         speedometer.SetActive(false);
+        timer.SetActive(false);
+        rankSprite[calculateScore()].SetActive(true);
         levelComplete.SetActive(true);
+        string minute = (timeAmt / 60).ToString();
+        string second = (timeAmt % 60).ToString();
+        if (second.Length <= 1) second = "0" + second;
+        timeRemainText.GetComponent<TextMeshProUGUI>().text = minute + ":" + second;
+        levelCompleteTimer.GetComponent<Image>().fillAmount = timeAmt / totalTimeAmt;
         collectable.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
         collectable.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.5f);
-        collectable.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 30, 0);
-        timer.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
-        timer.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.5f);
-        timer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, -35, 0);
-        scoreText.GetComponent<TMPro.TextMeshProUGUI>().text = "Score: " + score;
+        collectable.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0, 0);
     }
 
     public void loadScene(Load loadType)
@@ -424,5 +451,24 @@ public class UIManager : MonoBehaviour
         trickInfo.SetActive(true);
         Time.timeScale = 0;
         paused = true;
+    }
+
+    private int calculateScore()
+    {
+        int rank = 0;
+        for(int i =0; i<3; i++)
+        {
+            if (levelManager.sockCollected(i)) rank++;
+        }
+        if (rank != 3) rankFlavourText.GetComponent<TextMeshProUGUI>().text = "Collect More Socks";
+        if (timeAmt >= 60)
+        {
+            rank++;
+            if (!rankFlavourText.GetComponent<TextMeshProUGUI>().text.Equals("")) rankFlavourText.GetComponent<TextMeshProUGUI>().text += " and ";
+            rankFlavourText.GetComponent<TextMeshProUGUI>().text += "Go Faster";
+        } 
+        if(rank!=4) rankFlavourText.GetComponent<TextMeshProUGUI>().text += " for a Higher Rank";
+        if(rank == 4) rankFlavourText.GetComponent<TextMeshProUGUI>().text = "Great Job!";
+        return rank;
     }
 }
