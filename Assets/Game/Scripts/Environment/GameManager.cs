@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
     public static int gameProg;
 
     public static bool[,] socks = new bool[3, 3];
+    public static int[] rank = {-1,-1,-1};
 
     public static bool ollie;
     public static bool flip;

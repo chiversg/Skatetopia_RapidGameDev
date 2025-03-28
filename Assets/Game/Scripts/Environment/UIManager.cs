@@ -469,6 +469,7 @@ public class UIManager : MonoBehaviour
         } 
         if(rank!=4) rankFlavourText.GetComponent<TextMeshProUGUI>().text += " for a Higher Rank";
         if(rank == 4) rankFlavourText.GetComponent<TextMeshProUGUI>().text = "Great Job!";
+        GameManager.rank[levelManager.getIndex()] = rank;
         return rank;
     }
 }
