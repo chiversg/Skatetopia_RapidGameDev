@@ -243,7 +243,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             vSpeed += backflipStrength;
             animator.SetBool("isJumping", true);
         }
-        if (Input.GetButtonDown("U-Turn") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.uturn)
+        if (Input.GetButtonDown("U-Turn") && (isGrounded) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.uturn)
         {
             if (onRail)
             {
@@ -540,14 +540,15 @@ public class SkateboardMovementRigid : MonoBehaviour
             animator.SetBool("isFalling", true);
         }
         else
-        {
+        { 
             animator.SetBool("isFalling", false);
         }
         
     }
     //-----------------------------------------------------------------------[Public Methods]
-    public void boardRail(Transform target, Transform rail)
+    public void BoardRail(Transform target)
     {
+        Debug.Log("RWARWARR");
         Debug.Log(player.transform.rotation.z);
         grindSpeed = xSpeed;
         xSpeed = 0;
@@ -613,6 +614,21 @@ public class SkateboardMovementRigid : MonoBehaviour
 
     public bool getGrounded(){
         return isGrounded;
+    }
+
+    public Vector3 getPosition()
+    {
+        return transform.position;
+    }
+
+    public Quaternion getRotation()
+    {
+        return transform.rotation;
+    }
+
+    public string getState()
+    {
+        return playerState.ToString();
     }
 }
 
