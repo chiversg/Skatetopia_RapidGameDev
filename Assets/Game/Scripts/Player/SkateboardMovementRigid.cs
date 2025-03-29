@@ -605,7 +605,8 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
 
     public float getSpeed(){
-        return xSpeed;
+        if(playerState == state.GRINDING) return grindSpeed;
+        else return xSpeed;
     }
 
     public float getMaxManualSpeed(){
