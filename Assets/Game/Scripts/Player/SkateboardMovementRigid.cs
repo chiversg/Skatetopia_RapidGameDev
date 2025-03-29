@@ -180,7 +180,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     private void move_and_slide()
     {
         velocity = new Vector2(xSpeed, vSpeed);
-        if (playerState == state.GRINDING)
+        //if (playerState == state.GRINDING) velocity = new Vector2(grindSpeed, vSpeed);
         velocity.x = Mathf.Clamp(velocity.x, -maxSpeed, maxSpeed);
         rotatedVelocity = adjustVelocityToTarget(velocity, surfaceNormal);
         player.velocity = rotatedVelocity;
@@ -548,8 +548,9 @@ public class SkateboardMovementRigid : MonoBehaviour
     //-----------------------------------------------------------------------[Public Methods]
     public void BoardRail(Transform target)
     {
+        playerState = state.GRINDING;
         Debug.Log("RWARWARR");
-        Debug.Log(player.transform.rotation.z);
+        Debug.Log("XSpeed:" + xSpeed);
         grindSpeed = xSpeed;
         xSpeed = 0;
         vSpeed = 0;

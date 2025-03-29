@@ -38,10 +38,19 @@ public class GrindRail : MonoBehaviour
         Debug.Log(xSpeed*dir);
         Debug.Log(other.tag);
         Debug.Log(playerScript.getState());
-        if (other.tag == "Skateboard" && xSpeed * dir >= 0 && !string.Equals(playerScript.getState(), "GRINDING"))
+        if (xSpeed * dir >= 0 && !string.Equals(playerScript.getState(), "GRINDING"))
         {
-            Debug.Log("player enter rail");
-            playerScript.BoardRail(end);
+            if(other.tag == "Skateboard")
+            {
+                Debug.Log("skateboard has entered rail");
+                playerScript.BoardRail(end);
+            }
+            else if(other.tag == "Player")
+            {
+                Debug.Log("Player Backup");
+                playerScript.BoardRail(end);
+            }
         }
+
     }
 }
