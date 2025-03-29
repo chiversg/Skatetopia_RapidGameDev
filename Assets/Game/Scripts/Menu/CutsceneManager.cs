@@ -52,7 +52,7 @@ public class CutsceneManager : MonoBehaviour
             else if (cutsceneIndex == 2)
             {               
                 GameManager.gameProg = 8;
-                SceneManager.LoadScene("01_Hub");
+                SceneManager.LoadScene("Game_Over");
             }
         }
     }

@@ -96,6 +96,16 @@ public class UIManager : MonoBehaviour
     [Tooltip("image for backflip")]
     public Sprite flipImage;
 
+    [Header("Sock Hamper")]
+    [Tooltip("Sock Screen")]
+    public GameObject sockScreen;
+    [Tooltip("Array of socks")]
+    public GameObject[] hamperSocks;
+    [Tooltip("sock collected sprite")]
+    public Sprite sockCollected;
+    [Tooltip("sock not collected sprite")]
+    public Sprite sockNotCollected;
+
     private GameObject[] collectableImage = new GameObject[3];
     private GameObject[] rankSprite = new GameObject[5];
     private GameObject timerText;
@@ -105,6 +115,7 @@ public class UIManager : MonoBehaviour
     private int timeAmt;
     private float totalTimeAmt;
 
+    private bool inHamper;
     private bool paused;
     private bool canContinue;
     private bool alertUp = true;
@@ -213,6 +224,7 @@ public class UIManager : MonoBehaviour
         }
         else if (GameManager.gameState == GameManager.GameState.InHub)
         {
+            if (!sockScreen) Debug.LogError("Hamper Screen not assigned to UIMAnager");
             quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Menu";
             if(GameManager.gameProg == 3 || GameManager.gameProg == 5)
             {
@@ -224,6 +236,7 @@ public class UIManager : MonoBehaviour
                 t.setTimer(2.0f);
                 t.startTimer();
             }
+            checkSockCollected();
         }
         
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<SkateboardMovementRigid>();
@@ -427,13 +440,16 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1;
         pauseScreen.SetActive(false);
         trickInfo.SetActive(false);
+        sockScreen.SetActive(false);
         if(GameManager.gameState == GameManager.GameState.InLevel)
         {
             timer.SetActive(true);
             collectable.SetActive(true);
             speedometer.SetActive(true);
         }
+        if (inHamper) enablePopupText();
         paused = false;
+        inHamper = false;
     }
 
     public void trickGet(string trick)
@@ -471,5 +487,25 @@ public class UIManager : MonoBehaviour
         if(rank == 4) rankFlavourText.GetComponent<TextMeshProUGUI>().text = "Great Job!";
         GameManager.rank[levelManager.getIndex()] = rank;
         return rank;
+    }
+
+    public void enableHamper()
+    {
+        Time.timeScale = 0;
+        sockScreen.SetActive(true);
+        paused = true;
+        inHamper = true;
+    }
+
+    public void checkSockCollected()
+    {
+        for(int i=0; i<3; i++)
+        {
+            for(int j=0; j<3; j++)
+            {
+                if (GameManager.socks[i, j]) hamperSocks[i].transform.GetChild(j).GetComponent<Image>().sprite = sockCollected;
+                else hamperSocks[i].transform.GetChild(j).GetComponent<Image>().sprite = sockNotCollected;
+            }
+        }
     }
 }
