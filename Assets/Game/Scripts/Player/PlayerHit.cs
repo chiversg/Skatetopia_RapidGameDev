@@ -42,4 +42,8 @@ public class PlayerHit : MonoBehaviour
             invincible = true;
         }
     }
+    public bool isInvincible()
+    {
+        return invincible;
+    }
 }

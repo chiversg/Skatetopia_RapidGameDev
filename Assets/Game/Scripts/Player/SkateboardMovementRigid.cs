@@ -1,5 +1,9 @@
+using System;
+using System.Collections;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.EventSystems;
 
 public class SkateboardMovementRigid : MonoBehaviour
@@ -42,6 +46,14 @@ public class SkateboardMovementRigid : MonoBehaviour
     [SerializeField] private float checkRadius;
     [SerializeField] private LayerMask floorObjects;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioClip jumpAudio;
+    [SerializeField] private AudioClip landAudio;
+    [SerializeField] private AudioClip grindRailAudio;
+    [SerializeField] private AudioClip skateboardRollAudio;
+    [SerializeField] private AudioClip uTurnAudio;
+    [SerializeField] private AudioSource audioSource;
+
     [Header("Miscellaneous")]
     [SerializeField] private Animator animator;
     public bool debug;
@@ -66,6 +78,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     private bool isCrouching;
 
     private float grindSpeed;
+    private float airTime = 0;
 
     private Vector2 moveVector = new Vector2(0f, 0f);
 
@@ -86,6 +99,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         LISTENING
     };
     private state playerState = state.FALLING;
+    private state prevPlayerState = state.FALLING;
 
     Vector2 momentumGain;   //Extra momemtum gained by gravity
     Vector2 velocity;       //The player's total velocity
@@ -114,6 +128,8 @@ public class SkateboardMovementRigid : MonoBehaviour
         downRay = new Ray(player.transform.position, Vector3.down);
         leftRay = new Ray(player.transform.position, Vector3.left);
         rightRay = new Ray(player.transform.position, Vector3.right);
+
+        StartCoroutine(playMovementAudio());
     }
     private void Update()
     {
@@ -125,14 +141,20 @@ public class SkateboardMovementRigid : MonoBehaviour
 
         updateStates();
         updateCurrentSurface();
-        if(playerState != state.GRINDING) rotatePlayerToTarget(surfaceNormal);
+        if (playerState != state.GRINDING) rotatePlayerToTarget(surfaceNormal);
         flipSprite();
         animate();
-            
+
         if (debug) updateDebugText();
 
         direction = Input.GetAxisRaw("Horizontal");
         lastFacedDirection = direction != 0 ? direction : lastFacedDirection;
+
+        if (playerState == state.GROUNDED && playerState != prevPlayerState && airTime > 0.2f)
+        {
+            audioSource.PlayOneShot(landAudio);
+        }
+        prevPlayerState = playerState;
     }
     void FixedUpdate()
     {
@@ -142,23 +164,25 @@ public class SkateboardMovementRigid : MonoBehaviour
         switch (playerState)
         {
             case state.GROUNDED:
-
+                airTime = 0;
                 movePlayer(1);
                 applyGravity();
                 addMomentum();
                 performTricks();
                 break;
             case state.JUMPING:
+                airTime += Time.deltaTime;
                 movePlayer(airDampening);
                 applyGravity();
                 break;
             case state.FALLING:
+                airTime += Time.deltaTime;
                 movePlayer(airDampening);
                 applyGravity();
                 break;
             case state.GRINDING:
-                performTricks();
                 movePlayerTowards();
+                performTricks();
                 InstantiateDust dust = gameObject.AddComponent<InstantiateDust>();
                 dust.makeDust(transform.position);
                 break;
@@ -169,11 +193,11 @@ public class SkateboardMovementRigid : MonoBehaviour
                 kickoff();
                 break;
         }
-        if(playerState != state.LISTENING)
+        if (playerState != state.LISTENING)
         {
             move_and_slide();
         }
-        
+
     }
 
     //-----------------------------------------------------------------------[Movement Methods]
@@ -231,6 +255,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             isJumping = true;
             vSpeed += ollieStrength;
             animator.SetBool("isJumping", true);
+            audioSource.PlayOneShot(jumpAudio);
         }
         if (Input.GetButton("Backflip") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.flip)
         {
@@ -256,6 +281,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             uturnInitalSpeed = xSpeed;
             uturnSpeed = (uturnTargetSpeed - xSpeed) / (uturnDuration);
             uturnTime = 0f;
+            audioSource.PlayOneShot(uTurnAudio);
         }
         if (Input.GetButtonDown("Kickoff") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxKickoffAngle)
         {
@@ -332,16 +358,17 @@ public class SkateboardMovementRigid : MonoBehaviour
                 xSpeed += -velocity.normalized.x * 1;
             }
 
-            if(kickoffTime >= kickoffTimeToCharge)
+            if (kickoffTime >= kickoffTimeToCharge)
             {
                 kickoffIndicator.color = Color.green;
                 kickoffTime = kickoffTimeToCharge;
-            } else
+            }
+            else
             {
                 kickoffIndicator.color = Color.red;
                 kickoffTime = kickoffTime + Time.deltaTime;
             }
-            
+
         }
         else
         {
@@ -377,27 +404,28 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void updateCurrentSurface()
     {
-        if (!lockRotation) {
+        if (!lockRotation)
+        {
             //Shoots a raycast directly below the player 5 units down. Raycast is relative to player rotation
             //Raycast is used if the player is in any state other than jumping
             //OR
             //If the ground detection sphere detects ground below the player
             if (playerState != state.JUMPING || Physics.OverlapSphere(floorCheck.position, 0.4f, floorObjects).Length > 0)
-        {
-            if (Physics.Raycast(downRay, out RaycastHit hitInfo, 5f))
             {
-                if (hitInfo.collider.gameObject.tag == "Floor")
+                if (Physics.Raycast(downRay, out RaycastHit hitInfo, 5f))
                 {
-                    surfaceNormal = hitInfo.normal;
+                    if (hitInfo.collider.gameObject.tag == "Floor")
+                    {
+                        surfaceNormal = hitInfo.normal;
+                    }
                 }
             }
+            player.velocity = Quaternion.FromToRotation(Vector3.up, surfaceNormal) * player.velocity;
         }
-        player.velocity = Quaternion.FromToRotation(Vector3.up, surfaceNormal) * player.velocity;
-    }
     }
     private void checkCollisions()
     {
-       //isGrounded = Physics.Raycast(downRay.origin, downRay.direction, 1.1f);
+        //isGrounded = Physics.Raycast(downRay.origin, downRay.direction, 1.1f);
         isGrounded = Physics.OverlapSphere(floorCheck.position, 1 * player.transform.lossyScale.y, floorObjects).Length > 0;
         if (isGrounded) animator.SetBool("isJumping", false);
         Vector3 boxSize = new Vector3(0.26f * Mathf.Abs(player.transform.lossyScale.x), 0.40f * Mathf.Abs(player.transform.lossyScale.y), 1f * Mathf.Abs(player.transform.lossyScale.z));
@@ -409,12 +437,12 @@ public class SkateboardMovementRigid : MonoBehaviour
         {
             xSpeed = 0f;
         }
-        if(Physics.OverlapSphere(CeilingCheck.position, 1 * player.transform.lossyScale.y, floorObjects).Length > 0)
+        if (Physics.OverlapSphere(CeilingCheck.position, 1 * player.transform.lossyScale.y, floorObjects).Length > 0)
         {
             vSpeed = 0f;
         }
     }
-        private void updateStates()
+    private void updateStates()
     {
         if (onRail)
         {
@@ -430,7 +458,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         }
         else if (isGrounded)
         {
-            if(playerState != state.GROUNDED)
+            if (playerState != state.GROUNDED)
             {
                 //justGrounded();
             }
@@ -439,7 +467,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         else if (isJumping)
         {
             playerState = state.JUMPING;
-            if(!lockRotation) surfaceNormal = Vector3.up;
+            if (!lockRotation) surfaceNormal = Vector3.up;
         }
         else if (playerState == state.LISTENING)
         {
@@ -448,7 +476,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         else
         {
             playerState = state.FALLING;
-            if(!lockRotation) surfaceNormal = Vector3.up;
+            if (!lockRotation) surfaceNormal = Vector3.up;
         }
     }
     private void justGrounded()
@@ -514,7 +542,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "LockRotate")
+        if (other.gameObject.tag == "LockRotate")
         {
             Debug.Log("locked");
             lockRotation = true;
@@ -536,14 +564,15 @@ public class SkateboardMovementRigid : MonoBehaviour
         animator.SetFloat("Speed", Mathf.Abs(xSpeed));
         animator.SetBool("isJumping", isJumping);
         animator.SetBool("isCrouching", isCrouching);
-        if (isJumping && vSpeed <= 0) {
+        if (isJumping && vSpeed <= 0)
+        {
             animator.SetBool("isFalling", true);
         }
         else
-        { 
+        {
             animator.SetBool("isFalling", false);
         }
-        
+
     }
     //-----------------------------------------------------------------------[Public Methods]
     public void BoardRail(Transform target)
@@ -556,10 +585,31 @@ public class SkateboardMovementRigid : MonoBehaviour
         vSpeed = 0;
         railEnd = target;
         onRail = true;
+        StartCoroutine(playRailAudio());
     }
+    IEnumerator playRailAudio()
+    {
+        while (onRail)
+        {
+            Debug.Log("playing rail stuff");
+            audioSource.PlayOneShot(grindRailAudio);
+            yield return new WaitForSeconds(0.5f);
+        }
+        audioSource.Stop();
+    }
+    IEnumerator playMovementAudio()
+    {
+        while(true)
+        {
+            if(playerState == state.GROUNDED && xSpeed != 0) audioSource.PlayOneShot(skateboardRollAudio);
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+
     public void addSpeed(float xs, float ys, bool reset)
     {
-        if (reset){
+        if (reset)
+        {
             vSpeed = 0;
         }
         //Debug.Log("BOunce");
@@ -605,16 +655,19 @@ public class SkateboardMovementRigid : MonoBehaviour
             "\nclip: " + animator.GetCurrentAnimatorClipInfo(0)[0].clip.name; ;
     }
 
-    public float getSpeed(){
-        if(playerState == state.GRINDING) return grindSpeed;
+    public float getSpeed()
+    {
+        if (playerState == state.GRINDING) return grindSpeed;
         else return xSpeed;
     }
 
-    public float getMaxManualSpeed(){
+    public float getMaxManualSpeed()
+    {
         return maxManualSpeed;
     }
 
-    public bool getGrounded(){
+    public bool getGrounded()
+    {
         return isGrounded;
     }
 

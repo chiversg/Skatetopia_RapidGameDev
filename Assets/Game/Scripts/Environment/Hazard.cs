@@ -5,6 +5,8 @@ public class Hazard : MonoBehaviour
 {
 	private GameObject player;
 	private PlayerHit playerScript;
+	[SerializeField] private AudioSource audioSource;
+	[SerializeField] private AudioClip hitAudioClip;
 
 	void Awake()
 	{
@@ -16,6 +18,7 @@ public class Hazard : MonoBehaviour
 	{
 		if(other.tag == "Player"){
 			Debug.Log("Player has entered Hazard area");
+			if(!playerScript.isInvincible()) audioSource.PlayOneShot(hitAudioClip);
 			playerScript.playerHitHazard();
 		}
 	}

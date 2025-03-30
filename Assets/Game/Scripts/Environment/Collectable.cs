@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Collectable : MonoBehaviour
 {
-    public enum index{First, Second, Third}
+    public enum index { First, Second, Third }
     [Tooltip("Which position is the collectable in the level, first, second, or third?")]
     public index Index;
     private int idx;
@@ -15,6 +15,9 @@ public class Collectable : MonoBehaviour
     public ParticleSystem sock_get;
     [Tooltip("Sock gameobject")]
     public GameObject sockObj;
+
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip sockCollectAudio;
 
     private UIManager uiManager;
     private LevelManager levelManager;
@@ -50,6 +53,7 @@ public class Collectable : MonoBehaviour
         if(other.tag == "Player"){
             updateUI();
             levelManager.collectSock(idx);
+            audioSource.PlayOneShot(sockCollectAudio);
             sock_get.Play();
             sockObj.SetActive(false);
             Destroy(this.gameObject, 2.0f);

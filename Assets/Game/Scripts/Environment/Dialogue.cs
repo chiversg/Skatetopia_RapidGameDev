@@ -26,6 +26,8 @@ public class Dialogue : MonoBehaviour
     [SerializeField] private SkateboardMovementRigid skating;
     [SerializeField] private GameObject speechBubblePivot;
     [SerializeField] private LoadTrigger loadTrigger;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip dialogueAudio;
 
     private bool isListening;
     private bool playNext;
@@ -91,6 +93,12 @@ public class Dialogue : MonoBehaviour
                 break;
             }
             yield return new WaitForSeconds(playbackSpeed);
+
+            if (i % 2 == 0)
+            {
+                audioSource.pitch = Random.Range(0.9f, 1.1f);
+                audioSource.PlayOneShot(dialogueAudio);
+            }
             dialogueText.text += characters[i];
         }
         donePrinting = true;
