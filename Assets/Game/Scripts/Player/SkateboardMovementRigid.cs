@@ -266,6 +266,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             }
             isJumping = true;
             vSpeed += backflipStrength;
+            animator.SetBool("isKickFlip", true);
             animator.SetBool("isJumping", true);
         }
         if (Input.GetButtonDown("U-Turn") && (isGrounded) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.uturn)
@@ -281,6 +282,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             uturnInitalSpeed = xSpeed;
             uturnSpeed = (uturnTargetSpeed - xSpeed) / (uturnDuration);
             uturnTime = 0f;
+            animator.SetBool("playerSwitch", true);
             audioSource.PlayOneShot(uTurnAudio);
         }
         if (Input.GetButtonDown("Kickoff") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxKickoffAngle)
@@ -342,6 +344,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         {
             xSpeed = uturnTargetSpeed;
             turning = false;
+            animator.SetBool("playerSwitch", false);
         }
     }
     private void kickoff()
@@ -427,7 +430,11 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         //isGrounded = Physics.Raycast(downRay.origin, downRay.direction, 1.1f);
         isGrounded = Physics.OverlapSphere(floorCheck.position, 1 * player.transform.lossyScale.y, floorObjects).Length > 0;
-        if (isGrounded) animator.SetBool("isJumping", false);
+        if (isGrounded)
+        {
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isKickFlip", false);
+        }
         Vector3 boxSize = new Vector3(0.26f * Mathf.Abs(player.transform.lossyScale.x), 0.40f * Mathf.Abs(player.transform.lossyScale.y), 1f * Mathf.Abs(player.transform.lossyScale.z));
         if (Physics.OverlapBox(LeftCheck.position, boxSize, player.rotation, floorObjects).Length > 0)
         {
