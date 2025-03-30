@@ -45,7 +45,7 @@ public class GrindRail : MonoBehaviour
                 Debug.Log("skateboard has entered rail");
                 playerScript.BoardRail(end);
             }
-            else if(other.tag == "Player")
+            else if(other.tag == "Player" && string.Equals(playerScript.getState(), "FALLING"))
             {
                 Debug.Log("Player Backup");
                 playerScript.BoardRail(end);

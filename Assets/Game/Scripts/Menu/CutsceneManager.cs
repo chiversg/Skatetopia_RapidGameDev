@@ -11,6 +11,9 @@ public class CutsceneManager : MonoBehaviour
     [Tooltip("Key to press to continue at end")]
     public KeyCode accept;
 
+    [Tooltip("Key to press to skip")]
+    public KeyCode skip;
+
     [Tooltip ("Length between each panel in the cutscene")]
     public float length;
 
@@ -37,24 +40,29 @@ public class CutsceneManager : MonoBehaviour
 
     private void Update()
     {
-        if(cutsceneEnd && (Input.GetKey(accept) || accept == KeyCode.None))
+        if((cutsceneEnd && (Input.GetKey(accept) || accept == KeyCode.None))||Input.GetKey(skip))
         {
             if (cutsceneIndex == 0)
             {              
                 GameManager.gameProg = 1;
-                SceneManager.LoadScene("00_Tutorial");
+                sceneLoad("00_Tutorial");
             }
             else if (cutsceneIndex == 1)
             {               
                 GameManager.gameProg = 3;
-                SceneManager.LoadScene("01_Hub");
+                sceneLoad("01_Hub");
             }
             else if (cutsceneIndex == 2)
             {               
                 GameManager.gameProg = 8;
-                SceneManager.LoadScene("Game_Over");
+                sceneLoad("Game_Over");
             }
         }
+    }
+
+    private void sceneLoad(string name)
+    {
+        SceneManager.LoadScene(name);
     }
 
     public void showCutscene(int i){
