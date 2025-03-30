@@ -35,9 +35,9 @@ public class GrindRail : MonoBehaviour
     {
         var height = GetComponent<MeshFilter>().mesh.bounds.extents.z;
         float xSpeed = playerScript.getXSpeed();
-        Debug.Log(xSpeed*dir);
-        Debug.Log(other.tag);
-        Debug.Log(playerScript.getState());
+        //Debug.Log(xSpeed*dir);
+        //Debug.Log(other.tag);
+        //Debug.Log(playerScript.getState());
         if (xSpeed * dir >= 0 && !string.Equals(playerScript.getState(), "GRINDING"))
         {
             Debug.Log("GRIND TRIGGER ENTER");
@@ -48,7 +48,7 @@ public class GrindRail : MonoBehaviour
             }
             else if(other.tag == "Player" && (string.Equals(playerScript.getState(), "FALLING") || string.Equals(playerScript.getState(), "JUMPING")))
             {
-                Debug.Log("Player Backup");
+                //Debug.Log("Player Backup");
                 playerScript.BoardRail(end);
             }
         }
