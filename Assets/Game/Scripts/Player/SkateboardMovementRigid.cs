@@ -103,6 +103,8 @@ public class SkateboardMovementRigid : MonoBehaviour
     private state playerState = state.FALLING;
     private state prevPlayerState = state.FALLING;
 
+    private float listenXPos = 0f;
+
     Vector2 momentumGain;   //Extra momemtum gained by gravity
     Vector2 velocity;       //The player's total velocity
     Vector2 rotatedVelocity; //The player's velocity rotated to slope
@@ -142,8 +144,11 @@ public class SkateboardMovementRigid : MonoBehaviour
         if (onRail) playerState = state.GRINDING;
         //updateRays();
 
-        updateStates();
-        updateCurrentSurface();
+        if (playerState != state.LISTENING)
+        {
+            updateStates();
+            updateCurrentSurface();
+        }
         if (playerState != state.GRINDING) rotatePlayerToTarget(surfaceNormal);
         flipSprite();
         animate();
@@ -162,7 +167,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     void FixedUpdate()
     {
         checkCollisions();
-        localVelocity = Quaternion.FromToRotation(surfaceNormal, Vector3.up) * player.velocity;
+        if(playerState!=state.LISTENING) localVelocity = Quaternion.FromToRotation(surfaceNormal, Vector3.up) * player.velocity;
 
         switch (playerState)
         {
@@ -196,6 +201,9 @@ public class SkateboardMovementRigid : MonoBehaviour
                 //kickoff();
                 chargeJump();
                 movePlayer(1);
+                break;
+            case state.LISTENING:
+                setListenPos();
                 break;
         }
         if (playerState != state.LISTENING)
@@ -630,7 +638,11 @@ public class SkateboardMovementRigid : MonoBehaviour
         {
             animator.SetBool("isFalling", false);
         }
+    }
 
+    private void setListenPos()
+    {
+        transform.position = new Vector3(listenXPos, transform.position.y, transform.position.z);
     }
     //-----------------------------------------------------------------------[Public Methods]
     public void BoardRail(Transform target)
@@ -693,6 +705,14 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     public void enterDialogue()
     {
+        if (listenXPos == 0)
+        {
+            listenXPos = transform.position.x;
+            xSpeed = -1;
+        }
+        else xSpeed = 0;
+        direction = -1;
+
         playerState = state.LISTENING;
     }
     public void exitDialogue()

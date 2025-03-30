@@ -19,6 +19,12 @@ public class CameraFollow : MonoBehaviour
 
 	private Transform followTarget;
 	private bool camColliding;
+
+	private bool zoom;
+	private float offsetY;
+	private float offsetZ;
+	private float targetY;
+	private float targetZ;
 	
 	//setup objects
 	void Awake()
@@ -33,6 +39,8 @@ public class CameraFollow : MonoBehaviour
 		//don't smooth rotate if were using mouselook
 		if(mouseFreelook)
 			rotateDamping = 0f;
+		offsetY = targetOffset.y;
+		offsetZ = targetOffset.z;
 	}
 
 	//run our camera functions each frame
@@ -50,6 +58,15 @@ public class CameraFollow : MonoBehaviour
 		if (lockY) { 
 			transform.position = new Vector3(transform.position.x, yPosition, transform.position.z);
 		}
+
+		if (zoom)
+		{
+			targetOffset = Vector3.MoveTowards(targetOffset, new Vector3(targetOffset.x, targetY, targetZ), 30*Time.deltaTime);
+		}
+		else
+		{
+            targetOffset = Vector3.MoveTowards(targetOffset, new Vector3(targetOffset.x, offsetY, offsetZ), 30 * Time.deltaTime);
+        }
     }
 
 	//toggle waterfilter, is camera clipping walls?
@@ -114,5 +131,26 @@ public class CameraFollow : MonoBehaviour
 			//otherwise, move cam to intended position
 			transform.position = nextFramePosition;
 		}
+	}
+
+	public void zoomIn(float zoomY, float zoomZ)
+	{
+		Debug.Log("enttered zoom out");
+		/*float yDiff = zoomY - target.position.y;
+		float zDiff = zoomZ - target.position.z;
+		while(targetOffset.y != zoomY && targetOffset.z != zoomZ)
+		{
+			Debug.Log("ZOMMING OUT");
+			targetOffset = new Vector3(targetOffset.x, targetOffset.y + (yDiff/100), targetOffset.z + (zDiff/100));
+		}*/
+		//targetOffset = new Vector3(targetOffset.x, zoomY, zoomZ);
+		targetY = zoomY;
+		targetZ = zoomZ;
+		zoom = true;
+	}
+
+	public void zoomOut()
+	{
+		zoom = false;
 	}
 }

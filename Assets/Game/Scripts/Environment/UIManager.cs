@@ -238,8 +238,8 @@ public class UIManager : MonoBehaviour
             }
             checkSockCollected();
         }
-        
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<SkateboardMovementRigid>();
+        popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0f, 0f, false);
     }
 
     // Update is called once per frame
@@ -391,11 +391,12 @@ public class UIManager : MonoBehaviour
     public void enablePopupText()
     {
         popupText.SetActive(true);
+        popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(1.0f, 0.1f, false);
     }
 
     public void disablePopupText()
     {
-        popupText.SetActive(false);
+        popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0.0f, 0.1f, false);
     }
 
     public void updateAlertText(string s)

@@ -22,6 +22,7 @@ public class Dialogue : MonoBehaviour
     [SerializeField]
     [Tooltip("What to set internal game progress to after dialogue event is complete. Use -1 to never update game progress")]
     private int nextGameProgress;
+    public bool mum;
     [SerializeField] private PlayerWalk walking;
     [SerializeField] private SkateboardMovementRigid skating;
     [SerializeField] private GameObject speechBubblePivot;
@@ -38,14 +39,16 @@ public class Dialogue : MonoBehaviour
     private int numberOfLines;
     private GameManager gameManager;
     private LevelManager levelManager;
-
+    private UIManager uiManager;
 
     private void Start()
     {
         talkAgain = true;
+        if (!mum) keyPressed = true;
         speechBubblePivot.SetActive(false);
         gameManager = FindObjectOfType<GameManager>();
         levelManager = FindObjectOfType<LevelManager>();
+        uiManager = FindObjectOfType<UIManager>();
         numberOfLines = lines.Length;
     }
     void Update()
@@ -63,11 +66,21 @@ public class Dialogue : MonoBehaviour
             {
                 trigger.updateDoors();
             }
-            if (loadTrigger != null) loadTrigger.playerInTrigger = true;
+            if (loadTrigger != null)
+            {
+                loadTrigger.enabled = true;
+                loadTrigger.playerInTrigger = true;
+            }
             speechBubblePivot.SetActive(false);
             if (walking != null) walking.exitDialogue(); else skating.exitDialogue();
             if (levelManager != null) levelManager.unpauseGame();
             talkAgain = false;
+            if (!mum)
+            {
+                GameObject camera = GameObject.Find("Main Camera");
+                camera.GetComponent<CameraFollow>().zoomOut();
+                Destroy(this.gameObject);
+            }
         }
 
         if (playNext && donePrinting)
@@ -104,48 +117,100 @@ public class Dialogue : MonoBehaviour
         donePrinting = true;
         lineNum++;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            if (mum)
+            {
+                uiManager.updatePopupText("Press Space to Talk");
+                if (GameManager.gameProg == requiredGameProgress || GameManager.gameProg == nextGameProgress)
+                {
+                    uiManager.enablePopupText();
+                }
+            }
+            /*else
+            {
+                if (keyPressed)
+                {
+                    keyPressed = false;
+                    if (!isListening)
+                    {
+                        uiManager.disablePopupText();
+                        isListening = true;
+                        playNext = true;
+                        speechBubblePivot.SetActive(true);
+                        if (walking != null) walking.enterDialogue(); else skating.enterDialogue();
+                        if (levelManager != null) levelManager.pauseGame();
+                    }
+                    else
+                    {
+                        playNext = true;
+                    }
+                }
+            }*/
+
+        }
+    }
     private void OnTriggerStay(Collider other)
     {
         if ((gameManager.getGameProg() == requiredGameProgress || gameManager.getGameProg() == nextGameProgress) || requiredGameProgress < 0)
         {
-            Debug.Log("something entered");
-            if (other.gameObject.tag == "Player")
-            {
-                Debug.Log("in the dialog zone");
-                //toolTipText.text = "Press spacebar to listen";
-                if (talkAgain)
+                Debug.Log("something entered");
+                if (other.gameObject.tag == "Player")
                 {
-
-
-                    if (keyPressed)
+                    Debug.Log("in the dialog zone");
+                    //toolTipText.text = "Press spacebar to listen";
+                    if (talkAgain)
                     {
-                        keyPressed = false;
-                        if (!isListening)
+
+
+                        if (keyPressed)
                         {
-                            isListening = true;
-                            playNext = true;
-                            speechBubblePivot.SetActive(true);
-                            if (walking != null) walking.enterDialogue(); else skating.enterDialogue();
-                            if (levelManager != null) levelManager.pauseGame();
-                        }
-                        else
-                        {
-                            playNext = true;
+                            keyPressed = false;
+                            if (!isListening)
+                            {
+                                uiManager.disablePopupText();
+                                isListening = true;
+                                playNext = true;
+                                speechBubblePivot.SetActive(true);
+                                if (walking != null) walking.enterDialogue(); else skating.enterDialogue();
+                                if (levelManager != null) levelManager.pauseGame();
+                                if (!mum)
+                                {
+                                    GameObject camera = GameObject.Find("Main Camera");
+                                    camera.GetComponent<CameraFollow>().zoomIn(0.0f, -5.0f);
+                                }
+                            }
+                            else
+                            {
+                                playNext = true;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    talkAgain = true;
+                    else
+                    {
+                    if (mum)
+                    {
+                        uiManager.enablePopupText();
+                        talkAgain = true;
+                    }
+                    else { }
                 }
             }
         }
+        
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
-            toolTipText.text = null;
+            if (mum)
+            {
+                uiManager.disablePopupText();
+                toolTipText.text = null;
+            }
         }
     }
 }
