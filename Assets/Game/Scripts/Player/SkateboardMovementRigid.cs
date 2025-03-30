@@ -72,8 +72,10 @@ public class SkateboardMovementRigid : MonoBehaviour
     private float uturnInitalSpeed;
     private float uturnSpeed;
     private float uturnTime;
+    private float kickFlipMaxTime = 0.5f;
 
     private float kickoffTime;
+    private float kickFlipTime;
     private bool lockRotation;
     private bool isCrouching;
     private bool canWallride = true;
@@ -112,6 +114,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     Vector3 localVelocity;
 
     Vector3 surfaceNormal = Vector3.up;
+    private bool isCharging;
 
     private float playerAngle;
     private Quaternion defaultRotation;
@@ -146,7 +149,6 @@ public class SkateboardMovementRigid : MonoBehaviour
         animate();
 
         if (debug) updateDebugText();
-
         direction = Input.GetAxisRaw("Horizontal");
         lastFacedDirection = direction != 0 ? direction : lastFacedDirection;
 
@@ -155,6 +157,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             audioSource.PlayOneShot(landAudio);
         }
         prevPlayerState = playerState;
+        //performTricks();
     }
     void FixedUpdate()
     {
@@ -190,14 +193,15 @@ public class SkateboardMovementRigid : MonoBehaviour
                 uturn();
                 break;
             case state.CHARGING:
-                kickoff();
+                //kickoff();
+                chargeJump();
+                movePlayer(1);
                 break;
         }
         if (playerState != state.LISTENING)
         {
             move_and_slide();
         }
-
     }
 
     //-----------------------------------------------------------------------[Movement Methods]
@@ -264,18 +268,12 @@ public class SkateboardMovementRigid : MonoBehaviour
             vSpeed += ollieStrength;
             animator.SetBool("isJumping", true);
             audioSource.PlayOneShot(jumpAudio);
+            playerState = state.JUMPING;
         }
         if (Input.GetButton("Backflip") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.flip)
         {
-            if (onRail)
-            {
-                onRail = false;
-                xSpeed = grindSpeed;
-            }
-            isJumping = true;
-            vSpeed += backflipStrength;
-            animator.SetBool("isKickFlip", true);
-            animator.SetBool("isJumping", true);
+            playerState = state.CHARGING;
+            kickFlipTime = 0f;
         }
         if (Input.GetButtonDown("U-Turn") && (isGrounded) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.uturn)
         {
@@ -327,7 +325,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             }
         }
         else
-        {
+        { 
             isJumping = false;
             vSpeed = 0f;
         }
@@ -353,6 +351,41 @@ public class SkateboardMovementRigid : MonoBehaviour
             xSpeed = uturnTargetSpeed;
             turning = false;
             animator.SetBool("playerSwitch", false);
+        }
+    }
+    private void chargeJump()
+    {
+        if (Input.GetButton("Backflip"))
+        {
+            kickFlipTime += Time.deltaTime;
+            if (kickFlipTime > kickFlipMaxTime)
+            {
+                kickFlipTime = kickFlipMaxTime;
+            }
+        }
+        else
+        {
+            playerState = state.JUMPING;
+            var launchForce = backflipStrength * (kickFlipTime / kickFlipMaxTime);
+            if (onRail)
+            {
+                onRail = false;
+                xSpeed = grindSpeed;
+            }
+            if (launchForce < ollieStrength)
+            {
+                vSpeed = ollieStrength;
+            }
+            else
+            {
+                vSpeed = launchForce;
+            }
+            isJumping = true;
+            isGrounded = false;
+            animator.SetBool("isKickFlip", true);
+            animator.SetBool("isJumping", true);
+            
+            isCharging = false;
         }
     }
     private void kickoff()
