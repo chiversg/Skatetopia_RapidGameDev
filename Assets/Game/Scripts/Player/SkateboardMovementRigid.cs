@@ -215,6 +215,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         //If the direction held is the same direction the player is moving, move normal
         //Else if the direction held is opposite to player movement, multiply movement by deceleration as well
         //Else apply drag opposite to the direction the player is moving
+        //Debug.Log("MOVE PLAYER IS BEING CALLED");
         Debug.Log(player.transform.rotation.z);
         direction = Input.GetAxisRaw("Horizontal");
         if ((direction < 0) == (xSpeed < 0) && direction != 0 && Mathf.Abs(xSpeed) < maxManualSpeed)
@@ -525,9 +526,11 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void movePlayerTowards()
     {
-        if (grindSpeed * lastFacedDirection < (maxManualSpeed * 4) / 5)
+        if (transform.position.x < railEnd.position.x) direction = 1;
+        else if (transform.position.x > railEnd.position.x) direction = -1;
+        if (grindSpeed * direction < (maxManualSpeed * 4) / 5)
         {
-            grindSpeed += (maxManualSpeed / 200) * lastFacedDirection;
+            grindSpeed += (maxManualSpeed / 200) * direction;
         }
         Debug.Log("Speed: " + grindSpeed);
 
