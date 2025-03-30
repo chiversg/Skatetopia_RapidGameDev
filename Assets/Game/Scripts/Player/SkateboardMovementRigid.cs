@@ -76,12 +76,12 @@ public class SkateboardMovementRigid : MonoBehaviour
     private float kickoffTime;
     private bool lockRotation;
     private bool isCrouching;
+    private bool canWallride = true;
 
     private float grindSpeed;
     private float airTime = 0;
 
     private Vector2 moveVector = new Vector2(0f, 0f);
-
     public Transform railEnd;
     public bool onRail;
     private bool turning;
@@ -215,21 +215,28 @@ public class SkateboardMovementRigid : MonoBehaviour
         //If the direction held is the same direction the player is moving, move normal
         //Else if the direction held is opposite to player movement, multiply movement by deceleration as well
         //Else apply drag opposite to the direction the player is moving
-
+        Debug.Log(player.transform.rotation.z);
         direction = Input.GetAxisRaw("Horizontal");
         if ((direction < 0) == (xSpeed < 0) && direction != 0 && Mathf.Abs(xSpeed) < maxManualSpeed)
         {
-            // Debug.Log("Player dir" + direction);
-            xSpeed += direction * speed * dampening * acceleration * Time.deltaTime;
-            //xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
+            if (Mathf.Abs(player.rotation.eulerAngles.z) != 90)
+            {
+                // Debug.Log("Player dir" + direction);
+                xSpeed += direction * speed * dampening * acceleration * Time.deltaTime;
+                //xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
+            }
         }
         else if ((direction < 0) != (xSpeed < 0) && direction != 0)
         {
-            direction *= deceleration;
-            // Debug.Log("Player dir" + direction);
-            xSpeed += direction * speed * dampening * acceleration * Time.deltaTime;
-            xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
+            if (Mathf.Abs(player.rotation.eulerAngles.z) != 90)
+            {
+                direction *= deceleration;
+                // Debug.Log("Player dir" + direction);
+                xSpeed += direction * speed * dampening * acceleration * Time.deltaTime;
+                xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
+            }
         }
+
         else if (playerState == state.GROUNDED)
         {
             if (Mathf.Abs(xSpeed) < drag)
@@ -554,6 +561,10 @@ public class SkateboardMovementRigid : MonoBehaviour
             Debug.Log("locked");
             lockRotation = true;
         }
+        if (other.gameObject.tag == "DeactivateWallride")
+        {
+            canWallride = false;
+        }
     }
     private void OnTriggerExit(Collider other)
     {
@@ -563,6 +574,10 @@ public class SkateboardMovementRigid : MonoBehaviour
             xSpeed = player.velocity.x;
             vSpeed = player.velocity.y;
             lockRotation = false;
+        }
+        if (other.gameObject.tag == "DeactivateWallride")
+        {
+            canWallride = true;
         }
     }
     private void animate()
@@ -606,9 +621,9 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     IEnumerator playMovementAudio()
     {
-        while(true)
+        while (true)
         {
-            if(playerState == state.GROUNDED && xSpeed != 0) audioSource.PlayOneShot(skateboardRollAudio);
+            if (playerState == state.GROUNDED && xSpeed != 0) audioSource.PlayOneShot(skateboardRollAudio);
             yield return new WaitForSeconds(0.5f);
         }
     }
