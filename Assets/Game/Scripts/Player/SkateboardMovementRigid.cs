@@ -281,8 +281,19 @@ public class SkateboardMovementRigid : MonoBehaviour
         }
         if (Input.GetButton("Backflip") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.flip)
         {
-            playerState = state.CHARGING;
-            kickFlipTime = 0f;
+            if (onRail)
+            {
+                onRail = false;
+                xSpeed = grindSpeed;
+            }
+            isJumping = true;
+            vSpeed += backflipStrength;
+            animator.SetBool("isJumping", true);
+            animator.SetBool("isKickFlip", true);
+            audioSource.PlayOneShot(jumpAudio);
+            playerState = state.JUMPING;
+            //playerState = state.CHARGING;
+            //kickFlipTime = 0f;
         }
         if (Input.GetButtonDown("U-Turn") && (isGrounded) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.uturn)
         {
@@ -478,19 +489,19 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void checkForWallCollision()
     {
-        if (Physics.OverlapSphere(LeftCheck.position, 0.6f, floorObjects).Length > 0)
+        if (Physics.OverlapSphere(LeftCheck.position, 0.7f, floorObjects).Length > 0)
         {
             var temp = player.velocity.normalized;
-            xSpeed = temp.x * -20;
-            vSpeed = temp.y * 20;
+            xSpeed = temp.x * -10;
+            vSpeed = temp.y * 10;
 
 
         }
-        if (Physics.OverlapSphere(RightCheck.position, 0.6f, floorObjects).Length > 0)
+        if (Physics.OverlapSphere(RightCheck.position, 0.7f, floorObjects).Length > 0)
         {
             var temp = player.velocity.normalized;
-            xSpeed = temp.x * -5;
-            vSpeed = temp.y * 5;
+            xSpeed = temp.x * -10;
+            vSpeed = temp.y * 10;
         }
     }
     private void checkCollisions()
