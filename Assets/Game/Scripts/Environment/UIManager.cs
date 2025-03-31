@@ -481,9 +481,12 @@ public class UIManager : MonoBehaviour
         if (timeAmt >= 60)
         {
             rank++;
+        } 
+        else
+        {
             if (!rankFlavourText.GetComponent<TextMeshProUGUI>().text.Equals("")) rankFlavourText.GetComponent<TextMeshProUGUI>().text += " and ";
             rankFlavourText.GetComponent<TextMeshProUGUI>().text += "Go Faster";
-        } 
+        }
         if(rank!=4) rankFlavourText.GetComponent<TextMeshProUGUI>().text += " for a Higher Rank";
         if(rank == 4) rankFlavourText.GetComponent<TextMeshProUGUI>().text = "Great Job!";
         GameManager.rank[levelManager.getIndex()] = rank;
