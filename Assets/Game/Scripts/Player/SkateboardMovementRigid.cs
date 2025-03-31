@@ -167,6 +167,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     void FixedUpdate()
     {
         checkCollisions();
+        checkForWallCollision();
         if(playerState!=state.LISTENING) localVelocity = Quaternion.FromToRotation(surfaceNormal, Vector3.up) * player.velocity;
 
         switch (playerState)
@@ -473,6 +474,23 @@ public class SkateboardMovementRigid : MonoBehaviour
                 }
             }
             player.velocity = Quaternion.FromToRotation(Vector3.up, surfaceNormal) * player.velocity;
+        }
+    }
+    private void checkForWallCollision()
+    {
+        if (Physics.OverlapSphere(LeftCheck.position, 0.6f, floorObjects).Length > 0)
+        {
+            var temp = player.velocity.normalized;
+            xSpeed = temp.x * -20;
+            vSpeed = temp.y * 20;
+
+
+        }
+        if (Physics.OverlapSphere(RightCheck.position, 0.6f, floorObjects).Length > 0)
+        {
+            var temp = player.velocity.normalized;
+            xSpeed = temp.x * -5;
+            vSpeed = temp.y * 5;
         }
     }
     private void checkCollisions()
