@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.EventSystems;
@@ -87,6 +86,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     public Transform railEnd;
     public bool onRail;
     private bool turning;
+    private bool canControl = true;
 
     private Transform prevPos;
     private Vector3 prevDeltaPos;
@@ -231,7 +231,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         //Debug.Log("MOVE PLAYER IS BEING CALLED");
         Debug.Log(player.transform.rotation.z);
         direction = Input.GetAxisRaw("Horizontal");
-        if ((direction < 0) == (xSpeed < 0) && direction != 0 && Mathf.Abs(xSpeed) < maxManualSpeed)
+        if ((direction < 0) == (xSpeed < 0) && direction != 0 && Mathf.Abs(xSpeed) < maxManualSpeed && canControl)
         {
             if (Mathf.Abs(player.rotation.eulerAngles.z) != 90)
             {
@@ -240,7 +240,7 @@ public class SkateboardMovementRigid : MonoBehaviour
                 //xSpeed = Mathf.Clamp(xSpeed, -maxManualSpeed, maxManualSpeed);
             }
         }
-        else if ((direction < 0) != (xSpeed < 0) && direction != 0)
+        else if ((direction < 0) != (xSpeed < 0) && direction != 0 && canControl)
         {
             if (Mathf.Abs(player.rotation.eulerAngles.z) != 90)
             {
@@ -489,20 +489,28 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void checkForWallCollision()
     {
-        if (Physics.OverlapSphere(LeftCheck.position, 0.7f, floorObjects).Length > 0)
+        if (Physics.OverlapSphere(LeftCheck.position, 0.5f, floorObjects).Length > 0)
         {
             var temp = player.velocity.normalized;
+            player.transform.position -= new Vector3(lastFacedDirection * 0.2f, 0, 0);
             xSpeed = temp.x * -10;
             vSpeed = temp.y * 10;
-
-
+            //StartCoroutine(removePlayerControl());
         }
-        if (Physics.OverlapSphere(RightCheck.position, 0.7f, floorObjects).Length > 0)
+        if (Physics.OverlapSphere(RightCheck.position, 0.5f, floorObjects).Length > 0)
         {
             var temp = player.velocity.normalized;
+            player.transform.position -= new Vector3(lastFacedDirection * 0.2f, 0, 0);
             xSpeed = temp.x * -10;
             vSpeed = temp.y * 10;
+            //StartCoroutine(removePlayerControl());
         }
+    }
+    IEnumerator removePlayerControl()
+    {
+        canControl = false;
+        yield return new WaitForSeconds(0.5f);
+        canControl = true;
     }
     private void checkCollisions()
     {
