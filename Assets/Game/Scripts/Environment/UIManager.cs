@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
@@ -76,8 +77,8 @@ public class UIManager : MonoBehaviour
     public GameObject loseScreen;
 
     [Header("Trick Get")]
-    [Tooltip("input player must press to exit the menu")]
-    public KeyCode quitKey;
+    [Tooltip("Name of trick that player gets in this level")]
+    public string quitTrick;
     [Tooltip("trick info screen game object")]
     public GameObject trickInfo;
     [Tooltip("description for ollie")]
@@ -115,10 +116,12 @@ public class UIManager : MonoBehaviour
     private int timeAmt;
     private float totalTimeAmt;
 
+    private bool trickUp;
     private bool inHamper;
     private bool paused;
     private bool canContinue;
-    private bool alertUp = true;
+    private bool alertUp;
+    private bool popText;
 
     private string[] levelName = { "00_Tutorial", "02_Street", "03_Garden" };
 
@@ -130,6 +133,8 @@ public class UIManager : MonoBehaviour
     private LevelManager levelManager;
     private SkateboardMovementRigid playerScript;
 
+    private GameObject resumeButton;
+    private GameObject retryButton;
     public enum Load {Level, Hub, Title, Cutscene}
     void Awake()
     {
@@ -228,6 +233,7 @@ public class UIManager : MonoBehaviour
             quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Menu";
             if(GameManager.gameProg == 3 || GameManager.gameProg == 5)
             {
+                Debug.Log("TESTING ALERT THING");
                 alert.SetActive(true);
                 alertText.GetComponent<TMPro.TextMeshProUGUI>().text = "Talk to Mom";
                 alertUp = true;
@@ -238,6 +244,8 @@ public class UIManager : MonoBehaviour
             }
             checkSockCollected();
         }
+        resumeButton = pauseScreen.gameObject.transform.GetChild(1).gameObject;
+        retryButton = loseScreen.gameObject.transform.GetChild(2).gameObject;
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<SkateboardMovementRigid>();
         popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0f, 0f, false);
     }
@@ -247,18 +255,27 @@ public class UIManager : MonoBehaviour
     {
         if (Input.anyKey && !alertUp) disableAlert();
         if(GameManager.gameState==GameManager.GameState.InLevel) updateSpeedometer();
-        if(canContinue && Input.GetKey(input)){
+        if(canContinue && Input.GetButton("Interact")){
             if(GameManager.gameProg == 7 || GameManager.gameProg == 2) loadScene(Load.Cutscene);
             else loadScene(Load.Hub);
         }
-        if(Input.GetKeyDown(pauseKey)){
+        //if(Input.GetKeyDown(pauseKey)){
+        if (Input.GetButtonDown("Pause") && !trickUp){ 
             if(Time.timeScale == 1) pauseGame();
             else if(Time.timeScale == 0 && paused) resumeGame();
         }
-        if (Input.GetKeyDown(quitKey))
+        if (trickUp && Input.GetButtonDown(quitTrick))
         {
             if(Time.timeScale == 0) resumeGame();
         }
+
+        if ((Input.GetAxis("ControllerX") != 0 || Input.GetAxis("ControllerY") != 0) && EventSystem.current.currentSelectedGameObject == null)
+        {
+            if (timeAmt > 0) EventSystem.current.SetSelectedGameObject(resumeButton);
+            else EventSystem.current.SetSelectedGameObject(retryButton);
+        }
+
+        if (Input.GetButtonDown("Interact") && inHamper) resumeGame();
     }
 
     public void updateCollectables(int index, Sprite sock)
@@ -311,6 +328,7 @@ public class UIManager : MonoBehaviour
 
     private void loadCutscene()
     {
+        GameManager.gameState = GameManager.GameState.InCutscene;
         SceneManager.LoadScene("Cutscene");
     }
 
@@ -390,13 +408,16 @@ public class UIManager : MonoBehaviour
 
     public void enablePopupText()
     {
+        popText = true;
         popupText.SetActive(true);
         popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(1.0f, 0.1f, false);
     }
 
     public void disablePopupText()
     {
+        popText = false;
         popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0.0f, 0.1f, false);
+        if (Time.timeScale == 0) popupText.SetActive(false);
     }
 
     public void updateAlertText(string s)
@@ -422,6 +443,8 @@ public class UIManager : MonoBehaviour
         timer.SetActive(false);
         collectable.SetActive(false);
         speedometer.SetActive(false);
+        if(popText) popupText.SetActive(false);
+        if(alertUp) alert.SetActive(false);
         paused = true;
     }
 
@@ -434,6 +457,7 @@ public class UIManager : MonoBehaviour
         collectable.SetActive(false);
         speedometer.SetActive(false);
         paused = false;
+        EventSystem.current.SetSelectedGameObject(retryButton);
     }
 
     public void resumeGame()
@@ -449,8 +473,11 @@ public class UIManager : MonoBehaviour
             speedometer.SetActive(true);
         }
         if (inHamper) enablePopupText();
+        if (popText) popupText.SetActive(true);
+        if(alertUp) alert.SetActive(true); 
         paused = false;
         inHamper = false;
+        trickUp = false;
     }
 
     public void trickGet(string trick)
@@ -468,6 +495,7 @@ public class UIManager : MonoBehaviour
         trickInfo.SetActive(true);
         Time.timeScale = 0;
         paused = true;
+        trickUp = true;
     }
 
     private int calculateScore()
@@ -495,10 +523,10 @@ public class UIManager : MonoBehaviour
 
     public void enableHamper()
     {
-        Time.timeScale = 0;
         sockScreen.SetActive(true);
         paused = true;
         inHamper = true;
+        Time.timeScale = 0;
     }
 
     public void checkSockCollected()

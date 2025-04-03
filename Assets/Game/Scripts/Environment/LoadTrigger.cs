@@ -73,7 +73,7 @@ public class LoadTrigger : MonoBehaviour
             }
             else if (triggerType == TriggerType.HubDoor)
             {
-                if (Input.GetKey(enter))
+                if (Input.GetButtonDown("Interact"))
                 {
                     loadScene();
                     playerInTrigger = false;
@@ -131,7 +131,7 @@ public class LoadTrigger : MonoBehaviour
             if (level == Level.Tutorial)
             {
                 levelName = "Level One: Bedroom";
-                officialLevelName = "00_Bedroom";
+                officialLevelName = "00_Tutorial";
                 if (gameManager.getGameProg() < 2) this.enabled = false;
                 else this.enabled = true;
             }

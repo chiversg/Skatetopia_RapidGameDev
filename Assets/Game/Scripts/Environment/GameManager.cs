@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -69,6 +70,15 @@ public class GameManager : MonoBehaviour
         Debug.Log(gameProg);
 
         if (debug && firstLoad) setDebug();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            gameProg = 3;
+            SceneManager.LoadScene("01_Hub");
+        }
     }
 
     public static void RegisterForReset(ResetBehaviour resetBehaviour)

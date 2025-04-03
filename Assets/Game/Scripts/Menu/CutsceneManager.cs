@@ -40,21 +40,24 @@ public class CutsceneManager : MonoBehaviour
 
     private void Update()
     {
-        if((cutsceneEnd && (Input.GetKey(accept) || accept == KeyCode.None))||Input.GetKey(skip))
+        if((cutsceneEnd && (Input.GetKey(accept) || accept == KeyCode.None))||Input.GetButtonDown("Accept"))
         {
             if (cutsceneIndex == 0)
             {              
                 GameManager.gameProg = 1;
+                GameManager.gameState = GameManager.GameState.InLevel;
                 sceneLoad("00_Tutorial");
             }
             else if (cutsceneIndex == 1)
             {               
                 GameManager.gameProg = 3;
+                GameManager.gameState = GameManager.GameState.InHub;
                 sceneLoad("01_Hub");
             }
             else if (cutsceneIndex == 2)
             {               
                 GameManager.gameProg = 8;
+                GameManager.gameState = GameManager.GameState.StartMenu;
                 sceneLoad("Game_Over");
             }
         }

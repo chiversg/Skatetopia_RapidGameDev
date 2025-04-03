@@ -2,9 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class MainMenu : MonoBehaviour
 {
+    public GameObject playButton;
+    public GameObject creditsQuitButton;
+
     private GameManager gameManager;
 
     private void Awake()
@@ -15,6 +19,14 @@ public class MainMenu : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         if(gameManager==null) Debug.LogError("Game Manager missing from scene");
         if(!gameManager.enabled) Debug.LogError("Game Manager disabled");
+    }
+
+    void Update()
+    {
+        if ((Input.GetAxis("ControllerX") != 0 || Input.GetAxis("ControllerY") != 0) && EventSystem.current.currentSelectedGameObject == null)
+        {
+            EventSystem.current.SetSelectedGameObject(playButton);
+        }
     }
 
     public void playGame(){
@@ -32,7 +44,18 @@ public class MainMenu : MonoBehaviour
             GameManager.gameState = GameManager.GameState.InHub;
             SceneManager.LoadScene("01_Hub");
         }
-       
+    }
+
+    public void credits()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(creditsQuitButton);
+    }
+
+    public void quitCredits()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(playButton);
     }
 
     public void quitGame(){

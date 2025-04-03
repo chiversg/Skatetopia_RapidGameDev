@@ -17,10 +17,10 @@ public class Hamper : MonoBehaviour
     {
         if (inTrigger)
         {
-            if (Input.GetKey(KeyCode.E) && Time.timeScale == 1)
-            {
-                uiManager.disablePopupText();
+            if (Input.GetButtonDown("Interact") && Time.timeScale == 1)
+            {              
                 uiManager.enableHamper();
+                uiManager.disablePopupText();
             }
         }
     }
