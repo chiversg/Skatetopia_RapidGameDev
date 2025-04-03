@@ -39,11 +39,15 @@ public class SkateboardMovementRigid : MonoBehaviour
     [Header("Collision")]
     [SerializeField] private float knockbackStrength;
     [SerializeField] private Transform floorCheck;
+    [SerializeField] private Transform floorProxCheck;
     [SerializeField] private Transform LeftCheck;
+    [SerializeField] private Transform groundedLeftCheck;
     [SerializeField] private Transform RightCheck;
+    [SerializeField] private Transform groundedRightCheck;
     [SerializeField] private Transform CeilingCheck;
     [SerializeField] private float checkRadius;
     [SerializeField] private LayerMask floorObjects;
+    private bool isCloseToGround;
 
     [Header("Sounds")]
     [SerializeField] private AudioClip jumpAudio;
@@ -51,10 +55,12 @@ public class SkateboardMovementRigid : MonoBehaviour
     [SerializeField] private AudioClip grindRailAudio;
     [SerializeField] private AudioClip skateboardRollAudio;
     [SerializeField] private AudioClip uTurnAudio;
+    [SerializeField] private AudioClip playerKnockedBack;
     [SerializeField] private AudioSource audioSource;
 
     [Header("Miscellaneous")]
     [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer character;
     public bool debug;
     private bool isGrounded;
     private bool isJumping;
@@ -229,7 +235,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         //Else if the direction held is opposite to player movement, multiply movement by deceleration as well
         //Else apply drag opposite to the direction the player is moving
         //Debug.Log("MOVE PLAYER IS BEING CALLED");
-        Debug.Log(player.transform.rotation.z);
+        //Debug.Log(player.transform.rotation.z);
         direction = Input.GetAxisRaw("Horizontal");
         if ((direction < 0) == (xSpeed < 0) && direction != 0 && Mathf.Abs(xSpeed) < maxManualSpeed && canControl)
         {
@@ -489,18 +495,34 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void checkForWallCollision()
     {
-        if (Physics.OverlapSphere(LeftCheck.position, 0.5f, floorObjects).Length > 0)
+        //Debug.Log(isCloseToGround);
+        Vector3 boxHalfExtends = new Vector3(0.25f, 1f, 1f);
+        Transform left = LeftCheck;
+        Transform right = RightCheck;
+        if (isCloseToGround)
         {
+            left = groundedLeftCheck;
+            right = groundedLeftCheck;
+            boxHalfExtends = new Vector3(0.25f, 0.5f, 1f);
+        }
+        
+        if (Physics.OverlapBox(left.position, boxHalfExtends, left.transform.rotation, floorObjects).Length > 0)
+        {
+            Debug.Log("Collided will wall on left side");
             var temp = player.velocity.normalized;
-            player.transform.position -= new Vector3(lastFacedDirection * 0.2f, 0, 0);
+            audioSource.PlayOneShot(playerKnockedBack);
+            player.transform.position += new Vector3(0.3f, 0, 0);
             xSpeed = temp.x * -10;
             vSpeed = temp.y * 10;
             //StartCoroutine(removePlayerControl());
         }
-        if (Physics.OverlapSphere(RightCheck.position, 0.5f, floorObjects).Length > 0)
+        
+        if (Physics.OverlapBox(right.position, boxHalfExtends, right.transform.rotation, floorObjects).Length > 0)
         {
+            Debug.Log("Collided with wall on right side");
             var temp = player.velocity.normalized;
-            player.transform.position -= new Vector3(lastFacedDirection * 0.2f, 0, 0);
+            audioSource.PlayOneShot(playerKnockedBack);
+            player.transform.position -= new Vector3(0.3f, 0, 0);
             xSpeed = temp.x * -10;
             vSpeed = temp.y * 10;
             //StartCoroutine(removePlayerControl());
@@ -516,6 +538,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         //isGrounded = Physics.Raycast(downRay.origin, downRay.direction, 1.1f);
         isGrounded = Physics.OverlapSphere(floorCheck.position, 1 * player.transform.lossyScale.y, floorObjects).Length > 0;
+        isCloseToGround = Physics.OverlapBox(floorProxCheck.position, new Vector3(2.5f, 0.5f, 1f), player.rotation, floorObjects).Length > 0;
         if (isGrounded)
         {
             animator.SetBool("isJumping", false);
@@ -627,11 +650,11 @@ public class SkateboardMovementRigid : MonoBehaviour
         {
             if (xSpeed < 0)
             {
-                player.transform.localScale = new Vector3(-Mathf.Abs(player.transform.lossyScale.x), player.transform.lossyScale.y, player.transform.lossyScale.z);
+                character.flipX = false;
             }
             else if (xSpeed > 0)
             {
-                player.transform.localScale = new Vector3(Mathf.Abs(player.transform.lossyScale.x), player.transform.lossyScale.y, player.transform.lossyScale.z);
+                character.flipX = true;
             }
         }
     }
