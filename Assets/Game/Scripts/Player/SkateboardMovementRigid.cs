@@ -175,9 +175,11 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     void FixedUpdate()
     {
+        Debug.Log(xSpeed);
         checkCollisions();
         checkForWallCollision();
         if (playerState != state.LISTENING) localVelocity = Quaternion.FromToRotation(surfaceNormal, Vector3.up) * player.velocity;
+        else xSpeed = 0;
 
         switch (playerState)
         {
@@ -327,7 +329,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             kickoffTime = 0f;
             playerState = state.CHARGING;
         }
-        if (Input.GetButton("Crouch"))
+        if (Input.GetButton("Crouch") || Input.GetAxis("ControllerY") >= 0.3)
         {
             animator.SetBool("isCrouching", true);
             isCrouching = true;
