@@ -10,9 +10,17 @@ public class GameOver : MonoBehaviour
     public GameObject resumeButton;
     private void Update()
     {
-        if ((Input.GetAxis("ControllerX") != 0 || Input.GetAxis("ControllerY") != 0) && EventSystem.current.currentSelectedGameObject == null)
+        /*if ((Input.GetAxis("ControllerX") != 0 || Input.GetAxis("ControllerY") != 0) && EventSystem.current.currentSelectedGameObject == null)
         {
             EventSystem.current.SetSelectedGameObject(resumeButton);
+        }*/
+        if ((Mathf.Abs(Input.GetAxisRaw("Horizontal")) >= 0.01 || Mathf.Abs(Input.GetAxisRaw("Vertical")) >= 0.01) && EventSystem.current.currentSelectedGameObject == null)
+        {
+            EventSystem.current.SetSelectedGameObject(resumeButton);
+        }
+        else if ((Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0) && EventSystem.current.currentSelectedGameObject != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
         }
     }
 

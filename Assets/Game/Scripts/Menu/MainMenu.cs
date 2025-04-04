@@ -11,6 +11,7 @@ public class MainMenu : MonoBehaviour
 
     private GameManager gameManager;
 
+    private GameObject currButton;
     private void Awake()
     {
         GameManager.gameState = GameManager.GameState.StartMenu;
@@ -19,14 +20,40 @@ public class MainMenu : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         if(gameManager==null) Debug.LogError("Game Manager missing from scene");
         if(!gameManager.enabled) Debug.LogError("Game Manager disabled");
+        currButton = playButton;
+        Debug.Log("STARTUP");
     }
 
     void Update()
     {
-        if ((Input.GetAxis("ControllerX") != 0 || Input.GetAxis("ControllerY") != 0) && EventSystem.current.currentSelectedGameObject == null)
+        //Debug.Log("CurrButton: " + currButton.name);
+        //Debug.Log("Horizontal: " + Input.GetAxis("Horizontal") + ", Vertical: " + Input.GetAxis("Vertical"));
+        if (Mathf.Abs(Input.GetAxis("Horizontal")) >= 0.01 || Mathf.Abs(Input.GetAxis("Vertical")) >= 0.01)
+        {
+            //Debug.Log("LAYER ONE");
+            if (EventSystem.current.currentSelectedGameObject == null)
+            {
+                Debug.Log("EVENT SYSTEM ADDED: " + currButton.name);
+                EventSystem.current.SetSelectedGameObject(currButton);
+            }
+        }
+        else if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
+        {
+            if (EventSystem.current.currentSelectedGameObject != null)
+            {
+                Debug.Log("EVENT SYSTEM REMOVED: " + currButton.name);
+                EventSystem.current.SetSelectedGameObject(null);
+            }
+        }
+
+        /*if ((Input.GetAxis("ControllerX") != 0 || Input.GetAxis("ControllerY") != 0) && EventSystem.current.currentSelectedGameObject == null)
         {
             EventSystem.current.SetSelectedGameObject(playButton);
         }
+        if (Input.anyKey || Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }*/
     }
 
     public void playGame(){
@@ -50,12 +77,16 @@ public class MainMenu : MonoBehaviour
     {
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(creditsQuitButton);
+        currButton = creditsQuitButton;
+        Debug.Log(currButton.name + " AND " + creditsQuitButton.name);
     }
 
     public void quitCredits()
     {
+        Debug.Log("CREDITS HAVE NBEEN QUOT");
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(playButton);
+        currButton = playButton;
     }
 
     public void quitGame(){

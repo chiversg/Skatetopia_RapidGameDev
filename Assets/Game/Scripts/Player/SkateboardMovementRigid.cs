@@ -175,7 +175,6 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     void FixedUpdate()
     {
-        Debug.Log(xSpeed);
         checkCollisions();
         checkForWallCollision();
         if (playerState != state.LISTENING) localVelocity = Quaternion.FromToRotation(surfaceNormal, Vector3.up) * player.velocity;

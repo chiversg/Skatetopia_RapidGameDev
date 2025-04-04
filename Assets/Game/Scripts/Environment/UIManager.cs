@@ -63,7 +63,6 @@ public class UIManager : MonoBehaviour
     [Tooltip("Timer sprite for level complete")]
     public GameObject levelCompleteTimer;
 
-
     [Header("Pause")]
     [Tooltip("pause screen game object")]
     public GameObject pauseScreen;
@@ -71,10 +70,16 @@ public class UIManager : MonoBehaviour
     public KeyCode pauseKey;
     [Tooltip("Quit Button Text GameObject")]
     public GameObject quitButtonText;
+    [Tooltip("Resume Button Game Object")]
+    public GameObject resumeButton;
+    [Tooltip("Back Button on Control Screen")]
+    public GameObject controlsBackButton;
 
     [Header("Lose Screen")]
     [Tooltip("Lose screen game object")]
     public GameObject loseScreen;
+    [Tooltip("Retry Button Gameobject")]
+    public GameObject retryButton;
 
     [Header("Trick Get")]
     [Tooltip("Name of trick that player gets in this level")]
@@ -133,8 +138,7 @@ public class UIManager : MonoBehaviour
     private LevelManager levelManager;
     private SkateboardMovementRigid playerScript;
 
-    private GameObject resumeButton;
-    private GameObject retryButton;
+    private GameObject currButton;
     public enum Load {Level, Hub, Title, Cutscene}
     void Awake()
     {
@@ -244,8 +248,6 @@ public class UIManager : MonoBehaviour
             }
             checkSockCollected();
         }
-        resumeButton = pauseScreen.gameObject.transform.GetChild(1).gameObject;
-        retryButton = loseScreen.gameObject.transform.GetChild(2).gameObject;
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<SkateboardMovementRigid>();
         popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0f, 0f, false);
     }
@@ -269,10 +271,22 @@ public class UIManager : MonoBehaviour
             if(Time.timeScale == 0) resumeGame();
         }
 
-        if ((Input.GetAxis("ControllerX") != 0 || Input.GetAxis("ControllerY") != 0) && EventSystem.current.currentSelectedGameObject == null)
+        /*if ((Input.GetAxis("ControllerX") != 0 || Input.GetAxis("ControllerY") != 0) && EventSystem.current.currentSelectedGameObject == null)
         {
             if (timeAmt > 0) EventSystem.current.SetSelectedGameObject(resumeButton);
             else EventSystem.current.SetSelectedGameObject(retryButton);
+        }*/
+
+        if (Time.timeScale == 0)
+        {
+            if ((Mathf.Abs(Input.GetAxisRaw("Horizontal")) >= 0.01 || Mathf.Abs(Input.GetAxisRaw("Vertical")) >= 0.01) && EventSystem.current.currentSelectedGameObject == null)
+            {
+                EventSystem.current.SetSelectedGameObject(currButton);
+            }
+            else if ((Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0) && EventSystem.current.currentSelectedGameObject != null)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+            }
         }
 
         if (Input.GetButtonDown("Interact") && inHamper) resumeGame();
@@ -446,6 +460,8 @@ public class UIManager : MonoBehaviour
         if(popText) popupText.SetActive(false);
         if(alertUp) alert.SetActive(false);
         paused = true;
+        EventSystem.current.SetSelectedGameObject(resumeButton);
+        currButton = resumeButton;
     }
 
     public void playerLose()
@@ -458,6 +474,7 @@ public class UIManager : MonoBehaviour
         speedometer.SetActive(false);
         paused = false;
         EventSystem.current.SetSelectedGameObject(retryButton);
+        currButton = retryButton;
     }
 
     public void resumeGame()
@@ -478,6 +495,18 @@ public class UIManager : MonoBehaviour
         paused = false;
         inHamper = false;
         trickUp = false;
+    }
+
+    public void toControls()
+    {
+        EventSystem.current.SetSelectedGameObject(controlsBackButton);
+        currButton = controlsBackButton;
+    }
+
+    public void exitControls()
+    {
+        EventSystem.current.SetSelectedGameObject(resumeButton);
+        currButton = resumeButton;
     }
 
     public void trickGet(string trick)
