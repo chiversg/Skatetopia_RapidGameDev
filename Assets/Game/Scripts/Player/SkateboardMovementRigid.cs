@@ -95,6 +95,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     private bool canControl = true;
 
     private Transform prevPos;
+    private Vector3 previousPos;
     private Vector3 prevDeltaPos;
     private enum state
     {
@@ -131,11 +132,13 @@ public class SkateboardMovementRigid : MonoBehaviour
     public Transform indicatorTransform;
 
 
+
     void Start()
     {
         Application.targetFrameRate = 60;
         defaultRotation = player.rotation;
         prevPos = player.transform;
+        previousPos = player.position;
         downRay = new Ray(player.transform.position, Vector3.down);
         leftRay = new Ray(player.transform.position, Vector3.left);
         rightRay = new Ray(player.transform.position, Vector3.right);
@@ -174,7 +177,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         checkCollisions();
         checkForWallCollision();
-        if(playerState!=state.LISTENING) localVelocity = Quaternion.FromToRotation(surfaceNormal, Vector3.up) * player.velocity;
+        if (playerState != state.LISTENING) localVelocity = Quaternion.FromToRotation(surfaceNormal, Vector3.up) * player.velocity;
 
         switch (playerState)
         {
@@ -351,7 +354,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             }
         }
         else
-        { 
+        {
             isJumping = false;
             vSpeed = 0f;
         }
@@ -410,7 +413,7 @@ public class SkateboardMovementRigid : MonoBehaviour
             isGrounded = false;
             animator.SetBool("isKickFlip", true);
             animator.SetBool("isJumping", true);
-            
+
             isCharging = false;
         }
     }
@@ -474,7 +477,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void updateCurrentSurface()
     {
-        if (!lockRotation)
+        if (!lockRotation && canControl)
         {
             //Shoots a raycast directly below the player 5 units down. Raycast is relative to player rotation
             //Raycast is used if the player is in any state other than jumping
@@ -495,43 +498,57 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void checkForWallCollision()
     {
-        //Debug.Log(isCloseToGround);
-        Vector3 boxHalfExtends = new Vector3(0.25f, 1f, 1f);
-        Transform left = LeftCheck;
-        Transform right = RightCheck;
-        if (isCloseToGround)
+        if (canControl)
         {
-            left = groundedLeftCheck;
-            right = groundedLeftCheck;
-            boxHalfExtends = new Vector3(0.25f, 0.5f, 1f);
+            isCloseToGround = true;
+            //Debug.Log(isCloseToGround);
+            Vector3 boxHalfExtends = new Vector3(0.05f, 1f, 1f);
+            Transform left = LeftCheck;
+            Transform right = RightCheck;
+            if (isCloseToGround)
+            {
+                left = groundedLeftCheck;
+                right = groundedRightCheck;
+                boxHalfExtends = new Vector3(0.05f, 0.5f, 1f);
+            }
+            if (Physics.OverlapBox(CeilingCheck.position, new Vector3(0.75f, 0.5f, 1f), CeilingCheck.rotation, floorObjects).Length > 0)
+            {
+                Debug.Log("Collided with ceiling");
+                audioSource.PlayOneShot(playerKnockedBack);
+                player.transform.position = previousPos - new Vector3(0f, 0.1f, 0f);
+                vSpeed = -2f;
+                StartCoroutine(removePlayerControl(0.5f));
+            }
+            else
+            {
+                if (Physics.OverlapBox(left.position, boxHalfExtends, left.transform.rotation, floorObjects).Length > 0)
+                {
+                    Debug.Log("Collided will wall on left side");
+                    audioSource.PlayOneShot(playerKnockedBack);
+                    animator.SetTrigger("playerHit");
+                    surfaceNormal = Vector3.up;
+                    player.transform.position = previousPos + new Vector3(0.1f, 0f, 0f);
+                    xSpeed = 10 * Mathf.Abs(xSpeed / maxSpeed);
+                    StartCoroutine(removePlayerControl(0.5f));
+                }
+                if (Physics.OverlapBox(right.position, boxHalfExtends, right.transform.rotation, floorObjects).Length > 0)
+                {
+                    Debug.Log("Collided with wall on right side");
+                    audioSource.PlayOneShot(playerKnockedBack);
+                    animator.SetTrigger("playerHit");
+                    surfaceNormal = Vector3.up;
+                    player.transform.position = previousPos - new Vector3(0.1f, 0f, 0f); ;
+                    xSpeed = -10 * Mathf.Abs(xSpeed / maxSpeed);
+                    StartCoroutine(removePlayerControl(0.5f));
+                }
+            }
         }
-        
-        if (Physics.OverlapBox(left.position, boxHalfExtends, left.transform.rotation, floorObjects).Length > 0)
-        {
-            Debug.Log("Collided will wall on left side");
-            var temp = player.velocity.normalized;
-            audioSource.PlayOneShot(playerKnockedBack);
-            player.transform.position += new Vector3(0.3f, 0, 0);
-            xSpeed = temp.x * -10;
-            vSpeed = temp.y * 10;
-            //StartCoroutine(removePlayerControl());
-        }
-        
-        if (Physics.OverlapBox(right.position, boxHalfExtends, right.transform.rotation, floorObjects).Length > 0)
-        {
-            Debug.Log("Collided with wall on right side");
-            var temp = player.velocity.normalized;
-            audioSource.PlayOneShot(playerKnockedBack);
-            player.transform.position -= new Vector3(0.3f, 0, 0);
-            xSpeed = temp.x * -10;
-            vSpeed = temp.y * 10;
-            //StartCoroutine(removePlayerControl());
-        }
+        previousPos = player.position;
     }
-    IEnumerator removePlayerControl()
+    IEnumerator removePlayerControl(float time)
     {
         canControl = false;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(time);
         canControl = true;
     }
     private void checkCollisions()
@@ -545,18 +562,6 @@ public class SkateboardMovementRigid : MonoBehaviour
             animator.SetBool("isKickFlip", false);
         }
         Vector3 boxSize = new Vector3(0.26f * Mathf.Abs(player.transform.lossyScale.x), 0.40f * Mathf.Abs(player.transform.lossyScale.y), 1f * Mathf.Abs(player.transform.lossyScale.z));
-        if (Physics.OverlapBox(LeftCheck.position, boxSize, player.rotation, floorObjects).Length > 0)
-        {
-            xSpeed = 0f;
-        }
-        if (Physics.OverlapBox(RightCheck.position, boxSize, player.rotation, floorObjects).Length > 0)
-        {
-            xSpeed = 0f;
-        }
-        if (Physics.OverlapSphere(CeilingCheck.position, 1 * player.transform.lossyScale.y, floorObjects).Length > 0)
-        {
-            vSpeed = 0f;
-        }
     }
     private void updateStates()
     {
