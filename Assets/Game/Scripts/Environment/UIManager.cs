@@ -40,6 +40,8 @@ public class UIManager : MonoBehaviour
     [Header("Pop-up Text")]
     [Tooltip("Pop up text element in the UI")]
     public GameObject popupText;
+    [Tooltip("Image for popup text")]
+    public GameObject popupImage;
 
     [Header("Pop-up Alert")]
     [Tooltip("Pop-up alert element in UI")]
@@ -249,7 +251,7 @@ public class UIManager : MonoBehaviour
                 alertUp = true;
                 Timer t = gameObject.AddComponent<Timer>();
                 t.TimerEnded.AddListener(alertTimerOver);
-                t.setTimer(2.0f);
+                t.setTimer(1.0f);
                 t.startTimer();
             }
             checkSockCollected();
@@ -261,7 +263,7 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.anyKey && !alertUp) disableAlert();
+        if ((Input.anyKey || Mathf.Abs(Input.GetAxisRaw("ControllerX")) >= 0.01 || Mathf.Abs(Input.GetAxisRaw("ControllerY")) >= 0.01 || Input.GetButton("ControllerButton")) && !alertUp) disableAlert();
         if(GameManager.gameState==GameManager.GameState.InLevel) updateSpeedometer();
         if(canContinue && Input.GetButton("Interact")){
             if(GameManager.gameProg == 7 || GameManager.gameProg == 2) loadScene(Load.Cutscene);
@@ -426,17 +428,41 @@ public class UIManager : MonoBehaviour
         popupText.GetComponent<TMPro.TextMeshProUGUI>().text = s;
     }
 
+    public void updatePopupImage(bool enterDlog)
+    {
+        if (enterDlog) popupImage = popupText.transform.GetChild(1).gameObject;
+        else popupImage = popupText.transform.GetChild(0).gameObject;
+    }
+
     public void enablePopupText()
     {
         popText = true;
         popupText.SetActive(true);
-        popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(1.0f, 0.1f, false);
+        popupImage.SetActive(true);
+        if (!alertUp)
+        {
+            popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(1.0f, 0.1f, false);
+            //popupImage.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, false);
+            popupImage.SetActive(true);
+        }
     }
 
     public void disablePopupText()
     {
         popText = false;
         popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0.0f, 0.1f, false);
+        popupImage.SetActive(false);
+        /*if (popupImage.transform.GetChild(0) != null)
+        {
+            popupImage.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, false);
+        }
+        else
+        {
+            for(int i = 0; i<popupImage.transform.childCount; i++)
+            {
+                popupImage.transform.GetChild(i).GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, false);
+            }
+        }*/
         if (Time.timeScale == 0) popupText.SetActive(false);
     }
 

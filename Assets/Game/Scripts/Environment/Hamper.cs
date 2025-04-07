@@ -22,7 +22,7 @@ public class Hamper : MonoBehaviour
             {
                 uiManager.enableHamper();
                 uiManager.disablePopupText();
-                transform.localScale = new Vector3(2, 2, 2);
+                //transform.localScale = new Vector3(2, 2, 2);
             }
         }
     }
@@ -31,7 +31,7 @@ public class Hamper : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            uiManager.updatePopupText("Press E to view Sock Collection ");
+            uiManager.updatePopupText("View Sock Collection");
             uiManager.enablePopupText();
             inTrigger = true;
         }

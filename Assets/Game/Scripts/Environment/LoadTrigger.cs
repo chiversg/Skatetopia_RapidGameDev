@@ -102,7 +102,7 @@ public class LoadTrigger : MonoBehaviour
             playerInTrigger = true;
             if (triggerType == TriggerType.HubDoor && this.enabled)
             {
-                uiManager.updatePopupText("Press " + enter + " to Enter " + levelName);
+                uiManager.updatePopupText("Enter " + levelName);
                 uiManager.enablePopupText();
             }
         }

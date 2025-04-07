@@ -30,6 +30,7 @@ public class Dialogue : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip dialogueAudio;
 
+    private bool inTrigger;
     private bool isListening;
     private bool playNext;
     private bool keyPressed;
@@ -53,7 +54,7 @@ public class Dialogue : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetButtonDown("Accept")) keyPressed = true;
+        if (Input.GetButtonDown("Accept") && inTrigger) keyPressed = true;
 
         if (lineNum >= numberOfLines && (playNext && donePrinting))
         {
@@ -122,9 +123,11 @@ public class Dialogue : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            inTrigger = true;
             if (mum)
             {
-                uiManager.updatePopupText("Press Space to Talk");
+                uiManager.updatePopupText("Talk to Mum");
+                uiManager.updatePopupImage(true);
                 if (GameManager.gameProg == requiredGameProgress || GameManager.gameProg == nextGameProgress)
                 {
                     uiManager.enablePopupText();
@@ -206,9 +209,11 @@ public class Dialogue : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
+            inTrigger = false;
             if (mum)
             {
                 uiManager.disablePopupText();
+                uiManager.updatePopupImage(false);
                 toolTipText.text = null;
             }
         }
