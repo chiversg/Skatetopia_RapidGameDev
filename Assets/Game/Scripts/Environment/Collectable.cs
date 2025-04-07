@@ -40,7 +40,6 @@ public class Collectable : MonoBehaviour
         else if(Index == index.Third) idx = 2;
         //collectableUI = GameObject.FindGameObjectWithTag("Collectable UI");
         //collectableImage = collectableUI.transform.GetChild(idx).gameObject;
-        if(collected) updateUI();
     }
 
     // Update is called once per frame
@@ -62,7 +61,7 @@ public class Collectable : MonoBehaviour
 
     public void updateUI(){
         //Debug.Log("TESTING COLLECTABLE THINGY V2");
-        uiManager.updateCollectables(idx, sock);
+        uiManager.updateCollectables(idx);
     }
 
     public int getIdx(){

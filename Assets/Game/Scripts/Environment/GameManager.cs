@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -38,6 +39,14 @@ public class GameManager : MonoBehaviour
 
     public static GameState gameState;
 
+    public enum InputMode 
+    { 
+        Controller, 
+        Keyboard 
+    }
+    
+    public static InputMode currentInput;
+
     [Header("Debug")]
     [Tooltip("gives all tricks")]
     [SerializeField]
@@ -70,15 +79,30 @@ public class GameManager : MonoBehaviour
         Debug.Log(gameProg);
 
         if (debug && firstLoad) setDebug();
+        currentInput = InputMode.Keyboard;
     }
 
     void Update()
     {
+        currentInput = processInputMode();
         if (Input.GetKeyDown(KeyCode.P))
         {
             gameProg = 3;
             SceneManager.LoadScene("01_Hub");
         }
+    }
+
+    private InputMode processInputMode()
+    {
+        if (Input.GetJoystickNames().Length == 0) return InputMode.Keyboard;
+
+        if(Input.GetKey(KeyCode.JoystickButton9)) return InputMode.Controller;
+        if (Input.GetButton("ControllerButton")) return InputMode.Controller;
+        if ((Mathf.Abs(Input.GetAxisRaw("ControllerX")) >= 0.01 || Mathf.Abs(Input.GetAxisRaw("ControllerY")) >= 0.01)) return InputMode.Controller;
+        if ((Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)) return InputMode.Keyboard;
+        if (Input.anyKey) return InputMode.Keyboard;
+
+        return currentInput;
     }
 
     public static void RegisterForReset(ResetBehaviour resetBehaviour)

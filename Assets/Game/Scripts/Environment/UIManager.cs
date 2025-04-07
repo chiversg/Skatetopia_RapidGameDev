@@ -232,6 +232,10 @@ public class UIManager : MonoBehaviour
             speedometer.SetActive(true);
             if(GameManager.gameProg>=2) quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Hub";
             else quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Menu";
+            for(int i=0; i<collectableImage.Length; i++)
+            {
+                //if (GameManager.socks[levelManager.getIndex(), i]) updateCollectables(i);
+            }
         }
         else if (GameManager.gameState == GameManager.GameState.InHub)
         {
@@ -294,9 +298,9 @@ public class UIManager : MonoBehaviour
         if (Input.GetButtonDown("Interact") && inHamper) resumeGame();
     }
 
-    public void updateCollectables(int index, Sprite sock)
+    public void updateCollectables(int index)
     {
-        collectableImage[index].GetComponent<Image>().sprite = sock;
+        collectableImage[index].GetComponent<Image>().sprite = sockCollected;
     }
 
     public void updateTimerText(int time)
@@ -540,7 +544,8 @@ public class UIManager : MonoBehaviour
     private int calculateScore()
     {
         int rank = 0;
-        for(int i =0; i<3; i++)
+        flavourText = "";
+        for (int i =0; i<3; i++)
         {
             if (levelManager.sockCollected(i)) rank++;
         }
