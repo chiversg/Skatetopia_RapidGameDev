@@ -111,6 +111,8 @@ public class UIManager : MonoBehaviour
     public Sprite sockCollected;
     [Tooltip("sock not collected sprite")]
     public Sprite sockNotCollected;
+    [Tooltip("Back Button for Screen")]
+    public GameObject hamperBackButton;
 
     private GameObject[] collectableImage = new GameObject[3];
     private GameObject[] rankSprite = new GameObject[5];
@@ -230,6 +232,10 @@ public class UIManager : MonoBehaviour
             speedometer.SetActive(true);
             if(GameManager.gameProg>=2) quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Hub";
             else quitButtonText.GetComponent<TMPro.TextMeshProUGUI>().text = "Quit to Menu";
+            for(int i=0; i<collectableImage.Length; i++)
+            {
+                //if (GameManager.socks[levelManager.getIndex(), i]) updateCollectables(i);
+            }
         }
         else if (GameManager.gameState == GameManager.GameState.InHub)
         {
@@ -292,9 +298,9 @@ public class UIManager : MonoBehaviour
         if (Input.GetButtonDown("Interact") && inHamper) resumeGame();
     }
 
-    public void updateCollectables(int index, Sprite sock)
+    public void updateCollectables(int index)
     {
-        collectableImage[index].GetComponent<Image>().sprite = sock;
+        collectableImage[index].GetComponent<Image>().sprite = sockCollected;
     }
 
     public void updateTimerText(int time)
@@ -495,6 +501,14 @@ public class UIManager : MonoBehaviour
         paused = false;
         inHamper = false;
         trickUp = false;
+        currButton = resumeButton;
+        if(GameManager.gameState == GameManager.GameState.InHub)
+        {
+            Timer t = gameObject.AddComponent<Timer>();
+            t.TimerEnded.AddListener(setHamperTriggerTrue);
+            t.setTimer(0.1f);
+            t.startTimer();
+        }
     }
 
     public void toControls()
@@ -530,7 +544,8 @@ public class UIManager : MonoBehaviour
     private int calculateScore()
     {
         int rank = 0;
-        for(int i =0; i<3; i++)
+        flavourText = "";
+        for (int i =0; i<3; i++)
         {
             if (levelManager.sockCollected(i)) rank++;
         }
@@ -552,10 +567,14 @@ public class UIManager : MonoBehaviour
 
     public void enableHamper()
     {
+        Hamper hamperScript = FindObjectOfType<Hamper>();
+        hamperScript.setInTrigger(false);
         sockScreen.SetActive(true);
         paused = true;
         inHamper = true;
         Time.timeScale = 0;
+        EventSystem.current.SetSelectedGameObject(hamperBackButton);
+        currButton = hamperBackButton;
     }
 
     public void checkSockCollected()
@@ -568,5 +587,11 @@ public class UIManager : MonoBehaviour
                 else hamperSocks[i].transform.GetChild(j).GetComponent<Image>().sprite = sockNotCollected;
             }
         }
+    }
+
+    private void setHamperTriggerTrue()
+    {
+        Hamper hamperScript = FindObjectOfType<Hamper>();
+        hamperScript.setInTrigger(true);
     }
 }
