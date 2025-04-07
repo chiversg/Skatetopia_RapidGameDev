@@ -111,6 +111,8 @@ public class UIManager : MonoBehaviour
     public Sprite sockCollected;
     [Tooltip("sock not collected sprite")]
     public Sprite sockNotCollected;
+    [Tooltip("Back Button for Screen")]
+    public GameObject hamperBackButton;
 
     private GameObject[] collectableImage = new GameObject[3];
     private GameObject[] rankSprite = new GameObject[5];
@@ -495,6 +497,14 @@ public class UIManager : MonoBehaviour
         paused = false;
         inHamper = false;
         trickUp = false;
+        currButton = resumeButton;
+        if(GameManager.gameState == GameManager.GameState.InHub)
+        {
+            Timer t = gameObject.AddComponent<Timer>();
+            t.TimerEnded.AddListener(setHamperTriggerTrue);
+            t.setTimer(0.1f);
+            t.startTimer();
+        }
     }
 
     public void toControls()
@@ -552,10 +562,14 @@ public class UIManager : MonoBehaviour
 
     public void enableHamper()
     {
+        Hamper hamperScript = FindObjectOfType<Hamper>();
+        hamperScript.setInTrigger(false);
         sockScreen.SetActive(true);
         paused = true;
         inHamper = true;
         Time.timeScale = 0;
+        EventSystem.current.SetSelectedGameObject(hamperBackButton);
+        currButton = hamperBackButton;
     }
 
     public void checkSockCollected()
@@ -568,5 +582,11 @@ public class UIManager : MonoBehaviour
                 else hamperSocks[i].transform.GetChild(j).GetComponent<Image>().sprite = sockNotCollected;
             }
         }
+    }
+
+    private void setHamperTriggerTrue()
+    {
+        Hamper hamperScript = FindObjectOfType<Hamper>();
+        hamperScript.setInTrigger(true);
     }
 }

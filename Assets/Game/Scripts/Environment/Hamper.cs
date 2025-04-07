@@ -5,6 +5,7 @@ using UnityEngine;
 public class Hamper : MonoBehaviour
 {
     private bool inTrigger;
+    private bool hampDelay;
     private UIManager uiManager;
     // Start is called before the first frame update
     void Start()
@@ -18,9 +19,10 @@ public class Hamper : MonoBehaviour
         if (inTrigger)
         {
             if (Input.GetButtonDown("Interact") && Time.timeScale == 1)
-            {              
+            {
                 uiManager.enableHamper();
                 uiManager.disablePopupText();
+                Debug.Log("Hamper Activated");
             }
         }
     }
@@ -42,5 +44,10 @@ public class Hamper : MonoBehaviour
             uiManager.disablePopupText();
             inTrigger = false;
         }
+    }
+
+    public void setInTrigger(bool inT)
+    {
+        inTrigger = inT; 
     }
 }
