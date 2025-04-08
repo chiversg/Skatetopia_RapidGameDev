@@ -30,7 +30,7 @@ public class UISwap : MonoBehaviour
             if (GameManager.currentInput == GameManager.InputMode.Controller)
             {
                 //Controller is being used
-                Debug.Log("Controller");
+                //Debug.Log("Controller");
                 if(onCanvas) GetComponent<Image>().sprite = controllerSprite;
                 else GetComponent<SpriteRenderer>().sprite = controllerSprite;
                 thisInput = GameManager.currentInput;
@@ -38,7 +38,7 @@ public class UISwap : MonoBehaviour
             if (GameManager.currentInput == GameManager.InputMode.Keyboard)
             {
                 //Keyboard is being used
-                Debug.Log("Keyboard");
+                //Debug.Log("Keyboard");
                 if (onCanvas) GetComponent<Image>().sprite = keyboardSprite;
                 else GetComponent<SpriteRenderer>().sprite = keyboardSprite;
                 thisInput = GameManager.currentInput;

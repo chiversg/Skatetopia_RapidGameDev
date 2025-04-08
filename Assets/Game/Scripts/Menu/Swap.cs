@@ -28,7 +28,7 @@ public class Swap : MonoBehaviour
             if (GameManager.currentInput == GameManager.InputMode.Controller)
             {
                 //Controller is being used
-                Debug.Log("Controller");
+                //Debug.Log("Controller");
                 if (controllerObject.active == true || keyboardObject.active == true)
                 {
                     controllerObject.SetActive(true);
@@ -39,7 +39,7 @@ public class Swap : MonoBehaviour
             if (GameManager.currentInput == GameManager.InputMode.Keyboard)
             {
                 //Keyboard is being used
-                Debug.Log("Keyboard");
+                //Debug.Log("Keyboard");
                 if (controllerObject.active == true || keyboardObject.active == true)
                 {
                     controllerObject.SetActive(false);
@@ -51,7 +51,7 @@ public class Swap : MonoBehaviour
         if (GameManager.currentInput == GameManager.InputMode.Controller)
         {
             //Controller is being used
-            Debug.Log("Controller");
+            //Debug.Log("Controller");
             if (controllerObject.active == true || keyboardObject.active == true)
             {
                 controllerObject.SetActive(true);
