@@ -150,8 +150,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b45ab42165e301d498c20d0f47213ab2
-      internalID: -1018247000
+      spriteID: 7495a46118b016e42aabb2515d5a39b7
+      internalID: -686515099
       vertices: []
       indices: 
       edges: []
@@ -171,8 +171,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c5c680f0eb2fb504d9ac8472d53f8473
-      internalID: -77615402
+      spriteID: 2cc169815b871f448bcced0657b00cae
+      internalID: 841726762
       vertices: []
       indices: 
       edges: []
@@ -192,8 +192,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c67e8bc5443bb264fbe7d0a3d14ea39d
-      internalID: -398938970
+      spriteID: eadc4b38033d45949b997800c6778099
+      internalID: -74860345
       vertices: []
       indices: 
       edges: []
@@ -213,8 +213,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ff22dda86ba96fd4aaffe52540cf709d
-      internalID: -353600085
+      spriteID: 6a55753800869af418ebae80c2a69997
+      internalID: -1092274297
       vertices: []
       indices: 
       edges: []
@@ -234,8 +234,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7000ca86f308535448de7f4e994d0966
-      internalID: 1347131977
+      spriteID: edc6f6f19fb330a4793dba43ba423e68
+      internalID: 812978943
       vertices: []
       indices: 
       edges: []
@@ -255,8 +255,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 31fbd300aa269d64a85f77eb3ed2d6fe
-      internalID: 1454427636
+      spriteID: 52fc7a2736339004a93312640afac566
+      internalID: 2144835616
       vertices: []
       indices: 
       edges: []
@@ -276,8 +276,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a1be999644a3c9641aeeefa791f1d6b8
-      internalID: 387151402
+      spriteID: 304064924f62d7b4abb8003f08c67440
+      internalID: -1043738199
       vertices: []
       indices: 
       edges: []
@@ -297,8 +297,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a0ba035f178dff84b81107cc426c381a
-      internalID: -1354096760
+      spriteID: f567be2e3bef3cb48b9773b5bffb9a33
+      internalID: -979855869
       vertices: []
       indices: 
       edges: []
@@ -318,8 +318,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: db24359d058b7a943a1148543ff207cf
-      internalID: 1598279277
+      spriteID: a0f923533a164594fab76e9a3a6d827b
+      internalID: 1095327801
       vertices: []
       indices: 
       edges: []
@@ -339,8 +339,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cf3b12e68cc71b44b8676734727c6890
-      internalID: 994258452
+      spriteID: 1662adc36f5f3694ca324cade65d08e2
+      internalID: -277742663
       vertices: []
       indices: 
       edges: []
@@ -348,7 +348,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 777df0ab204f4394f945c03da4c7017e
+    spriteID: 4efc0073f356ad84e9abf56c17e0998b
     internalID: 0
     vertices: []
     indices: 
@@ -356,16 +356,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      LouWalk_0: -1018247000
-      LouWalk_1: -77615402
-      LouWalk_2: -398938970
-      LouWalk_3: -353600085
-      LouWalk_4: 1347131977
-      LouWalk_5: 1454427636
-      LouWalk_6: 387151402
-      LouWalk_7: -1354096760
-      LouWalk_8: 1598279277
-      LouWalk_9: 994258452
+      LouWalk_0: -686515099
+      LouWalk_1: 841726762
+      LouWalk_2: -74860345
+      LouWalk_3: -1092274297
+      LouWalk_4: 812978943
+      LouWalk_5: 2144835616
+      LouWalk_6: -1043738199
+      LouWalk_7: -979855869
+      LouWalk_8: 1095327801
+      LouWalk_9: -277742663
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
