@@ -107,6 +107,7 @@ public class GameManager : MonoBehaviour
         if ((Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)) return InputMode.Keyboard;
         if (Input.anyKey) return InputMode.Keyboard;
 
+        //Debug.Log(currentInput.ToString());
         return currentInput;
     }
 
