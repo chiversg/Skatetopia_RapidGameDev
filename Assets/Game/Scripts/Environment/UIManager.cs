@@ -484,6 +484,13 @@ public class UIManager : MonoBehaviour
     public void enableAlert()
     {
         alert.SetActive(true);
+        alert.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, false);
+        alertText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(1.0f, 0.1f, false);
+        Timer t = gameObject.AddComponent<Timer>();
+        t.TimerEnded.AddListener(alertTimerOver);
+        t.setTimer(1.0f);
+        t.startTimer();
+        alertUp = true;
     }
 
     public void disableAlert()

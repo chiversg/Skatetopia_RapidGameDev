@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
         Keyboard 
     }
     
-    public static InputMode currentInput;
+    public static InputMode currentInput = InputMode.Keyboard;
 
     [Header("Debug")]
     [Tooltip("gives all tricks")]
@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
         Debug.Log(gameProg);
 
         if (debug && firstLoad) setDebug();
-        currentInput = InputMode.Keyboard;
+        //currentInput = InputMode.Keyboard;
     }
 
     void Update()
@@ -88,6 +88,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             gameProg = 3;
+            gameState = GameState.InHub;
             SceneManager.LoadScene("01_Hub");
         }
     }
