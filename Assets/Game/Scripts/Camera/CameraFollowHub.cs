@@ -43,9 +43,14 @@ public class CameraFollowHub : MonoBehaviour
 
         SmoothFollow();
         //if (rotateDamping > 0)
-            //SmoothLookAt();
+        //SmoothLookAt();
         //else
-            //transform.LookAt(target.position);
+        //transform.LookAt(target.position);
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            //targetOffset = new Vector3(targetOffset.y, targetOffset.y, -20.0f);
+        }
 
         if (lockY)
         {

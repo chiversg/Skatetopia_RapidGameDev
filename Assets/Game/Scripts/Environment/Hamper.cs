@@ -7,6 +7,7 @@ public class Hamper : MonoBehaviour
     private bool inTrigger;
     private bool hampDelay;
     private UIManager uiManager;
+    private int interactSwitch = -1;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,9 +19,12 @@ public class Hamper : MonoBehaviour
     {
         if (inTrigger)
         {
-            if (Input.GetButtonDown("Interact") && Time.timeScale == 1)
+            if (Input.GetButtonUp("Interact") && Time.timeScale == 1 && interactSwitch == 1)
             {
+                Debug.Log("Hamper Activated");
+                Time.timeScale = 0;
                 uiManager.enableHamper();
+                FindObjectOfType<UIManager>().enableHamper();
                 uiManager.disablePopupText();
                 //transform.localScale = new Vector3(2, 2, 2);
             }
@@ -43,6 +47,18 @@ public class Hamper : MonoBehaviour
         {
             uiManager.disablePopupText();
             inTrigger = false;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.tag == "Player")
+        {
+            if (Input.GetButtonDown("Interact") || Input.GetButtonDown("Pause"))
+            {
+                interactSwitch *= -1;
+                Debug.Log(interactSwitch);
+            }
         }
     }
 
