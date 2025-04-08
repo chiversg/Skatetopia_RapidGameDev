@@ -23,6 +23,7 @@ public class Dialogue : MonoBehaviour
     [Tooltip("What to set internal game progress to after dialogue event is complete. Use -1 to never update game progress")]
     private int nextGameProgress;
     public bool mum;
+    [SerializeField] private Animator animator;
     [SerializeField] private PlayerWalk walking;
     [SerializeField] private SkateboardMovementRigid skating;
     [SerializeField] private GameObject speechBubblePivot;
@@ -38,6 +39,7 @@ public class Dialogue : MonoBehaviour
     private bool talkAgain;
     private int lineNum = 0;
     private int numberOfLines;
+    private bool isActive;
     private GameManager gameManager;
     private LevelManager levelManager;
     private UIManager uiManager;
@@ -54,6 +56,14 @@ public class Dialogue : MonoBehaviour
     }
     void Update()
     {
+        if(gameManager.getGameProg() == requiredGameProgress || gameManager.getGameProg() == nextGameProgress || requiredGameProgress < 0)
+        {
+            isActive = true;
+        }
+        else
+        {
+            isActive = false;
+        }
         if (Input.GetButtonDown("Accept") && inTrigger) keyPressed = true;
 
         if (lineNum >= numberOfLines && (playNext && donePrinting))
@@ -89,6 +99,11 @@ public class Dialogue : MonoBehaviour
 
             StartCoroutine(printLine(lines[lineNum]));
 
+        }
+        if (animator != null && (isActive || !mum))
+        {
+            Debug.Log("Current Talking state is: " + !donePrinting);
+            animator.SetBool("isTalking", !donePrinting);
         }
     }
 
@@ -158,7 +173,7 @@ public class Dialogue : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-        if ((gameManager.getGameProg() == requiredGameProgress || gameManager.getGameProg() == nextGameProgress) || requiredGameProgress < 0)
+        if (isActive)
         {
                 Debug.Log("something entered");
                 if (other.gameObject.tag == "Player")
