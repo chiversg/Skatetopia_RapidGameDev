@@ -528,6 +528,7 @@ public class UIManager : MonoBehaviour
 
     public void resumeGame()
     {
+        Debug.Log("GAME RESUMED");
         Time.timeScale = 1;
         pauseScreen.SetActive(false);
         trickInfo.SetActive(false);
@@ -611,6 +612,7 @@ public class UIManager : MonoBehaviour
 
     public void enableHamper()
     {
+        Debug.Log("Hamper Enabled");
         Hamper hamperScript = FindObjectOfType<Hamper>();
         hamperScript.setInTrigger(false);
         sockScreen.SetActive(true);
@@ -619,6 +621,7 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 0;
         EventSystem.current.SetSelectedGameObject(hamperBackButton);
         currButton = hamperBackButton;
+        Debug.Log("GameState: " + GameManager.gameState);
     }
 
     public void checkSockCollected()
@@ -627,8 +630,16 @@ public class UIManager : MonoBehaviour
         {
             for(int j=0; j<3; j++)
             {
-                if (GameManager.socks[i, j]) hamperSocks[i].transform.GetChild(j).GetComponent<Image>().sprite = sockCollected;
-                else hamperSocks[i].transform.GetChild(j).GetComponent<Image>().sprite = sockNotCollected;
+                if (GameManager.socks[i, j])
+                {
+                    hamperSocks[i].transform.GetChild(j).GetComponent<Image>().sprite = sockCollected;
+                    Debug.Log("SOCK[" + i + "][" + j + "]: Collected");
+                }
+                else
+                {
+                    hamperSocks[i].transform.GetChild(j).GetComponent<Image>().sprite = sockNotCollected;
+                    Debug.Log("SOCK[" + i + "][" + j + "]: Not Collected");
+                }
             }
         }
     }

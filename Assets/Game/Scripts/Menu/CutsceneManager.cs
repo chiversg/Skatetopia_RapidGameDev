@@ -8,14 +8,14 @@ public class CutsceneManager : MonoBehaviour
     [Tooltip("List holding Empty Gameobjects, each one holds all the panels for a specific cutscene")]
     public List<GameObject> cutscenes;
 
+    [Tooltip("Length between each panel in the cutscenes")]
+    public float[] length = new float[3];
+
     [Tooltip("Key to press to continue at end")]
     public KeyCode accept;
 
     [Tooltip("Key to press to skip")]
     public KeyCode skip;
-
-    [Tooltip ("Length between each panel in the cutscene")]
-    public float length;
 
     private int panelIndex = 0;
     private int cutsceneIndex = 0;
@@ -74,7 +74,7 @@ public class CutsceneManager : MonoBehaviour
         cutscenes[i].transform.GetChild(panelIndex).gameObject.SetActive(true);
         Timer t = gameObject.AddComponent<Timer>();
         t.TimerEnded.AddListener(timerEnded);
-        t.setTimer(length);
+        t.setTimer(length[cutsceneIndex]);
         t.startTimer();
         panelIndex++;
     }
