@@ -512,37 +512,37 @@ public class SkateboardMovementRigid : MonoBehaviour
                 right = groundedRightCheck;
                 boxHalfExtends = new Vector3(0.05f, 0.5f, 1f);
             }
-            if (Physics.OverlapBox(CeilingCheck.position, new Vector3(0.75f, 0.5f, 1f), CeilingCheck.rotation, floorObjects).Length > 0)
+
+            if (Physics.OverlapBox(left.position, boxHalfExtends, left.transform.rotation, floorObjects).Length > 0)
+            {
+                Debug.Log("Collided will wall on left side");
+                audioSource.PlayOneShot(playerKnockedBack);
+                animator.SetTrigger("playerHit");
+                surfaceNormal = Vector3.up;
+                player.transform.position = previousPos + new Vector3(0.1f, 0f, 0f);
+                xSpeed = 10 * Mathf.Abs(xSpeed / maxSpeed);
+                StartCoroutine(removePlayerControl(0.5f));
+            }
+            if (Physics.OverlapBox(right.position, boxHalfExtends, right.transform.rotation, floorObjects).Length > 0)
+            {
+                Debug.Log("Collided with wall on right side");
+                audioSource.PlayOneShot(playerKnockedBack);
+                animator.SetTrigger("playerHit");
+                surfaceNormal = Vector3.up;
+                player.transform.position = previousPos - new Vector3(0.1f, 0f, 0f); ;
+                xSpeed = -10 * Mathf.Abs(xSpeed / maxSpeed);
+                StartCoroutine(removePlayerControl(0.5f));
+            }
+
+            if (Physics.OverlapBox(CeilingCheck.position, new Vector3(0.50f, 0.5f, 1f), CeilingCheck.rotation, floorObjects).Length > 0)
             {
                 Debug.Log("Collided with ceiling");
                 audioSource.PlayOneShot(playerKnockedBack);
                 player.transform.position = previousPos - new Vector3(0f, 0.1f, 0f);
                 vSpeed = -2f;
-                StartCoroutine(removePlayerControl(0.5f));
+                StartCoroutine(removePlayerControl(0.1f));
             }
-            else
-            {
-                if (Physics.OverlapBox(left.position, boxHalfExtends, left.transform.rotation, floorObjects).Length > 0)
-                {
-                    Debug.Log("Collided will wall on left side");
-                    audioSource.PlayOneShot(playerKnockedBack);
-                    animator.SetTrigger("playerHit");
-                    surfaceNormal = Vector3.up;
-                    player.transform.position = previousPos + new Vector3(0.1f, 0f, 0f);
-                    xSpeed = 10 * Mathf.Abs(xSpeed / maxSpeed);
-                    StartCoroutine(removePlayerControl(0.5f));
-                }
-                if (Physics.OverlapBox(right.position, boxHalfExtends, right.transform.rotation, floorObjects).Length > 0)
-                {
-                    Debug.Log("Collided with wall on right side");
-                    audioSource.PlayOneShot(playerKnockedBack);
-                    animator.SetTrigger("playerHit");
-                    surfaceNormal = Vector3.up;
-                    player.transform.position = previousPos - new Vector3(0.1f, 0f, 0f); ;
-                    xSpeed = -10 * Mathf.Abs(xSpeed / maxSpeed);
-                    StartCoroutine(removePlayerControl(0.5f));
-                }
-            }
+
         }
         previousPos = player.position;
     }
