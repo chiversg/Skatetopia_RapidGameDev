@@ -555,7 +555,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     private void checkCollisions()
     {
         //isGrounded = Physics.Raycast(downRay.origin, downRay.direction, 1.1f);
-        isGrounded = Physics.OverlapSphere(floorCheck.position, 1 * player.transform.lossyScale.y, floorObjects).Length > 0;
+        isGrounded = Physics.OverlapSphere(floorCheck.position, 0.1f, floorObjects).Length > 0;
         isCloseToGround = Physics.OverlapBox(floorProxCheck.position, new Vector3(2.5f, 0.5f, 1f), player.rotation, floorObjects).Length > 0;
         if (isGrounded)
         {
