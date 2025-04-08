@@ -103,6 +103,13 @@ public class UIManager : MonoBehaviour
     public string flipDesc;
     [Tooltip("image for backflip")]
     public Sprite flipImage;
+    [Tooltip("Parent GameObject for Ollie Buttons")]
+    public GameObject ollieButtons;
+    [Tooltip("Parent GameObject for U-Turn Buttons")]
+    public GameObject uturnButtons;
+    [Tooltip("Parent GameObject for Flip Buttons")]
+    public GameObject flipButtons;
+
 
     [Header("Sock Hamper")]
     [Tooltip("Sock Screen")]
@@ -551,17 +558,18 @@ public class UIManager : MonoBehaviour
 
     public void trickGet(string trick)
     {
-        if(string.Equals(trick, "ollie")) displayTrickInfo("Ollie", ollieImage, ollieDesc);
-        if(string.Equals(trick, "uturn")) displayTrickInfo("U-Turn", uturnImage, uturnDesc);
-        if(string.Equals(trick, "flip")) displayTrickInfo("Flip", flipImage, flipDesc);
+        if(string.Equals(trick, "ollie")) displayTrickInfo("Ollie", ollieImage, ollieDesc, ollieButtons);
+        if(string.Equals(trick, "uturn")) displayTrickInfo("U-Turn", uturnImage, uturnDesc, uturnButtons);
+        if(string.Equals(trick, "flip")) displayTrickInfo("Flip", flipImage, flipDesc, flipButtons);
     }
 
-    private void displayTrickInfo(string name, Sprite image, string desc)
+    private void displayTrickInfo(string name, Sprite image, string desc, GameObject controls)
     {
         trickName.GetComponent<TMPro.TextMeshProUGUI>().text = name;
         trickImage.GetComponent<Image>().sprite = image;
         trickDesc.GetComponent<TMPro.TextMeshProUGUI>().text = desc;
         trickInfo.SetActive(true);
+        controls.SetActive(true);
         Time.timeScale = 0;
         paused = true;
         trickUp = true;
