@@ -36,6 +36,8 @@ public class UIManager : MonoBehaviour
     public float maxAngle = -90.0f;
     [Tooltip("Sparks particle system")]
     public ParticleSystem sparks;
+    [Tooltip("Flames animation game object")]
+    public Image flames;
 
     [Header("Pop-up Text")]
     [Tooltip("Pop up text element in the UI")]
@@ -334,8 +336,16 @@ public class UIManager : MonoBehaviour
         float speed = Mathf.Abs(playerScript.getSpeed());
         float maxSpeed = playerScript.getMaxManualSpeed();
         arrow.localEulerAngles = new Vector3(0, 0, Mathf.Lerp(minAngle, maxAngle, speed/maxSpeed));
-        if(speed > maxSpeed) sparks.Play();
-        else sparks.Stop();
+        if (speed+1 >= maxSpeed)
+        {
+            sparks.Play();
+            flames.CrossFadeAlpha(1.0f, 0.1f, false);
+        }
+        else
+        {
+            sparks.Stop();
+            flames.CrossFadeAlpha(0.0f, 0.1f, false);
+        }
     }
 
     private void loadHub()
