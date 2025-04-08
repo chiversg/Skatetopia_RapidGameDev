@@ -260,6 +260,7 @@ public class UIManager : MonoBehaviour
                 t.TimerEnded.AddListener(alertTimerOver);
                 t.setTimer(1.0f);
                 t.startTimer();
+                Time.timeScale = 0.0f;
             }
             checkSockCollected();
         }
@@ -277,7 +278,7 @@ public class UIManager : MonoBehaviour
             else loadScene(Load.Hub);
         }
         //if(Input.GetKeyDown(pauseKey)){
-        if (Input.GetButtonDown("Pause") && !trickUp){ 
+        if (Input.GetButtonDown("Pause") && !trickUp && !alertUp){ 
             if(Time.timeScale == 1) pauseGame();
             else if(Time.timeScale == 0 && paused) resumeGame();
         }
@@ -427,7 +428,9 @@ public class UIManager : MonoBehaviour
 
     public void alertTimerOver()
     {
+        disableAlert();
         alertUp = false;
+        Time.timeScale = 1.0f;
     }
 
     public void updatePopupText(string s)
