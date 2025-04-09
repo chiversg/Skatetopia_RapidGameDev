@@ -62,7 +62,7 @@ public class LevelManager : MonoBehaviour
             if (gameManager.getCollectableBool(levelIndex, c.getIdx()))
             {
                 //Debug.Log("TESTING GAME MANAGER BOLLEAN");
-                c.setCollected(true);
+                //c.setCollected(true);
             }
         }
     }
