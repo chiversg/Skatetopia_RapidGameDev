@@ -36,6 +36,8 @@ public class UIManager : MonoBehaviour
     public float maxAngle = -90.0f;
     [Tooltip("Sparks particle system")]
     public ParticleSystem sparks;
+    [Tooltip("Flames animation game object")]
+    public Image flames;
 
     [Header("Pop-up Text")]
     [Tooltip("Pop up text element in the UI")]
@@ -48,6 +50,12 @@ public class UIManager : MonoBehaviour
     public GameObject alert;
     [Tooltip("alert text element")]
     public GameObject alertText;
+    [Tooltip("alert arrow GameObject")]
+    public GameObject alertArrow;
+
+    [Header("Arrow")]
+    [Tooltip("Arrow Game Object")]
+    public GameObject pointerArrow;
 
     [Header("Level Complete Screen")]
     [Tooltip("level complete screen element")]
@@ -109,7 +117,6 @@ public class UIManager : MonoBehaviour
     public GameObject uturnButtons;
     [Tooltip("Parent GameObject for Flip Buttons")]
     public GameObject flipButtons;
-
 
     [Header("Sock Hamper")]
     [Tooltip("Sock Screen")]
@@ -334,8 +341,16 @@ public class UIManager : MonoBehaviour
         float speed = Mathf.Abs(playerScript.getSpeed());
         float maxSpeed = playerScript.getMaxManualSpeed();
         arrow.localEulerAngles = new Vector3(0, 0, Mathf.Lerp(minAngle, maxAngle, speed/maxSpeed));
-        if(speed > maxSpeed) sparks.Play();
-        else sparks.Stop();
+        if (speed+1 >= maxSpeed)
+        {
+            sparks.Play();
+            flames.CrossFadeAlpha(1.0f, 0.1f, false);
+        }
+        else
+        {
+            sparks.Stop();
+            flames.CrossFadeAlpha(0.0f, 0.1f, false);
+        }
     }
 
     private void loadHub()
@@ -486,6 +501,7 @@ public class UIManager : MonoBehaviour
         alert.SetActive(true);
         alert.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, false);
         alertText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(1.0f, 0.1f, false);
+        alertArrow.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, false);
         Timer t = gameObject.AddComponent<Timer>();
         t.TimerEnded.AddListener(alertTimerOver);
         t.setTimer(1.0f);
@@ -497,6 +513,24 @@ public class UIManager : MonoBehaviour
     {
         alert.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, false);
         alertText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0.0f, 0.1f, false);
+        alertArrow.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, false);
+    }
+
+    public void enablePointerArrow(float x)
+    {
+        Debug.Log("X SIZE: " + x);
+        pointerArrow.SetActive(true);
+        pointerArrow.transform.localScale = new Vector3(x, pointerArrow.transform.localScale.y, pointerArrow.transform.localScale.z);
+        pointerArrow.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, false);
+        Timer t = gameObject.AddComponent<Timer>();
+        t.TimerEnded.AddListener(disablePointerArrow);
+        t.setTimer(1.5f);
+        t.startTimer();
+    }
+
+    public void disablePointerArrow()
+    {
+        pointerArrow.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, false);
     }
 
     public void pauseGame()
