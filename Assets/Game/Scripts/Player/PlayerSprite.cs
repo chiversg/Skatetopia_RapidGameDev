@@ -6,7 +6,11 @@ public class PlayerSprite : MonoBehaviour
 {
     [SerializeField] private SkateboardMovementRigid player;
     [SerializeField] private Transform pivot;
-    Vector3 offset;
+    private Vector3 offset;
+    private Quaternion targetRotation;
+    private Vector3 currentRotation;
+    private float groundRotateSpeed = 400f;
+    private float airRotationSpeed = 50f;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +20,15 @@ public class PlayerSprite : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        targetRotation = Quaternion.FromToRotation(Vector3.up, player.spriteRotation);
         pivot.position = player.transform.position + offset;
-        pivot.rotation = player.transform.rotation;
+        if (player.CloseToGround())
+        {
+            pivot.transform.rotation = Quaternion.RotateTowards(pivot.transform.rotation, targetRotation, groundRotateSpeed * Time.deltaTime);
+        }
+        else
+        {
+            pivot.transform.rotation = Quaternion.RotateTowards(pivot.transform.rotation, targetRotation, airRotationSpeed * Time.deltaTime);
+        }
     }
 }

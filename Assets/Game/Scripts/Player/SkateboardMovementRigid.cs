@@ -93,6 +93,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     public bool onRail;
     private bool turning;
     private bool canControl = true;
+    [HideInInspector] public Vector3 spriteRotation;
 
     private Transform prevPos;
     private Vector3 previousPos;
@@ -494,8 +495,20 @@ public class SkateboardMovementRigid : MonoBehaviour
                     }
                 }
             }
+            if (Physics.Raycast(downRay, out RaycastHit hitInfo2, 5f))
+            {
+                if (hitInfo2.collider.gameObject.tag == "Floor")
+                {
+                    spriteRotation = hitInfo2.normal;
+                }
+            }
+            else
+            {
+                spriteRotation = Vector3.up;
+            }
             player.velocity = Quaternion.FromToRotation(Vector3.up, surfaceNormal) * player.velocity;
         }
+        
     }
     private void checkForWallCollision()
     {
@@ -813,6 +826,10 @@ public class SkateboardMovementRigid : MonoBehaviour
     public bool getGrounded()
     {
         return isGrounded;
+    }
+    public bool CloseToGround()
+    {
+        return isCloseToGround;
     }
 
     public Vector3 getPosition()
