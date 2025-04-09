@@ -265,7 +265,7 @@ public class UIManager : MonoBehaviour
                 alertUp = true;
                 Timer t = gameObject.AddComponent<Timer>();
                 t.TimerEnded.AddListener(alertTimerOver);
-                t.setTimer(1.0f);
+                t.setTimer(2.0f);
                 t.startTimer();
                 Time.timeScale = 0.0f;
             }
@@ -285,9 +285,9 @@ public class UIManager : MonoBehaviour
             else loadScene(Load.Hub);
         }
         //if(Input.GetKeyDown(pauseKey)){
-        if (Input.GetButtonDown("Pause") && !trickUp && !alertUp){ 
-            if(Time.timeScale == 1) pauseGame();
-            else if(Time.timeScale == 0 && paused) resumeGame();
+        if (Input.GetButtonDown("Pause") && !trickUp && !alertUp){
+            if (Time.timeScale == 1) pauseGame();
+            else if (Time.timeScale == 0 && paused) delayedResume();
         }
         if (trickUp && Input.GetButtonDown(quitTrick))
         {
@@ -589,6 +589,14 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void delayedResume()
+    {
+        Timer t = gameObject.AddComponent<Timer>();
+        t.TimerEnded.AddListener(resumeGame);
+        t.setTimer(0.1f);
+        t.startTimer();
+    }
+
     public void toControls()
     {
         EventSystem.current.SetSelectedGameObject(controlsBackButton);
@@ -660,7 +668,7 @@ public class UIManager : MonoBehaviour
     {
         Debug.Log("Hamper Enabled");
         Hamper hamperScript = FindObjectOfType<Hamper>();
-        hamperScript.setInTrigger(false);
+        //hamperScript.setInTrigger(false);
         sockScreen.SetActive(true);
         paused = true;
         inHamper = true;
@@ -693,6 +701,6 @@ public class UIManager : MonoBehaviour
     private void setHamperTriggerTrue()
     {
         Hamper hamperScript = FindObjectOfType<Hamper>();
-        hamperScript.setInTrigger(true);
+        //hamperScript.setInTrigger(true);
     }
 }
