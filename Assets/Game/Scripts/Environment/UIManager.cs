@@ -265,7 +265,7 @@ public class UIManager : MonoBehaviour
                 alertUp = true;
                 Timer t = gameObject.AddComponent<Timer>();
                 t.TimerEnded.AddListener(alertTimerOver);
-                t.setTimer(2.0f);
+                t.setTimer(1.5f);
                 t.startTimer();
                 Time.timeScale = 0.0f;
             }
