@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
         currentInput = processInputMode();
         if (Input.GetKeyDown(KeyCode.P))
         {
-            gameProg = 0;
+            gameProg = 3;
             gameState = GameState.InHub;
             SceneManager.LoadScene("01_Hub");
         }
