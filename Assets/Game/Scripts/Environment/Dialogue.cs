@@ -92,6 +92,8 @@ public class Dialogue : MonoBehaviour
                 camera.GetComponent<CameraFollow>().zoomOut();
                 Destroy(this.gameObject);
             }
+            if (GameManager.gameProg == nextGameProgress && requiredGameProgress == 3) uiManager.enablePointerArrow(-2.0f);
+            if (GameManager.gameProg == nextGameProgress && requiredGameProgress == 5) uiManager.enablePointerArrow(2.0f);
         }
 
         if (playNext && donePrinting)

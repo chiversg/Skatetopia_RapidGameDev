@@ -85,16 +85,16 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         currentInput = processInputMode();
-        if (Input.GetKeyDown(KeyCode.P))
+        /*if (Input.GetKeyDown(KeyCode.P))
         {
-            gameProg = 0;
+            gameProg = 3;
             gameState = GameState.InHub;
             SceneManager.LoadScene("01_Hub");
         }
         if (Input.GetKeyDown(KeyCode.Y))
         {
             FindObjectOfType<UIManager>().enableHamper();
-        }
+        }*/
     }
 
     private InputMode processInputMode()
