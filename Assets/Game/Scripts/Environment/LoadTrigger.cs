@@ -73,7 +73,7 @@ public class LoadTrigger : MonoBehaviour
             }
             else if (triggerType == TriggerType.HubDoor)
             {
-                if (Input.GetButtonDown("Interact"))
+                if (Input.GetButtonDown("Interact") && Time.timeScale == 1)
                 {
                     loadScene();
                     playerInTrigger = false;
