@@ -622,19 +622,31 @@ public class UIManager : MonoBehaviour
 
     private int calculateScore()
     {
+        Debug.Log("CALCULATING SCORE");
+        bool socksNeeded = false;
+        bool timeNeeded = false;
         int rank = 0;
-        flavourText = "";
+        rankFlavourText.GetComponent<TextMeshProUGUI>().text = "";
+        Debug.Log("FIRST SOCK COLLECTED: " + levelManager.sockCollected(0));
+        Debug.Log("SECOND SOCK COLLECTED: " + levelManager.sockCollected(1));
+        Debug.Log("THIRD SOCK COLLECTED: " + levelManager.sockCollected(2));
+        Debug.Log("RANK BEFORE SOCKS: " + rank);
         for (int i =0; i<3; i++)
         {
             if (levelManager.sockCollected(i)) rank++;
+            else socksNeeded = true;
         }
+        Debug.Log("RANK AFTER SOCKS: " + rank);
         if (rank != 3) rankFlavourText.GetComponent<TextMeshProUGUI>().text = "Collect More Socks";
+        else rankFlavourText.GetComponent<TextMeshProUGUI>().text = "";
         if (timeAmt >= 60)
         {
+            Debug.Log("UNDER TWO MINUTES");
             rank++;
         } 
         else
         {
+            Debug.Log("OVER TWO MINUTES");
             if (!rankFlavourText.GetComponent<TextMeshProUGUI>().text.Equals("")) rankFlavourText.GetComponent<TextMeshProUGUI>().text += " and ";
             rankFlavourText.GetComponent<TextMeshProUGUI>().text += "Go Faster";
         }
