@@ -9,8 +9,8 @@ public class PlayerSprite : MonoBehaviour
     private Vector3 offset;
     private Quaternion targetRotation;
     private Vector3 currentRotation;
-    private float groundRotateSpeed = 400f;
-    private float airRotationSpeed = 50f;
+    private float groundRotateSpeed = 20f;
+    private float airRotateSpeed = 3f;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,13 +22,14 @@ public class PlayerSprite : MonoBehaviour
     {
         targetRotation = Quaternion.FromToRotation(Vector3.up, player.spriteRotation);
         pivot.position = player.transform.position + offset;
+        float deltaAngle = Mathf.Abs(Mathf.DeltaAngle(pivot.transform.rotation.eulerAngles.z, targetRotation.eulerAngles.z));
         if (player.CloseToGround())
         {
-            pivot.transform.rotation = Quaternion.RotateTowards(pivot.transform.rotation, targetRotation, groundRotateSpeed * Time.deltaTime);
+            pivot.transform.rotation = Quaternion.RotateTowards(pivot.transform.rotation, targetRotation, groundRotateSpeed * deltaAngle * Time.deltaTime);
         }
         else
         {
-            pivot.transform.rotation = Quaternion.RotateTowards(pivot.transform.rotation, targetRotation, airRotationSpeed * Time.deltaTime);
+            pivot.transform.rotation = Quaternion.RotateTowards(pivot.transform.rotation, targetRotation, airRotateSpeed * deltaAngle * Time.deltaTime);
         }
     }
 }

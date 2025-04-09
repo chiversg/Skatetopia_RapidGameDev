@@ -69,7 +69,7 @@ public class Ramp : MonoBehaviour
             if (usable && bounceFinal)
             {
                 //Debug.Log("TESTINGTESTING");
-                player.GetComponent<SkateboardMovementRigid>().addSpeed(0, (plyrExitY - plyrEnterY) * 2, false);
+                player.GetComponent<SkateboardMovementRigid>().addSpeed(0, (plyrExitY - plyrEnterY) * 2, false, false);
             }
             if (transform.position.x*dir < other.transform.position.x*dir){
                 meshCol.enabled = false;

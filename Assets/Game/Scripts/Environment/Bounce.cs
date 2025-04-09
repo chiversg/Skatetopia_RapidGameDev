@@ -31,7 +31,7 @@ public class Bounce : MonoBehaviour
         {
             if (player.transform.position.y > this.transform.position.y)
             {
-                player.GetComponent<SkateboardMovementRigid>().addSpeed(0, force, true);
+                player.GetComponent<SkateboardMovementRigid>().addSpeed(0, force, true, true);
                 audioSource.PlayOneShot(bounceAudio);
             }
         }

@@ -495,7 +495,7 @@ public class SkateboardMovementRigid : MonoBehaviour
                     }
                 }
             }
-            if (Physics.Raycast(downRay, out RaycastHit hitInfo2, 5f))
+            if (Physics.Raycast(downRay, out RaycastHit hitInfo2, 2f))
             {
                 if (hitInfo2.collider.gameObject.tag == "Floor")
                 {
@@ -514,12 +514,16 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         if (canControl)
         {
-            isCloseToGround = true;
             //Debug.Log(isCloseToGround);
             Vector3 boxHalfExtends = new Vector3(0.05f, 1f, 1f);
             Transform left = LeftCheck;
             Transform right = RightCheck;
             if (isCloseToGround)
+            {
+                left = groundedLeftCheck;
+                right = groundedRightCheck;
+                boxHalfExtends = new Vector3(0.05f, 0.5f, 1f);
+            } else
             {
                 left = groundedLeftCheck;
                 right = groundedRightCheck;
@@ -569,7 +573,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         //isGrounded = Physics.Raycast(downRay.origin, downRay.direction, 1.1f);
         isGrounded = Physics.OverlapSphere(floorCheck.position, 0.1f, floorObjects).Length > 0;
-        isCloseToGround = Physics.OverlapBox(floorProxCheck.position, new Vector3(2.5f, 0.5f, 1f), player.rotation, floorObjects).Length > 0;
+        isCloseToGround = Physics.OverlapBox(floorProxCheck.position, new Vector3(1f, 0.5f, 1f), player.rotation, floorObjects).Length > 0;
         if (isGrounded)
         {
             animator.SetBool("isJumping", false);
@@ -705,10 +709,14 @@ public class SkateboardMovementRigid : MonoBehaviour
     }
     private void animate()
     {
-        //Debug.Log(isCrouching);
+        Debug.Log(isGrounded + " is grounded");
+        Debug.Log(isCloseToGround + " is close");
+        Debug.Log(isJumping + " is jumping");
         animator.SetFloat("Speed", Mathf.Abs(xSpeed));
         animator.SetBool("isJumping", isJumping);
         animator.SetBool("isCrouching", isCrouching);
+        animator.SetBool("isGrounded", isGrounded);
+        animator.SetBool("isCloseToGround", isCloseToGround);
         if (isJumping && vSpeed <= 0)
         {
             animator.SetBool("isFalling", true);
@@ -755,7 +763,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         }
     }
 
-    public void addSpeed(float xs, float ys, bool reset)
+    public void addSpeed(float xs, float ys, bool reset, bool isBouncePad)
     {
         if (reset)
         {
@@ -764,6 +772,11 @@ public class SkateboardMovementRigid : MonoBehaviour
         //Debug.Log("BOunce");
         xSpeed += xs;
         vSpeed += ys;
+        if (isBouncePad)
+        {
+            animator.SetTrigger("bounce");
+            isJumping = true;
+        }
         //velocity.Set(velocity.x += xs, velocity.y += ys);   
     }
     public void setDirection(float dir)
