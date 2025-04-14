@@ -13,6 +13,14 @@ public class UIManager : MonoBehaviour
     //[Tooltip("Is the level UI such as collectables, speedometer, and timer in the scene?")]
     //public bool levelUI;
 
+    [SerializeField]
+    private AudioSource levelMusic;
+    [SerializeField]
+    private AudioSource winJingle;
+    [SerializeField]
+    private AudioSource loseJingle;
+
+
     [Header("Collectables")]
     [Tooltip("collectable UI element")]
     public GameObject collectable;
@@ -395,6 +403,8 @@ public class UIManager : MonoBehaviour
         //pHit.playerHitHazard();
         t.setTimer(screenTimer);
         t.startTimer();
+        levelMusic.Stop();
+        winJingle.Play();
         Time.timeScale = 0;
         speedometer.SetActive(false);
         timer.SetActive(false);
@@ -567,6 +577,7 @@ public class UIManager : MonoBehaviour
         paused = false;
         EventSystem.current.SetSelectedGameObject(retryButton);
         currButton = retryButton;
+        loseJingle.Play();
     }
 
     public void resumeGame()
