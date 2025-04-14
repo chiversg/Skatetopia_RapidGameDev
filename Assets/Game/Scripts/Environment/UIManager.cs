@@ -313,6 +313,15 @@ public class UIManager : MonoBehaviour
         }
 
         if (Input.GetButtonDown("Interact") && inHamper) resumeGame();
+
+        if (Time.timeScale == 1) hideUI();
+    }
+
+    public void hideUI()
+    {
+        pauseScreen.SetActive(false);
+        trickInfo.SetActive(false);
+        sockScreen.SetActive(false);
     }
 
     public void updateCollectables(int index)
