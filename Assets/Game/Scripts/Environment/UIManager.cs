@@ -643,6 +643,8 @@ public class UIManager : MonoBehaviour
         trickDesc.GetComponent<TMPro.TextMeshProUGUI>().text = desc;
         trickInfo.SetActive(true);
         controls.SetActive(true);
+        popupImage.SetActive(false);
+        popupText.SetActive(false);
         Time.timeScale = 0;
         paused = true;
         trickUp = true;
