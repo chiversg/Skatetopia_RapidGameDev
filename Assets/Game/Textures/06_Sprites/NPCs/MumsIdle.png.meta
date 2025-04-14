@@ -150,8 +150,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0f28e91946ee67243959bebcb10e43c6
-      internalID: -723109776
+      spriteID: 1f3a033338565864896af56bdbbba9b1
+      internalID: -1694026213
       vertices: []
       indices: 
       edges: []
@@ -171,8 +171,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6b6bc42f28b5a80498ebcbde9c04eb29
-      internalID: -971789560
+      spriteID: 6d47a6895aa8b734fa96ad50d32b6db0
+      internalID: -1170397971
       vertices: []
       indices: 
       edges: []
@@ -192,8 +192,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 688b58ed79361014183434ddfaeff129
-      internalID: 633215771
+      spriteID: 4969db41be562b241a750800700f5614
+      internalID: -1660943715
       vertices: []
       indices: 
       edges: []
@@ -213,8 +213,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a0c775a720f7fe843a010d719140f542
-      internalID: -1703068578
+      spriteID: 2a85ad51dee19a147944d756e6db4da2
+      internalID: -796471902
       vertices: []
       indices: 
       edges: []
@@ -234,113 +234,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6b1810b3f7ac85c47956c6cfa303cec8
-      internalID: -1293663320
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_5
-      rect:
-        serializedVersion: 2
-        x: 2560
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9726101b7b4c8064abd6c2caf817882d
-      internalID: -1893802849
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_6
-      rect:
-        serializedVersion: 2
-        x: 3072
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: af3d58801883803448ecc3b7771e36ce
-      internalID: 981254016
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_7
-      rect:
-        serializedVersion: 2
-        x: 3584
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 63e9fc8fce85aca4fb1d0a22d67961ce
-      internalID: -1618659460
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_8
-      rect:
-        serializedVersion: 2
-        x: 4096
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e8a72afdab9e19a48a2ce44ab4cf0192
-      internalID: 1460013423
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MumsIdle_9
-      rect:
-        serializedVersion: 2
-        x: 4608
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: de77379c61a0bf4408e479d0552504e1
-      internalID: 414725922
+      spriteID: fb96c62ed45b7044f9782e63fdfd5f17
+      internalID: 1690608122
       vertices: []
       indices: 
       edges: []
@@ -348,7 +243,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 46df0e1f23fec654b9786b881cdda19b
+    spriteID: 08fc0e6ebc0878340b357cb9f1e9a923
     internalID: 0
     vertices: []
     indices: 
@@ -356,16 +251,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      MumsIdle_0: -723109776
-      MumsIdle_1: -971789560
-      MumsIdle_2: 633215771
-      MumsIdle_3: -1703068578
-      MumsIdle_4: -1293663320
-      MumsIdle_5: -1893802849
-      MumsIdle_6: 981254016
-      MumsIdle_7: -1618659460
-      MumsIdle_8: 1460013423
-      MumsIdle_9: 414725922
+      MumsIdle_0: -1694026213
+      MumsIdle_1: -1170397971
+      MumsIdle_2: -1660943715
+      MumsIdle_3: -796471902
+      MumsIdle_4: 1690608122
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

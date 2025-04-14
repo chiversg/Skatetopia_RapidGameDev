@@ -150,8 +150,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 48f8d2075c0f0a6439665a589e6f2712
-      internalID: 1333851967
+      spriteID: 69b972dfd20c27943ae0c51308b2df5c
+      internalID: -670393052
       vertices: []
       indices: 
       edges: []
@@ -171,8 +171,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4ed951763fe946549868e6c128b0ba6e
-      internalID: 434590984
+      spriteID: a0f238124d5835349b540d6fe18c0643
+      internalID: -143196379
       vertices: []
       indices: 
       edges: []
@@ -192,8 +192,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 98a9c673b12c4f04fa99b2374baecbcc
-      internalID: -1405011503
+      spriteID: 9fb12edf298f88c49ba1ed6ba783eeef
+      internalID: 1149033136
       vertices: []
       indices: 
       edges: []
@@ -213,8 +213,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fff2b83409987314c9c8e0bed183d496
-      internalID: 20357954
+      spriteID: f98e406b1e745da4383d07b33aefd7e5
+      internalID: 886653334
       vertices: []
       indices: 
       edges: []
@@ -234,113 +234,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 719eed263e7ba174189a2ca82ed51dfc
-      internalID: -1189969033
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PopsIdle_5
-      rect:
-        serializedVersion: 2
-        x: 2560
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d5b32f89a56c93b48a7781c6ef4e3672
-      internalID: 636242205
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PopsIdle_6
-      rect:
-        serializedVersion: 2
-        x: 3072
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 94e95ca834dc3c94b89f18eede15556b
-      internalID: 1538163612
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PopsIdle_7
-      rect:
-        serializedVersion: 2
-        x: 3584
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5c469457930ef454c82a3db01f5428d1
-      internalID: -513625803
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PopsIdle_8
-      rect:
-        serializedVersion: 2
-        x: 4096
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: da7b1efc6a9f2a9468adad56f2b77756
-      internalID: -1793959858
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PopsIdle_9
-      rect:
-        serializedVersion: 2
-        x: 4608
-        y: 0
-        width: 512
-        height: 800
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 99e510261ee5fe94d93a4370f4029fff
-      internalID: -314299398
+      spriteID: 7fba166f5bc77704f9b7331a0ff62420
+      internalID: 255387797
       vertices: []
       indices: 
       edges: []
@@ -348,7 +243,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: d99450d27a6ddb74cb42f42e8768f859
+    spriteID: aaaf177628a87a14793aaffd753c8028
     internalID: 0
     vertices: []
     indices: 
@@ -356,16 +251,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PopsIdle_0: 1333851967
-      PopsIdle_1: 434590984
-      PopsIdle_2: -1405011503
-      PopsIdle_3: 20357954
-      PopsIdle_4: -1189969033
-      PopsIdle_5: 636242205
-      PopsIdle_6: 1538163612
-      PopsIdle_7: -513625803
-      PopsIdle_8: -1793959858
-      PopsIdle_9: -314299398
+      PopsIdle_0: -670393052
+      PopsIdle_1: -143196379
+      PopsIdle_2: 1149033136
+      PopsIdle_3: 886653334
+      PopsIdle_4: 255387797
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
