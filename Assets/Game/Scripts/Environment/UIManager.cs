@@ -80,6 +80,8 @@ public class UIManager : MonoBehaviour
     public GameObject timeRemainText;
     [Tooltip("Timer sprite for level complete")]
     public GameObject levelCompleteTimer;
+    [Tooltip("Lou win animation")]
+    public Animator louWin;
 
     [Header("Pause")]
     [Tooltip("pause screen game object")]
@@ -682,7 +684,7 @@ public class UIManager : MonoBehaviour
         }
         if(rank!=4) rankFlavourText.GetComponent<TextMeshProUGUI>().text += " for a Higher Rank";
         if(rank == 4) rankFlavourText.GetComponent<TextMeshProUGUI>().text = "Great Job!";
-        GameManager.rank[levelManager.getIndex()] = rank;
+        if (GameManager.rank[levelManager.getIndex()] < rank) GameManager.rank[levelManager.getIndex()] = rank;
         return rank;
     }
 
