@@ -57,6 +57,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     [SerializeField] private AudioClip uTurnAudio;
     [SerializeField] private AudioClip playerKnockedBack;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private float rollVolume;
 
     [Header("Miscellaneous")]
     [SerializeField] private Animator animator;
@@ -132,6 +133,7 @@ public class SkateboardMovementRigid : MonoBehaviour
 
     public SpriteRenderer kickoffIndicator;
     public Transform indicatorTransform;
+    public PlayerHit PlayerHit;
 
 
 
@@ -532,10 +534,11 @@ public class SkateboardMovementRigid : MonoBehaviour
                 left = groundedLeftCheck;
                 right = groundedRightCheck;
                 boxHalfExtends = new Vector3(0.05f, 0.5f, 1f);
-            } else
+            }
+            else
             {
-                left = LeftCheck;
-                right = RightCheck;
+                left = groundedLeftCheck;
+                right = groundedRightCheck;
                 boxHalfExtends = new Vector3(0.05f, 0.5f, 1f);
             }
 
@@ -727,6 +730,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         animator.SetBool("isGrounded", isGrounded);
         animator.SetBool("isCloseToGround", isCloseToGround);
         animator.SetBool("onRail", onRail);
+        animator.SetBool("Invincible", PlayerHit.isInvincible());
         if (isJumping && vSpeed <= 0)
         {
             animator.SetBool("isFalling", true);
@@ -768,7 +772,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         while (true)
         {
-            if (playerState == state.GROUNDED && xSpeed != 0) audioSource.PlayOneShot(skateboardRollAudio);
+            if (playerState == state.GROUNDED && xSpeed != 0) audioSource.PlayOneShot(skateboardRollAudio, rollVolume);
             yield return new WaitForSeconds(0.5f);
         }
     }
