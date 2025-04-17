@@ -64,6 +64,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     public bool debug;
     private bool isGrounded;
     private bool isJumping;
+    private bool uTurn;
 
     public TextMeshProUGUI debugText;
 
@@ -172,6 +173,9 @@ public class SkateboardMovementRigid : MonoBehaviour
             audioSource.PlayOneShot(landAudio);
         }
         prevPlayerState = playerState;
+
+        if (Input.GetButtonDown("U-Turn") && (isGrounded) && GameManager.uturn) uTurn = true;
+
         //performTricks();
     }
     void FixedUpdate()
@@ -306,8 +310,9 @@ public class SkateboardMovementRigid : MonoBehaviour
             //playerState = state.CHARGING;
             //kickFlipTime = 0f;
         }
-        if (Input.GetButtonDown("U-Turn") && (isGrounded) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.uturn)
+        if (uTurn && (isGrounded) && Mathf.Abs(playerAngle) <= maxBackflipAngle && GameManager.uturn)
         {
+            uTurn = false;
             if (onRail)
             {
                 onRail = false;
@@ -321,6 +326,10 @@ public class SkateboardMovementRigid : MonoBehaviour
             uturnTime = 0f;
             animator.SetBool("playerSwitch", true);
             audioSource.PlayOneShot(uTurnAudio);
+        }
+        else
+        {
+            uTurn = false;
         }
         if (Input.GetButtonDown("Kickoff") && (isGrounded || onRail) && Mathf.Abs(playerAngle) <= maxKickoffAngle)
         {
@@ -717,6 +726,7 @@ public class SkateboardMovementRigid : MonoBehaviour
         animator.SetBool("isCrouching", isCrouching);
         animator.SetBool("isGrounded", isGrounded);
         animator.SetBool("isCloseToGround", isCloseToGround);
+        animator.SetBool("onRail", onRail);
         if (isJumping && vSpeed <= 0)
         {
             animator.SetBool("isFalling", true);
