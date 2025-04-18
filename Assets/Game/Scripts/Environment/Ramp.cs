@@ -19,7 +19,7 @@ public class Ramp : MonoBehaviour
     [Tooltip("Ramp boost multiplier")]
     public int mult = 2;
     [Tooltip("Ramp boost minimum")]
-    public float min = 5.0f
+    public float min = 5.0f;
 
     private bool usable = true;
     private bool[] bounce = new bool[60];
