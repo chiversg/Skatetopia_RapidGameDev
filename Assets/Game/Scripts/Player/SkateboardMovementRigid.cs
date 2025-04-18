@@ -519,7 +519,6 @@ public class SkateboardMovementRigid : MonoBehaviour
             }
             player.velocity = Quaternion.FromToRotation(Vector3.up, surfaceNormal) * player.velocity;
         }
-        
     }
     private void checkForWallCollision()
     {
@@ -749,6 +748,9 @@ public class SkateboardMovementRigid : MonoBehaviour
     public void BoardRail(Transform target)
     {
         playerState = state.GRINDING;
+        surfaceNormal = Vector3.up;
+        spriteRotation = Vector3.up;
+        rotatePlayerToTarget(surfaceNormal);
         Debug.Log("RWARWARR");
         Debug.Log("XSpeed:" + xSpeed);
         grindSpeed = xSpeed;
@@ -762,6 +764,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     {
         while (onRail)
         {
+            surfaceNormal = Vector3.up;
             Debug.Log("playing rail stuff");
             audioSource.PlayOneShot(grindRailAudio);
             yield return new WaitForSeconds(0.5f);
