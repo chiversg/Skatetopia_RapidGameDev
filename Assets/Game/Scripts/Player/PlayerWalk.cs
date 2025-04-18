@@ -1,25 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class PlayerWalk : MonoBehaviour
 {
     [SerializeField] private Rigidbody player;
     [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer character;
 
     private float xSpeed;
     private bool lookUp;
+    private float direction;
+    private float lastFacedDirection;
     private bool isListening = false;
     void Start()
     {
-        
+
     }
 
     private void Update()
     {
         if (!isListening)
         {
+            direction = Input.GetAxis("Horizontal");
+            lastFacedDirection = direction != 0 ? direction : lastFacedDirection;
             xSpeed = player.velocity.x;
             flipSprite();
             checkInputs();
@@ -36,7 +43,7 @@ public class PlayerWalk : MonoBehaviour
     {
         if (!isListening)
         {
-            player.AddForce(Vector3.right * Input.GetAxis("Horizontal") * 1.3f, ForceMode.VelocityChange);
+            player.AddForce(Vector3.right * direction * 1.3f, ForceMode.Impulse);
         }
     }
     private void checkInputs()
@@ -44,7 +51,8 @@ public class PlayerWalk : MonoBehaviour
         if (Input.GetButton("LookUp"))
         {
             lookUp = true;
-        } else
+        }
+        else
         {
             lookUp = false;
         }
@@ -52,18 +60,16 @@ public class PlayerWalk : MonoBehaviour
     private void flipSprite()
     {
         //Debug.Log(xSpeed);
-        if (xSpeed != 0)
+        if (lastFacedDirection < 0)
         {
-            if (xSpeed < 0)
-            {
-                player.transform.localScale = new Vector3(-Mathf.Abs(player.transform.lossyScale.x), player.transform.lossyScale.y, player.transform.lossyScale.z);
-            }
-            else if (xSpeed > 0)
-            {
-                player.transform.localScale = new Vector3(Mathf.Abs(player.transform.lossyScale.x), player.transform.lossyScale.y, player.transform.lossyScale.z);
-            }
+            character.flipX = false;
+        }
+        else
+        {
+            character.flipX = true;
         }
     }
+
     public void enterDialogue()
     {
         isListening = true;
