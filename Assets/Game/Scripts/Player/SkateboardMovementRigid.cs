@@ -547,8 +547,8 @@ public class SkateboardMovementRigid : MonoBehaviour
                 Debug.Log("Collided will wall on left side");
                 audioSource.PlayOneShot(playerKnockedBack);
                 animator.SetTrigger("playerHit");
+                player.transform.position = previousPos +  new Vector3(0.1f, 0f, 0f);
                 surfaceNormal = Vector3.up;
-                player.transform.position = previousPos + new Vector3(0.1f, 0f, 0f);
                 xSpeed = 10 * Mathf.Abs(xSpeed / maxSpeed);
                 StartCoroutine(removePlayerControl(0.5f));
             }
@@ -557,8 +557,8 @@ public class SkateboardMovementRigid : MonoBehaviour
                 Debug.Log("Collided with wall on right side");
                 audioSource.PlayOneShot(playerKnockedBack);
                 animator.SetTrigger("playerHit");
+                player.transform.position = previousPos - new Vector3(0.1f, 0f, 0f);
                 surfaceNormal = Vector3.up;
-                player.transform.position = previousPos - new Vector3(0.1f, 0f, 0f); ;
                 xSpeed = -10 * Mathf.Abs(xSpeed / maxSpeed);
                 StartCoroutine(removePlayerControl(0.5f));
             }
@@ -584,7 +584,7 @@ public class SkateboardMovementRigid : MonoBehaviour
     private void checkCollisions()
     {
         //isGrounded = Physics.Raycast(downRay.origin, downRay.direction, 1.1f);
-        isGrounded = Physics.OverlapSphere(floorCheck.position, 1.1f, floorObjects).Length > 0;
+        isGrounded = Physics.OverlapSphere(floorCheck.position, 1f, floorObjects).Length > 0;
         isCloseToGround = Physics.OverlapBox(floorProxCheck.position, new Vector3(1f, 0.5f, 1f), player.rotation, floorObjects).Length > 0;
         if (isGrounded)
         {
