@@ -16,6 +16,8 @@ public class Ramp : MonoBehaviour
     public Collider meshCol;
     [Tooltip("Box collider for the ramp")]
     public Collider boxCol;
+    [Tooltip("Ramp boost multiplier")]
+    public int mult = 2;
 
     private bool usable = true;
     private bool[] bounce = new bool[60];
@@ -82,7 +84,7 @@ public class Ramp : MonoBehaviour
             plyrExitY = other.transform.position.y;
             if(!player.GetComponent<SkateboardMovementRigid>().getState().Equals("JUMPING"))
             {
-                player.GetComponent<SkateboardMovementRigid>().addSpeed(0, (plyrExitY - plyrEnterY) * 2, false, false);
+                player.GetComponent<SkateboardMovementRigid>().addSpeed(0, (plyrExitY - plyrEnterY) * mult, false, false);
             }
             if (transform.position.x*dir < other.transform.position.x*dir){
                 meshCol.enabled = false;
