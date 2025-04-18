@@ -115,10 +115,11 @@ public class Ramp : MonoBehaviour
     }
     private bool meetsContactRequirement()
     {
+        bool touched = false;
         foreach (bool b in bounce)
         {
-            if (!b) return false;
+            if (b) touched = true;
         }
-        return true;
+        return touched;
     }
 }
