@@ -18,7 +18,7 @@ public class Ramp : MonoBehaviour
     public Collider boxCol;
 
     private bool usable = true;
-    private bool[] bounce = new bool[5];
+    private bool[] bounce = new bool[60];
     private int bounceIndex = 0;
     private float plyrEnterY;
     private float plyrExitY;
@@ -54,14 +54,14 @@ public class Ramp : MonoBehaviour
             //Debug.Log(bounce);
             bounce[bounceIndex] = player.GetComponent<SkateboardMovementRigid>().getGrounded();
             bounceIndex++;
-            if(bounceIndex>=5) bounceIndex = 0;
+            if(bounceIndex>=bounce.Length) bounceIndex = 0;
         }
     }
 
     private void OnTriggerExit(Collider other){
         //Debug.Log("Trigger has been Exited: " + gameObject.name + ", " + bounce[0] + bounce[1] + bounce[2] + bounce[3] + bounce[4]);
         if(other.tag == "Player"){
-            bool bounceFinal = false;
+            /*bool bounceFinal = false;
             foreach(bool b in bounce){
                 if(b) bounceFinal = true;
             }
@@ -69,6 +69,19 @@ public class Ramp : MonoBehaviour
             if (usable && bounceFinal)
             {
                 //Debug.Log("TESTINGTESTING");
+                player.GetComponent<SkateboardMovementRigid>().addSpeed(0, (plyrExitY - plyrEnterY) * 2, false, false);
+            }
+            if (transform.position.x*dir < other.transform.position.x*dir){
+                meshCol.enabled = false;
+                usable = false;
+            }
+            else{
+                meshCol.enabled = true;
+                usable = true;
+            }*/
+            plyrExitY = other.transform.position.y;
+            if(!player.GetComponent<SkateboardMovementRigid>().getState().Equals("JUMPING"))
+            {
                 player.GetComponent<SkateboardMovementRigid>().addSpeed(0, (plyrExitY - plyrEnterY) * 2, false, false);
             }
             if (transform.position.x*dir < other.transform.position.x*dir){

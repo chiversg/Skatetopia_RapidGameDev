@@ -363,12 +363,12 @@ public class UIManager : MonoBehaviour
         if (speed+1 >= maxSpeed)
         {
             sparks.Play();
-            flames.CrossFadeAlpha(1.0f, 0.1f, false);
+            flames.CrossFadeAlpha(1.0f, 0.1f, true);
         }
         else
         {
             sparks.Stop();
-            flames.CrossFadeAlpha(0.0f, 0.1f, false);
+            flames.CrossFadeAlpha(0.0f, 0.1f, true);
         }
     }
 
@@ -487,8 +487,8 @@ public class UIManager : MonoBehaviour
         popupImage.SetActive(true);
         if (!alertUp)
         {
-            popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(1.0f, 0.1f, false);
-            //popupImage.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, false);
+            popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(1.0f, 0.1f, true);
+            //popupImage.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, true);
             popupImage.SetActive(true);
         }
     }
@@ -496,17 +496,17 @@ public class UIManager : MonoBehaviour
     public void disablePopupText()
     {
         popText = false;
-        popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0.0f, 0.1f, false);
+        popupText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0.0f, 0.1f, true);
         popupImage.SetActive(false);
         /*if (popupImage.transform.GetChild(0) != null)
         {
-            popupImage.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, false);
+            popupImage.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, true);
         }
         else
         {
             for(int i = 0; i<popupImage.transform.childCount; i++)
             {
-                popupImage.transform.GetChild(i).GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, false);
+                popupImage.transform.GetChild(i).GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, true);
             }
         }*/
         if (Time.timeScale == 0) popupText.SetActive(false);
@@ -520,9 +520,9 @@ public class UIManager : MonoBehaviour
     public void enableAlert()
     {
         alert.SetActive(true);
-        alert.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, false);
-        alertText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(1.0f, 0.1f, false);
-        alertArrow.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, false);
+        alert.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, true);
+        alertText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(1.0f, 0.1f, true);
+        alertArrow.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, true);
         Timer t = gameObject.AddComponent<Timer>();
         t.TimerEnded.AddListener(alertTimerOver);
         t.setTimer(1.0f);
@@ -532,9 +532,9 @@ public class UIManager : MonoBehaviour
 
     public void disableAlert()
     {
-        alert.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, false);
-        alertText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0.0f, 0.1f, false);
-        alertArrow.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, false);
+        alert.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, true);
+        alertText.GetComponent<TextMeshProUGUI>().CrossFadeAlpha(0.0f, 0.1f, true);
+        alertArrow.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, true);
     }
 
     public void enablePointerArrow(float x)
@@ -542,7 +542,7 @@ public class UIManager : MonoBehaviour
         Debug.Log("X SIZE: " + x);
         pointerArrow.SetActive(true);
         pointerArrow.transform.localScale = new Vector3(x, pointerArrow.transform.localScale.y, pointerArrow.transform.localScale.z);
-        pointerArrow.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, false);
+        pointerArrow.GetComponent<Image>().CrossFadeAlpha(1.0f, 0.1f, true);
         Timer t = gameObject.AddComponent<Timer>();
         t.TimerEnded.AddListener(disablePointerArrow);
         t.setTimer(1.5f);
@@ -551,7 +551,7 @@ public class UIManager : MonoBehaviour
 
     public void disablePointerArrow()
     {
-        pointerArrow.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, false);
+        pointerArrow.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.1f, true);
     }
 
     public void pauseGame()

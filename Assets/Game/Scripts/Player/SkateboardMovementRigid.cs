@@ -855,6 +855,9 @@ public class SkateboardMovementRigid : MonoBehaviour
 
     public bool getGrounded()
     {
+        //bool temp = false;
+        //if(isGrounded) temp = true;
+        //if(isCloseToGround) temp = true;
         return isGrounded;
     }
     public bool CloseToGround()
